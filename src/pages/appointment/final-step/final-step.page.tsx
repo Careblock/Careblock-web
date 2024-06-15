@@ -1,13 +1,18 @@
 import { TextField } from '@mui/material';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import { getFullName } from '@/utils/common.helpers';
 import { AuthContextType } from '@/types/auth.type';
 import { FinalStepProps } from './final-step.type';
 import { useAuth } from '@/contexts/auth.context';
 import { Images } from '@/assets/images';
+import { setTitle } from '@/utils/document';
 
 const FinalStep = ({ reason, setReason, organization, schedule }: FinalStepProps) => {
     const { userData } = useAuth() as AuthContextType;
+
+    useEffect(() => {
+        setTitle('Final step | CareBlock');
+    }, []);
 
     return (
         <div className="final-steps mt-5">

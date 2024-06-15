@@ -11,6 +11,7 @@ import { getFullName } from '@/utils/common.helpers';
 import { useAuth } from '@/contexts/auth.context';
 import { Images } from '@/assets/images';
 import { Color } from '@/enums/Color';
+import { setTitle } from '@/utils/document';
 
 const AppointmentHistory = () => {
     const { subscribeOnce } = useObservable();
@@ -19,6 +20,10 @@ const AppointmentHistory = () => {
     const [appointmentData, setAppointmentData] = useState([]);
     const [formattedAppointments, setFormattedAppointments] = useState<any>([]);
     const fullName = getFullName(userInfo);
+
+    useEffect(() => {
+        setTitle('Appointment history | CareBlock');
+    }, []);
 
     useEffect(() => {
         subscribeOnce(AccountService.getById(userData?.id), (res: User) => {

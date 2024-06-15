@@ -15,6 +15,7 @@ import useObservable from '@/hooks/use-observable.hook';
 import { SecondStepProps } from './second-step.type';
 import { Doctors } from '@/types/doctor.type';
 import { Images } from '@/assets/images';
+import { setTitle } from '@/utils/document';
 
 const timeRanges = [
     '07:00 - 08:00',
@@ -33,6 +34,10 @@ const SecondStep = ({ scheduleData, setScheduleData, organization }: SecondStepP
     const [searchValue, setSearchValue] = useState('');
     const [doctorData, setDoctorData] = useState<Doctors[]>([]);
     const [doctorDataDisplay, setDoctorDataDisplay] = useState<Doctors[] | undefined>([]);
+
+    useEffect(() => {
+        setTitle('Second step | CareBlock');
+    }, []);
 
     useEffect(() => {
         subscribeOnce(AccountService.filterByOrganization(organization!.id), (res: Doctors[]) => {

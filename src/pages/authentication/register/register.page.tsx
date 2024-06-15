@@ -21,6 +21,7 @@ import { PATHS } from '@/enums/RoutePath';
 import avatarRegister from '@/assets/images/auth/background.png';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
 import 'react-toastify/dist/ReactToastify.css';
+import { setTitle } from '@/utils/document';
 
 function Register() {
     const navigate = useNavigate();
@@ -34,6 +35,10 @@ function Register() {
     const [showAdditionalInfo, setShowAdditionalInfo] = useState<boolean>(false);
     const stakeIdCookie = getCookie('stakeId');
     const stakeId = stakeIdCookie ? JSON.stringify(stakeIdCookie).slice(1, -1) : '';
+
+    useEffect(() => {
+        setTitle('Register | CareBlock');
+    }, []);
 
     const formik = useFormik({
         initialValues: INITIAL_VALUES.REGISTER,

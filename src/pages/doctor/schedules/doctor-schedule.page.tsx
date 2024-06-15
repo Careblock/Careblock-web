@@ -16,6 +16,7 @@ import { Patients } from '@/types/patient.type';
 import { Accounts } from '@/types/account.type';
 import { ScheduleTabs } from '@/enums/Common';
 import { Images } from '@/assets/images';
+import { setTitle } from '@/utils/document';
 
 const DoctorSchedulePage = () => {
     const { userData } = useAuth() as AuthContextType;
@@ -28,6 +29,7 @@ const DoctorSchedulePage = () => {
     const [detailsInfo, setDetailsInfo] = useState<Patients | undefined>();
 
     useEffect(() => {
+        setTitle('Doctor schedule | CareBlock');
         getDataSource();
     }, []);
 

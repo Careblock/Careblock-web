@@ -13,6 +13,7 @@ import UserService from '@/services/user.service';
 import useObservable from '@/hooks/use-observable.hook';
 import { useAuth } from '@/contexts/auth.context';
 import { Button, MenuItem, Select, TextField } from '@mui/material';
+import { setTitle } from '@/utils/document';
 
 function PatientInfo() {
     const { subscribeOnce } = useObservable();
@@ -20,6 +21,10 @@ function PatientInfo() {
     const [userInfo, setUserInfo] = useState<any>();
     const [imageSrc, setImageSrc] = useState<string>('');
     const [selectedFile, setSelectedFile] = useState<any>();
+
+    useEffect(() => {
+        setTitle('Information | CareBlock');
+    }, []);
 
     const formik = useFormik({
         initialValues: INITIAL_VALUES.EDIT_PROFILE_PATIENT,
