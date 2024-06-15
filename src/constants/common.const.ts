@@ -4,11 +4,6 @@ export const DEFAULT_DATE_FORMAT = 'DD/MM/YYYY';
 export const DEFAULT_MINUTES_SECONDS_FORMAT = 'mm:ss';
 export const REFRESH_TOKEN_KEY = '';
 
-export const CONFIRM_TYPE = {
-    REGISTER: 'register',
-    FORGOT_PASSWORD: 'forgotPassword',
-};
-
 export const REF = {
     PASSSWORD: 'password',
     NEWPASSWORD: 'newPassword',

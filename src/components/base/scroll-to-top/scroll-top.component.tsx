@@ -1,7 +1,7 @@
 import { useScrollTrigger } from '@mui/material';
 import Fade from '@mui/material/Fade';
 import Box from '@mui/material/Box';
-import { Props } from './navbar.type';
+import { Props } from '@/layouts/navbar/navbar.type';
 
 export function ScrollToTop(props: Props) {
     const { children, window } = props;

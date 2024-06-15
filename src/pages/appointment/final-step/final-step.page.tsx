@@ -30,7 +30,7 @@ const FinalStep = ({ reason, setReason, organization, schedule }: FinalStepProps
                 <div className="steps-content__right flex-1">
                     <div className="content-right__patient text-[16px] mb-1">
                         <b className="mr-1 text-[16px]">Patient:</b>
-                        {`${userData?.firstname} ${userData?.lastname}`}
+                        {`${userData?.firstname ?? ''} ${userData?.lastname ?? ''}`}
                     </div>
                     <div className="content-right__doctor text-[16px] mb-1">
                         <b className="mr-1 text-[16px]">Doctor:</b>

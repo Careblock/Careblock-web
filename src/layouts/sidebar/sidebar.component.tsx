@@ -37,13 +37,19 @@ const Sidebar = () => {
 
             <SidebarContent style={{ backgroundColor: 'white' }}>
                 <Menu iconShape="circle" className="!p-0 hover:bg-gray">
-                    <MenuItem icon={<Images.MdDashboard />}>
-                        <span className="text-black text-xl">Dashboard</span>
+                    <MenuItem icon={<Images.BookOnlineIcon />}>
+                        <span className="text-black text-xl">Make a reservation</span>
                         <Link to="/" />
                     </MenuItem>
                 </Menu>
                 <Menu iconShape="circle" className="!p-0 hover:bg-gray">
-                    <MenuItem icon={<Images.FaHouseUser />}>
+                    <MenuItem icon={<Images.MdDashboard />}>
+                        <span className="text-black text-xl">Dashboard</span>
+                        <Link to="/patient" />
+                    </MenuItem>
+                </Menu>
+                <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                    <MenuItem icon={<Images.HistoryIcon />}>
                         <span className="text-black text-xl">Appointment History</span>
                         <Link to="/patient/appointment-history" />
                     </MenuItem>

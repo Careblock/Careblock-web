@@ -48,7 +48,7 @@ export const Login = ({ handleClose }: any) => {
                         if (rest.role === ROLES.DOCTOR) {
                             navigate(PATHS.DOCTOR_SCHEDULE);
                         } else if (rest.role === ROLES.PATIENT) {
-                            navigate(PATHS.PATIENT_PAGE);
+                            navigate(PATHS.DEFAULT);
                         } else {
                             navigate(PATHS.HOME);
                         }

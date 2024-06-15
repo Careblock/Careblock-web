@@ -1,7 +1,5 @@
 import { Images } from '@/assets/images';
-import { MenuSidebar, SocialMediaLink } from '@/types/common.type';
-
-export const menuUserSidebar: MenuSidebar[] = [{ title: 'History Appointment', path: '/patient/history_appointment' }];
+import { SocialMediaLink } from '@/types/common.type';
 
 export const socialMediaLinks: SocialMediaLink[] = [
     { platform: 'Facebook', icon: <Images.FaFacebook className="w-[16px] h-[16px]" title="Facebook" />, link: '/' },
