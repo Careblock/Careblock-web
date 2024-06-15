@@ -51,10 +51,13 @@ export const Login = ({ handleClose }: any) => {
                         startSession({ accessToken: res.jwtToken, user: rest });
                         dispatch(storeUser(res) as any);
                         if (rest.role === ROLES.DOCTOR) {
+                            setTitle('Doctor schedule | CareBlock');
                             navigate(PATHS.DOCTOR_SCHEDULE);
                         } else if (rest.role === ROLES.PATIENT) {
+                            setTitle('Home | CareBlock');
                             navigate(PATHS.DEFAULT);
                         } else {
+                            setTitle('Home | CareBlock');
                             navigate(PATHS.HOME);
                         }
                         handleClose();

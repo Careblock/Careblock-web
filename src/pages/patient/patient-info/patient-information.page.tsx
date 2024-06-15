@@ -14,6 +14,7 @@ import useObservable from '@/hooks/use-observable.hook';
 import { useAuth } from '@/contexts/auth.context';
 import { Button, MenuItem, Select, TextField } from '@mui/material';
 import { setTitle } from '@/utils/document';
+import { AccountRequest } from '@/types/accountRequest.type';
 
 function PatientInfo() {
     const { subscribeOnce } = useObservable();
@@ -56,18 +57,21 @@ function PatientInfo() {
         }
     }, [userInfo]);
 
-    const handleSubmit = (values: any) => {
+    const handleSubmit = (values: AccountRequest) => {
         subscribeOnce(
-            UserService.update(userData?.id, {
+            AccountService.update(userData?.id, {
                 ...values,
-                avatar: userInfo.avatar ? userInfo.avatar : selectedFile,
-                stakeId: userInfo.stakeId,
+                avatar: selectedFile ?? userInfo.avatar,
             }),
             (res: User) => {
-                if (res) {
-                    setUser(res);
-                    StorageService.setObject(localStorageKeys.USER_INFO, res);
-                    addToast({ text: SystemMessage.EDIT_PROFILE, position: 'top-right' });
+                try {
+                    if (res) {
+                        setUser(res);
+                        StorageService.setObject(localStorageKeys.USER_INFO, res);
+                        addToast({ text: SystemMessage.EDIT_PROFILE, position: 'top-right' });
+                    }
+                } catch (err) {
+                    console.error(err);
                 }
             }
         );
