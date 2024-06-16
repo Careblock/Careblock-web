@@ -9,7 +9,6 @@ import { AuthContextType, User } from '@/types/auth.type';
 import { addToast } from '@/components/base/toast/toast.service';
 import AccountService from '@/services/account.service';
 import StorageService from '@/services/storage.service';
-import UserService from '@/services/user.service';
 import useObservable from '@/hooks/use-observable.hook';
 import { useAuth } from '@/contexts/auth.context';
 import { Button, MenuItem, Select, TextField } from '@mui/material';
