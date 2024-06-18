@@ -32,6 +32,10 @@ const HeaderPatient = () => {
         });
     }, []);
 
+    useEffect(() => {
+        setUserInfo({ ...userData });
+    }, [userData]);
+
     const fullName = `${userInfo?.firstname ?? ''} ${userInfo?.lastname ?? ''}`;
     const email = userInfo?.email;
 
@@ -96,7 +100,7 @@ const HeaderPatient = () => {
                             <Typography className="text-xl !font-bold">{fullName}</Typography>
                         </div>
                         <div className="flex flex-col justify-center items-center">
-                            <Typography className="text-xl !font-bold">{email}</Typography>
+                            <Typography className="text-xs">{email}</Typography>
                         </div>
                     </div>
                     <div className="flex items-center hover:bg-gray" onClick={() => navigate('/patient/detail_info')}>
