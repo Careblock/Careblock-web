@@ -8,13 +8,11 @@ import { theme } from './constants/var.const.ts';
 import ToastContainer from './components/base/toast/toast.container.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <StartupImport>
-            <ThemeProvider theme={theme}>
-                <Routes />
-            </ThemeProvider>
-            <ToastContainer />
-            <Loading />
-        </StartupImport>
-    </React.StrictMode>
+    <StartupImport>
+        <ThemeProvider theme={theme}>
+            <Routes />
+        </ThemeProvider>
+        <ToastContainer />
+        <Loading />
+    </StartupImport>
 );
