@@ -5,7 +5,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as React from 'react';
 import { Login } from '@/pages/authentication/login/login.page';
 import IconButton from '@mui/material/IconButton';
-import { ScrollToTop } from './scroll-top.component';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import AppBar from '@mui/material/AppBar';
@@ -13,6 +12,7 @@ import Menu from '@mui/material/Menu';
 import Box from '@mui/material/Box';
 import { PATHS } from '@/enums/RoutePath';
 import { Images } from '@/assets/images';
+import { ScrollToTop } from '@/components/base/scroll-to-top/scroll-top.component';
 
 export default function PrimarySearchAppBar() {
     const navigate = useNavigate();

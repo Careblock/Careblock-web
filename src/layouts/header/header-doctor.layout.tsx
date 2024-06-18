@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
-import { Typography } from '@mui/material';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { Fab, Typography } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
@@ -15,6 +16,7 @@ import { AuthContextType, User } from '@/types/auth.type';
 import { useAuth } from '@/contexts/auth.context';
 import { PATHS } from '@/enums/RoutePath';
 import { Images } from '@/assets/images';
+import { ScrollToTop } from '@/components/base/scroll-to-top/scroll-top.component';
 
 const HeaderDoctor = () => {
     const navigate = useNavigate();
@@ -30,14 +32,18 @@ const HeaderDoctor = () => {
         });
     }, []);
 
-    const firstname = userInfo?.firstname;
-    const lastname = userInfo?.lastname;
-    const fullName = `${firstname} ${lastname}`;
+    const fullName = `${userInfo?.firstname} ${userInfo?.lastname}`;
     const email = userInfo?.email;
 
     const handleMoveToPage = (pathname: string) => {
         navigate({
             pathname: pathname,
+        });
+    };
+
+    const handleLogout = () => {
+        navigate({
+            pathname: PATHS.LOGOUT,
         });
     };
 
@@ -95,6 +101,9 @@ const HeaderDoctor = () => {
                         <div className="flex flex-col justify-center items-center">
                             <Typography className="text-xl !font-bold">{fullName}</Typography>
                         </div>
+                        <div className="flex flex-col justify-center items-center">
+                            <Typography className="text-xl !font-bold">{email}</Typography>
+                        </div>
                     </div>
                     <div className="flex items-center  hover:bg-gray" onClick={() => navigate('/patient/detail_info')}>
                         <Images.FaUser size={18} className="ml-5" />
@@ -104,7 +113,7 @@ const HeaderDoctor = () => {
                         <Images.IoMdHelp size={18} className="ml-5" />
                         <Typography className="text-lg p-3 ml-8">Help</Typography>
                     </div>
-                    <div className="flex items-center hover:bg-gray " onClick={() => handleMoveToPage(PATHS.LOGOUT)}>
+                    <div className="flex items-center hover:bg-gray " onClick={() => handleLogout()}>
                         <Images.IoLogOutOutline size={18} color="red" className="ml-5" />
                         <Typography className="text-lg p-3 ml-8 text-red">Log Out</Typography>
                     </div>
@@ -178,77 +187,85 @@ const HeaderDoctor = () => {
     );
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
-                <Toolbar className="w-full text-white flex justify-between items-center !h-[52px] !min-h-[52px] bg-primary">
-                    <div
-                        className="header__brand cursor-pointer flex items-center"
-                        onClick={() => handleMoveToPage(PATHS.HOME)}
-                    >
-                        <img
-                            src={Images.Logo}
-                            alt="Selected Avatar"
-                            className="w-10 h-10 object-cover rounded-full mr-3"
-                            aria-hidden="true"
-                        />
-                        <div className="header-brand__text select-none font-bold text-xl uppercase  text-white">
-                            Careblock
-                        </div>
-                    </div>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }} className="gap-x-2">
-                        <IconButton size="medium" aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="error">
-                                <Images.MdOutlineNotifications size={26} />
-                            </Badge>
-                        </IconButton>
-                        <IconButton size="medium" aria-label="show 17 new notifications" color="inherit">
-                            <Badge badgeContent={17} color="error">
-                                <Images.PiChatsBold size={26} />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            size="medium"
-                            color="inherit"
-                            onClick={() => handleMoveToPage(PATHS.DOCTOR_SCHEDULE)}
-                        >
-                            <Images.CalendarMonthIcon className="text-[26px]" />
-                        </IconButton>
-                        <IconButton
-                            edge="end"
-                            size="medium"
-                            color="inherit"
-                            className="ml-8"
-                            aria-haspopup="true"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            onClick={handleProfileMenuOpen}
+        <>
+            <Box sx={{ flexGrow: 1 }}>
+                <AppBar position="fixed">
+                    <Toolbar className="w-full text-white flex justify-between items-center !h-[52px] !min-h-[52px] bg-primary">
+                        <div
+                            className="header__brand cursor-pointer flex items-center"
+                            onClick={() => handleMoveToPage(PATHS.HOME)}
                         >
                             <img
-                                src={userInfo?.avatar ? userInfo?.avatar : avatarDefault}
-                                alt="avatar"
-                                className="w-10 h-10 object-cover rounded-[175px]"
+                                src={Images.Logo}
+                                alt="Selected Avatar"
+                                className="w-10 h-10 object-cover rounded-full mr-3"
                                 aria-hidden="true"
                             />
-                        </IconButton>
-                    </Box>
-                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="medium"
-                            aria-label="show more"
-                            aria-controls={mobileMenuId}
-                            aria-haspopup="true"
-                            onClick={handleMobileMenuOpen}
-                            color="inherit"
-                        >
-                            <Images.RiMenu3Line size={22} />
-                        </IconButton>
-                    </Box>
-                </Toolbar>
-            </AppBar>
-            {renderMobileMenu}
-            {renderMenu}
-        </Box>
+                            <div className="header-brand__text select-none font-bold text-xl uppercase  text-white">
+                                Careblock
+                            </div>
+                        </div>
+                        <Box sx={{ flexGrow: 1 }} />
+                        <Box sx={{ display: { xs: 'none', md: 'flex' } }} className="gap-x-2">
+                            <IconButton size="medium" aria-label="show 4 new mails" color="inherit">
+                                <Badge badgeContent={4} color="error">
+                                    <Images.MdOutlineNotifications size={26} />
+                                </Badge>
+                            </IconButton>
+                            <IconButton size="medium" aria-label="show 17 new notifications" color="inherit">
+                                <Badge badgeContent={17} color="error">
+                                    <Images.PiChatsBold size={26} />
+                                </Badge>
+                            </IconButton>
+                            <IconButton
+                                size="medium"
+                                color="inherit"
+                                onClick={() => handleMoveToPage(PATHS.DOCTOR_SCHEDULE)}
+                            >
+                                <Images.CalendarMonthIcon className="text-[26px]" />
+                            </IconButton>
+                            <IconButton
+                                edge="end"
+                                size="medium"
+                                color="inherit"
+                                className="ml-8"
+                                aria-haspopup="true"
+                                aria-label="account of current user"
+                                aria-controls={menuId}
+                                onClick={handleProfileMenuOpen}
+                            >
+                                <img
+                                    src={userInfo?.avatar ? userInfo?.avatar : avatarDefault}
+                                    alt="avatar"
+                                    className="w-10 h-10 object-cover rounded-[175px]"
+                                    aria-hidden="true"
+                                />
+                            </IconButton>
+                        </Box>
+                        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                size="medium"
+                                aria-label="show more"
+                                aria-controls={mobileMenuId}
+                                aria-haspopup="true"
+                                onClick={handleMobileMenuOpen}
+                                color="inherit"
+                            >
+                                <Images.RiMenu3Line size={22} />
+                            </IconButton>
+                        </Box>
+                    </Toolbar>
+                </AppBar>
+                {renderMobileMenu}
+                {renderMenu}
+                <Toolbar id="back-to-top-anchor" className="!h-[52px] !min-h-[52px]" />
+            </Box>
+            <ScrollToTop>
+                <Fab size="small" aria-label="scroll back to top">
+                    <KeyboardArrowUpIcon />
+                </Fab>
+            </ScrollToTop>
+        </>
     );
 };
 

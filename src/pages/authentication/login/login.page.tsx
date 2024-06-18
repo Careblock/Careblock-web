@@ -8,9 +8,10 @@ import AuthService from '@/services/auth.service';
 import { storeUser } from '@/stores/auth/auth.action';
 import { AuthContextType } from '@/types/auth.type';
 import { CookieManager } from '@/utils/cookie';
+import { setTitle } from '@/utils/document';
 import { CardanoWallet, useWallet } from '@meshsdk/react';
 import { Button, Container, Grid } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
@@ -24,6 +25,10 @@ export const Login = ({ handleClose }: any) => {
     const { wallet, connected } = useWallet();
     const [assets, setAssets] = useState<null | any>(null);
     const [loading, setLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        setTitle('Login | CareBlock');
+    }, []);
 
     const getAssets = async () => {
         if (wallet) {
@@ -48,7 +53,7 @@ export const Login = ({ handleClose }: any) => {
                         if (rest.role === ROLES.DOCTOR) {
                             navigate(PATHS.DOCTOR_SCHEDULE);
                         } else if (rest.role === ROLES.PATIENT) {
-                            navigate(PATHS.PATIENT_PAGE);
+                            navigate(PATHS.DEFAULT);
                         } else {
                             navigate(PATHS.HOME);
                         }

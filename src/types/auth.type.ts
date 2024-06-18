@@ -33,10 +33,6 @@ export interface LoginResponse {
     user: User;
 }
 
-export interface ForgotPasswordInitialValues {
-    email: string;
-}
-
 export interface ChangePasswordInitialValues {
     newPassword: string;
     confirmPassword: string;
@@ -46,12 +42,6 @@ export interface ChangePasswordRequest {
     newPassword: string;
     confirmPassword: string;
     token: string;
-}
-
-export interface ChangePasswordProfileInitialValues {
-    oldPassword: string;
-    newPassword: string;
-    confirmPassword: string;
 }
 
 export interface ChangePasswordProfileRequest {

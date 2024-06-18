@@ -19,8 +19,8 @@ export const routesForNotAuthenticatedOnly = [
 export const routesForPublic = [
     { path: PATHS.DEFAULT, element: <HomePage /> },
     { path: PATHS.HOME, element: <HomePage /> },
-    { path: PATHS.LOGOUT, element: <Logout /> },
     { path: PATHS.APPOINTMENT, element: <AppointmentPage /> },
+    { path: PATHS.LOGOUT, element: <Logout /> },
 ];
 
 export const routesForDoctor = [

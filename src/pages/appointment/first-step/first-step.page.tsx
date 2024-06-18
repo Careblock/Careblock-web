@@ -9,6 +9,7 @@ import { FirstStepProps } from './first-step.type';
 import { PATHS } from '@/enums/RoutePath';
 import store from '@/stores/global.store';
 import { Images } from '@/assets/images';
+import { setTitle } from '@/utils/document';
 
 const FirstStep = ({ organization, onClickAnOrganization }: FirstStepProps) => {
     const navigate = useNavigate();
@@ -17,6 +18,10 @@ const FirstStep = ({ organization, onClickAnOrganization }: FirstStepProps) => {
     const [searchValue, setSearchValue] = useState('');
     const [organizations, setOrganizations] = useState<Organizations[]>([]);
     const [organizationDisplay, setOrganizationDisplay] = useState<Organizations[] | undefined>([]);
+
+    useEffect(() => {
+        setTitle('First step | CareBlock');
+    }, []);
 
     useEffect(() => {
         navigate({

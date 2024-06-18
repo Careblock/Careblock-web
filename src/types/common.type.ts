@@ -1,4 +1,4 @@
-import { ComponentType, ReactElement } from 'react';
+import { ReactElement } from 'react';
 
 export interface Pagination {
     page?: number;
@@ -6,10 +6,6 @@ export interface Pagination {
     sortType?: string;
     text?: string;
 }
-
-export type ChangeTypeOfKeys<T extends object, Keys extends keyof T, NewType> = {
-    [key in keyof T]: key extends Keys ? NewType : T[key];
-};
 
 export interface SocialMediaLink {
     platform: string;
@@ -29,5 +25,3 @@ export interface FormField {
     placeholder: string;
     type: string;
 }
-
-export type ExtractPropsFromComponent<C> = C extends ComponentType<infer P> ? P : any;

@@ -45,5 +45,6 @@ module.exports = {
         'prefer-const': 'off',
         '@typescript-eslint/no-misused-promises': 'off',
         '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
+        '@typescript-eslint/prefer-for-of': 'off',
     },
 };

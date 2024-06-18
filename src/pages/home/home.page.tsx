@@ -8,12 +8,17 @@ import Carousel from '@/components/base/carousel/carousel.component';
 import OrganizationService from '@/services/organization.service';
 import useObservable from '@/hooks/use-observable.hook';
 import { PATHS } from '@/enums/RoutePath';
+import { setTitle } from '@/utils/document';
 
 const Homepage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { subscribeOnce } = useObservable();
     const [carouselDatasource, setCarouselDatasource] = useState<CarouselDataSource[]>([]);
+
+    useEffect(() => {
+        setTitle('Home | CareBlock');
+    }, []);
 
     useEffect(() => {
         dispatch(clearAppointment() as any);

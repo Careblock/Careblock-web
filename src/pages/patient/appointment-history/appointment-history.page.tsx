@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Button, CardActionArea } from '@mui/material';
+import { Card, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import AppointmentService from '@/services/appointment.service';
@@ -11,6 +11,7 @@ import { getFullName } from '@/utils/common.helpers';
 import { useAuth } from '@/contexts/auth.context';
 import { Images } from '@/assets/images';
 import { Color } from '@/enums/Color';
+import { setTitle } from '@/utils/document';
 
 const AppointmentHistory = () => {
     const { subscribeOnce } = useObservable();
@@ -19,6 +20,10 @@ const AppointmentHistory = () => {
     const [appointmentData, setAppointmentData] = useState([]);
     const [formattedAppointments, setFormattedAppointments] = useState<any>([]);
     const fullName = getFullName(userInfo);
+
+    useEffect(() => {
+        setTitle('Appointment history | CareBlock');
+    }, []);
 
     useEffect(() => {
         subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
@@ -107,10 +112,6 @@ const AppointmentHistory = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-y-1 flex-1">
-                                    <div className="flex items-center gap-x-2">
-                                        <p className="font-bold">Patient:</p>
-                                        <p>{appointment.patient}</p>
-                                    </div>
                                     <div className="flex items-center gap-x-2">
                                         <p className="font-bold">Doctor:</p>
                                         <p>{appointment.doctor}</p>

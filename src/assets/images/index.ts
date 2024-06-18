@@ -77,6 +77,8 @@ import PanToolAltIcon from '@mui/icons-material/PanToolAlt';
 import PersonIcon from '@mui/icons-material/Person';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
+import HistoryIcon from '@mui/icons-material/History';
+import BookOnlineIcon from '@mui/icons-material/BookOnline';
 import RemoveIcon from '@mui/icons-material/Remove';
 import SearchIcon from '@mui/icons-material/Search';
 import UndoIcon from '@mui/icons-material/Undo';
@@ -87,6 +89,7 @@ import { LuClock } from 'react-icons/lu';
 import { RxUpdate } from 'react-icons/rx';
 import { TbListDetails } from 'react-icons/tb';
 import { TfiWorld } from 'react-icons/tfi';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { TiTick, TiVideo } from 'react-icons/ti';
 import { PiChatsBold, PiVideoFill } from 'react-icons/pi';
 import { BiSolidLogOut, BiSolidMedal } from 'react-icons/bi';
@@ -132,6 +135,8 @@ export const Images = {
     ArrowThinLeftIcon,
     ArrowThinRightIcon,
     QrCode2Icon,
+    HistoryIcon,
+    BookOnlineIcon,
     FaGoogle,
     FaFacebook,
     FaXTwitter,
@@ -159,6 +164,7 @@ export const Images = {
     MdDashboard,
     RxUpdate,
     RiDeleteBin6Line,
+    ManageAccountsIcon,
     FaBan,
     TbListDetails,
     FaCheck,

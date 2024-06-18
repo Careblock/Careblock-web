@@ -1,13 +1,18 @@
 import { TextField } from '@mui/material';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import { getFullName } from '@/utils/common.helpers';
 import { AuthContextType } from '@/types/auth.type';
 import { FinalStepProps } from './final-step.type';
 import { useAuth } from '@/contexts/auth.context';
 import { Images } from '@/assets/images';
+import { setTitle } from '@/utils/document';
 
 const FinalStep = ({ reason, setReason, organization, schedule }: FinalStepProps) => {
     const { userData } = useAuth() as AuthContextType;
+
+    useEffect(() => {
+        setTitle('Final step | CareBlock');
+    }, []);
 
     return (
         <div className="final-steps mt-5">
@@ -30,7 +35,7 @@ const FinalStep = ({ reason, setReason, organization, schedule }: FinalStepProps
                 <div className="steps-content__right flex-1">
                     <div className="content-right__patient text-[16px] mb-1">
                         <b className="mr-1 text-[16px]">Patient:</b>
-                        {`${userData?.firstname} ${userData?.lastname}`}
+                        {`${userData?.firstname ?? ''} ${userData?.lastname ?? ''}`}
                     </div>
                     <div className="content-right__doctor text-[16px] mb-1">
                         <b className="mr-1 text-[16px]">Doctor:</b>
