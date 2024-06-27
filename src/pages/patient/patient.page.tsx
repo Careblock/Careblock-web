@@ -1,12 +1,7 @@
-import { setTitle } from '@/utils/document';
-import { useEffect } from 'react';
+import TestResult from '@/components/others/test-result/test-result.component';
 
 const PatientPage = () => {
-    useEffect(() => {
-        setTitle('Patient | CareBlock');
-    }, []);
-
-    return <>Patient</>;
+    return <TestResult />;
 };
 
 export default PatientPage;

@@ -1,4 +1,5 @@
 import { GENDER } from '@/enums/Common';
+import { ResultType } from '@/types/result.type';
 
 export const resultData = JSON.stringify({
     general: {
@@ -6,9 +7,10 @@ export const resultData = JSON.stringify({
         dateOfBirth: '05/08/2002',
         order: 1,
         gender: GENDER.MALE,
-        title: 'Kết quả khám sức khỏe định kỳ và tư vấn điều trị dành cho cá nhân công ty TNHH Grapecity',
-        createdDate: '16/06/2024',
-        hospital: 'Bệnh viện đa khoa tư nhân Hà Thành',
+        title: 'Results of periodic health examinations and treatment consultation for individuals of Grapecity LLC',
+        createdDate: 'Hanoi, June 24, 2024',
+        hospital: 'Ha Thanh Private General Hospital',
+        sign: 'nnhiep',
     },
     clinicalExamination: {
         height: 172,
@@ -36,6 +38,12 @@ export const resultData = JSON.stringify({
     paraclinicalResults: {
         test: {
             glucose: 5.08,
+            peripheralBloodCells: {
+                whiteBloodCells: 5.68,
+                redBloodCells: 5.41,
+                hst: 155,
+                platelet: 191,
+            },
             kidney: {
                 ure: 4.81,
                 creatinin: 85.47,
@@ -46,26 +54,20 @@ export const resultData = JSON.stringify({
                 alt: 36.11,
                 ggt: 34.61,
             },
-            cholesterol: {
-                triglycerid: 0.93,
-                cholesterol: 3.51,
-                hdl: 1.32,
-                ldl: 1.77,
-            },
-            ca724: '<0.5',
-            peripheralBloodCells: {
-                whiteBloodCells: 5.68,
-                redBloodCells: 5.41,
-                hst: 155,
-                platelet: 191,
-            },
             urine: {
                 glucose: -1,
                 redBloodCells: -1,
                 protein: -1,
                 whiteBloodCells: -1,
             },
+            cholesterol: {
+                triglycerid: 0.93,
+                cholesterol: 3.51,
+                hdl: 1.32,
+                ldl: 1.77,
+            },
             cea: 1.57,
+            ca724: '<0.5',
             afp: 1.63,
             ca125: 0,
         },
@@ -76,4 +78,4 @@ export const resultData = JSON.stringify({
     },
     note: 'Pathology that needs consultation and treatment: Refractive errors require wearing glasses of the correct number. Sore throat: limit eating and drinking cold foods. Gargle regularly with light salt water. Thyroid cysts are monitored and checked periodically. Dental plaque needs to be removed periodically every 6 months.',
     healthClassification: 2,
-});
+} as ResultType);
