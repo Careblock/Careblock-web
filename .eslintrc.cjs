@@ -46,5 +46,7 @@ module.exports = {
         '@typescript-eslint/no-misused-promises': 'off',
         '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
         '@typescript-eslint/prefer-for-of': 'off',
+        '@typescript-eslint/ban-ts-comment': 'off',
+        '@typescript-eslint/prefer-nullish-coalescing': 'off',
     },
 };
