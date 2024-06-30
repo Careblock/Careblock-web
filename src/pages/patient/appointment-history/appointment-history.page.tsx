@@ -35,7 +35,7 @@ const AppointmentHistory = () => {
 
     useEffect(() => {
         if (userData) {
-            subscribeOnce(AppointmentService.appointment_history_by_id(userData.id), (res: any) => {
+            subscribeOnce(AppointmentService.getAppointmentHistories(userData.id), (res: any) => {
                 setAppointmentData(res);
             });
         }

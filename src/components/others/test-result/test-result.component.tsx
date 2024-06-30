@@ -4,10 +4,11 @@ import { resultData } from '@/mocks/result';
 import { getGenderName, getTestResult, numberToRoman } from '@/utils/common.helpers';
 import { ResultType } from '@/types/result.type';
 import { TestResultEnum } from '@/enums/TestResultEnum';
-import { Document, Page, Text, View, PDFViewer } from '@react-pdf/renderer';
+import ReactPDF, { Document, Page, Text, View, PDFViewer } from '@react-pdf/renderer';
 import { styles } from './test-result.const';
+import { Props } from './test-result.type';
 
-const TestResult = () => {
+const TestResult = ({ onUploadFile }: Props) => {
     const [dataSource, setDataSource] = useState<ResultType | null>();
 
     useEffect(() => {
@@ -17,7 +18,11 @@ const TestResult = () => {
 
     return (
         <PDFViewer className="w-full h-full">
-            <Document>
+            <Document
+                onRender={(props: ReactPDF.OnRenderProps) => {
+                    onUploadFile(props, dataSource);
+                }}
+            >
                 <Page size="A4" style={styles.page}>
                     <View style={styles.section}>
                         {dataSource && (

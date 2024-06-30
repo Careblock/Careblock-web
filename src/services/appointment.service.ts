@@ -11,7 +11,7 @@ class _AppointmentService {
         return HttpService.post<any>(`/appointment/create`, { body: { ...appointment } });
     }
 
-    public appointment_history_by_id(patientId: string) {
+    public getAppointmentHistories(patientId: string) {
         return HttpService.get<any>(`/Appointment/get-by-patient/${patientId}`);
     }
 

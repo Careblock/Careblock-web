@@ -2,6 +2,7 @@ import { TestResultEnum } from '@/enums/TestResultEnum';
 import { DIAGNOSTIC_STATUS, GENDER } from '../enums/Common';
 import { AccountSimple, Accounts } from '../types/account.type';
 import { Patients } from '../types/patient.type';
+import { Environment } from '@/environment';
 
 export const nullSafetyJSONStringify = (obj: any): string => {
     return JSON.stringify(obj, (_, v) => (v === null ? undefined : v));
@@ -62,4 +63,12 @@ export const numberToRoman = (num: number): string => {
     }
 
     return result;
+};
+
+export const resolveUri = (uri: string) => {
+    if (/^(http|https):\/\/.+$/.test(uri)) {
+        return uri;
+    }
+
+    return `${Environment.BASE_API}${uri}`;
 };
