@@ -1,7 +1,7 @@
 import { catchError, finalize, map, Observable, of, Subject, throwError } from 'rxjs';
 import { ajax, AjaxResponse } from 'rxjs/ajax';
 import { HttpMethod, HttpOptions, ProgressOptions, RequestContentType } from './http.type';
-import { isNullOrUndefined, nullSafetyJSONStringify } from '../../utils/common.helpers';
+import { isNullOrUndefined, nullSafetyJSONStringify, resolveUri } from '../../utils/common.helpers';
 import { localStorageKeys, REFRESH_TOKEN_KEY } from '../../constants/common.const';
 import { addToast } from '@/components/base/toast/toast.service';
 import { SystemMessage } from '../../constants/message.const';
@@ -63,7 +63,7 @@ class _HttpService {
 
     public requestDownload(uri: string, options?: HttpOptions) {
         const token = this.getAccessToken();
-        const url = this.resolveUri(uri);
+        const url = resolveUri(uri);
 
         return ajax({
             url,
@@ -90,7 +90,7 @@ class _HttpService {
 
         const token = this.getAccessToken();
 
-        let url = this.resolveUri(uri);
+        let url = resolveUri(uri);
 
         if (options?.queryParams) {
             url = url + '?' + this.generateHttpParams(options?.queryParams);
@@ -175,14 +175,6 @@ class _HttpService {
 
     public handleResponse<T>(ajaxResponse: AjaxResponse<any>): T {
         return ajaxResponse.response.data;
-    }
-
-    private resolveUri(uri: string): string {
-        if (/^(http|https):\/\/.+$/.test(uri)) {
-            return uri;
-        }
-
-        return `${Environment.BASE_API}${uri}`;
     }
 
     private refreshToken(): Observable<any> {
