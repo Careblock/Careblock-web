@@ -49,5 +49,6 @@ module.exports = {
         '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
         'react/prop-types': 'off',
+        'no-case-declarations': 'off',
     },
 };

@@ -43,6 +43,14 @@ export const getTestResult = (result: number): string => {
     return TestResultEnum.Positive;
 };
 
+export function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = (Math.random() * 16) | 0,
+            v = c == 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
+}
+
 export const numberToRoman = (num: number): string => {
     if (isNaN(num) || num < 1 || num > 3999) {
         return 'Số nhập vào không hợp lệ.';
