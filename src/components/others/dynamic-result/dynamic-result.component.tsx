@@ -2,8 +2,8 @@ import { DynamicFieldType } from '@/types/dynamic-field.type';
 import { Props } from './dynamic-result.type';
 import { FormType } from '@/enums/FormType';
 import { FieldType } from '@/enums/FieldType';
-import { ChangeEvent, ReactNode, useState } from 'react';
-import { MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import { ChangeEvent, ReactNode, useRef, useState } from 'react';
+import { Button, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Dayjs } from 'dayjs';
 import { DateTimeValidationError, PickerChangeHandlerContext } from '@mui/x-date-pickers';
@@ -13,10 +13,11 @@ import { selectList } from './dynamic-result.mock';
 import { getAlignmentStyle, isDynamicField } from './dynamic-result.util';
 import { uuidv4 } from '@/utils/common.helpers';
 
-function DynamicResult({ type, datasource, classes }: Props) {
+function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Props) {
     const rowLength = datasource[datasource.length - 1].rowIndex;
     const rowArray = new Array(rowLength).fill(0);
     const [data, setData] = useState<DynamicFieldType[]>(datasource);
+    const dynamicRef = useRef(null);
 
     const getRowData = (rowIndex: number): DynamicFieldType[] => {
         return data.filter((field) => field.rowIndex === rowIndex);
@@ -169,94 +170,99 @@ function DynamicResult({ type, datasource, classes }: Props) {
 
     return (
         <>
-            {type === FormType.Detail ? (
-                <div className={`${classes} border border-solid border-[#ddd] rounded-lg py-[16px] mx-auto`}>
-                    <table className="w-full">
-                        <tbody>
-                            {rowArray.map((_, index) => (
-                                <tr
-                                    key={`${_}${index}`}
-                                    className={`${getRowData(index + 1).length > 1 ? 'flex' : ''} ${getAlignmentStyle(getRowData(index + 1)[0]?.alignment)}`}
-                                >
-                                    {getRowData(index + 1).map((field) => (
-                                        <td
-                                            key={field.fieldName}
-                                            className={`px-[32px] ${Array.isArray(field.value) ? '' : 'flex items-center'} ${field.style ?? ''} ${getAlignmentStyle(field.alignment)}`}
-                                        >
-                                            {field.caption && <p className="mr-[8px]">{`${field.caption}:`}</p>}
-                                            {Array.isArray(field.value) ? (
-                                                <ul className="list-disc ml-[50px]">
-                                                    {field.value.map((item: any) => (
-                                                        <li key={item}>{item}</li>
-                                                    ))}
-                                                </ul>
-                                            ) : (
-                                                <p>{field.value}</p>
-                                            )}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            ) : (
-                <div className={`${classes} border border-solid border-[#ddd] rounded-lg py-[16px] mx-auto`}>
-                    <table className="w-full">
-                        <tbody>
-                            {rowArray.map((_, index) => (
-                                <tr
-                                    key={`${_}${index}`}
-                                    className={`${getRowData(index + 1).length > 1 ? 'flex' : ''} ${getAlignmentStyle(getRowData(index + 1)[0]?.alignment)}`}
-                                >
-                                    {getRowData(index + 1).map((field) => (
-                                        <td
-                                            key={field.fieldName}
-                                            className={`${isDynamicField(field.type) ? 'my-[6px]' : ''} px-[32px] flex items-center ${field.style ?? ''} ${getAlignmentStyle(field.alignment)}`}
-                                        >
-                                            {field.caption && !field.isCustomField && (
-                                                <p
-                                                    className={`mr-[8px] ${isDynamicField(field.type) ? 'min-w-[134px]' : ''}`}
-                                                >{`${field.caption}:`}</p>
-                                            )}
-                                            {field.isCustomField && (
-                                                <TextField
-                                                    name={field.fieldName}
-                                                    placeholder={field.placeholder ?? ''}
-                                                    value={field.caption}
-                                                    variant="outlined"
-                                                    size="small"
-                                                    className="w-[160px] !mr-[10px]"
-                                                    onChange={(
-                                                        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                                                    ) => handleSetCaptionValue(field, event.target.value)}
-                                                />
-                                            )}
-                                            {getField(field)}
-                                            {!field.isDefault && (
-                                                <Images.RiDeleteBin6Line
-                                                    size={20}
-                                                    className="ml-5 cursor-pointer"
-                                                    title="Click to remove field"
-                                                    onClick={() => handleClickRemoveField(field)}
-                                                />
-                                            )}
-                                            {field.isGroup && (
-                                                <Images.MdAddCircleOutline
-                                                    size={20}
-                                                    className="ml-5 cursor-pointer"
-                                                    title="Click to add new field"
-                                                    onClick={() => handleClickAddField(field)}
-                                                />
-                                            )}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+            <Button variant="contained" onClick={() => onClickConvertToImage(dynamicRef)}>
+                Convert
+            </Button>
+            <div ref={dynamicRef}>
+                {type === FormType.Detail ? (
+                    <div className={`${classes} border border-solid border-[#ddd] rounded-lg py-[16px] mx-auto`}>
+                        <table className="w-full">
+                            <tbody>
+                                {rowArray.map((_, index) => (
+                                    <tr
+                                        key={`${_}${index}`}
+                                        className={`${getRowData(index + 1).length > 1 ? 'flex' : ''} ${getAlignmentStyle(getRowData(index + 1)[0]?.alignment)}`}
+                                    >
+                                        {getRowData(index + 1).map((field) => (
+                                            <td
+                                                key={field.fieldName}
+                                                className={`px-[32px] ${Array.isArray(field.value) ? '' : 'flex items-center'} ${field.style ?? ''} ${getAlignmentStyle(field.alignment)}`}
+                                            >
+                                                {field.caption && <p className="mr-[8px]">{`${field.caption}:`}</p>}
+                                                {Array.isArray(field.value) ? (
+                                                    <ul className="list-disc ml-[50px]">
+                                                        {field.value.map((item: any) => (
+                                                            <li key={item}>{item}</li>
+                                                        ))}
+                                                    </ul>
+                                                ) : (
+                                                    <p>{field.value}</p>
+                                                )}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <div className={`${classes} border border-solid border-[#ddd] rounded-lg py-[16px] mx-auto`}>
+                        <table className="w-full">
+                            <tbody>
+                                {rowArray.map((_, index) => (
+                                    <tr
+                                        key={`${_}${index}`}
+                                        className={`${getRowData(index + 1).length > 1 ? 'flex' : ''} ${getAlignmentStyle(getRowData(index + 1)[0]?.alignment)}`}
+                                    >
+                                        {getRowData(index + 1).map((field) => (
+                                            <td
+                                                key={field.fieldName}
+                                                className={`${isDynamicField(field.type) ? 'my-[6px]' : ''} px-[32px] flex items-center ${field.style ?? ''} ${getAlignmentStyle(field.alignment)}`}
+                                            >
+                                                {field.caption && !field.isCustomField && (
+                                                    <p
+                                                        className={`mr-[8px] ${isDynamicField(field.type) ? 'min-w-[134px]' : ''}`}
+                                                    >{`${field.caption}:`}</p>
+                                                )}
+                                                {field.isCustomField && (
+                                                    <TextField
+                                                        name={field.fieldName}
+                                                        placeholder={field.placeholder ?? ''}
+                                                        value={field.caption}
+                                                        variant="outlined"
+                                                        size="small"
+                                                        className="w-[160px] !mr-[10px]"
+                                                        onChange={(
+                                                            event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                                                        ) => handleSetCaptionValue(field, event.target.value)}
+                                                    />
+                                                )}
+                                                {getField(field)}
+                                                {!field.isDefault && (
+                                                    <Images.RiDeleteBin6Line
+                                                        size={20}
+                                                        className="ml-5 cursor-pointer"
+                                                        title="Click to remove field"
+                                                        onClick={() => handleClickRemoveField(field)}
+                                                    />
+                                                )}
+                                                {field.isGroup && (
+                                                    <Images.MdAddCircleOutline
+                                                        size={20}
+                                                        className="ml-5 cursor-pointer"
+                                                        title="Click to add new field"
+                                                        onClick={() => handleClickAddField(field)}
+                                                    />
+                                                )}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
         </>
     );
 }
