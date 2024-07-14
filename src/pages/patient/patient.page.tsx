@@ -12,6 +12,8 @@ import { useState } from 'react';
 import DynamicResult from '@/components/others/dynamic-result/dynamic-result.component';
 import { dynamicFieldData } from '@/mocks/dynamic-field';
 import { FormType } from '@/enums/FormType';
+import { toPng } from 'html-to-image';
+import { jsPDF } from 'jspdf';
 
 const PatientPage = () => {
     const [isFirstLoad, setIsFirstLoad] = useState(true);
@@ -50,13 +52,37 @@ const PatientPage = () => {
         } else addToast({ text: SystemMessage.UNKNOWN_ERROR, position: 'top-right' });
     };
 
+    const onClickConvertToImage = (dynamicRef: any) => {
+        toPng(dynamicRef.current)
+            .then(function (dataUrl: any) {
+                let img = new Image();
+                img.src = dataUrl;
+
+                const doc = new jsPDF();
+                const imgProps = doc.getImageProperties(img);
+                const pdfWidth = (doc.internal.pageSize.getWidth() * 90) / 100;
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                const pdfX = (doc.internal.pageSize.getWidth() - pdfWidth) / 2;
+
+                doc.addImage(img, 'PNG', pdfX, 20, pdfWidth, pdfHeight);
+                doc.save('result.pdf');
+            })
+            .catch(function (error: any) {
+                console.error('Oops, something went wrong!', error);
+            });
+    };
+
     return (
         <>
             {/* <Button variant="contained" onClick={() => onClickGetFile()}>
                 Get file
             </Button>
             <TestResult onUploadFile={onUploadFile} /> */}
-            <DynamicResult type={FormType.Detail} datasource={dynamicFieldData} />
+            <DynamicResult
+                type={FormType.Create}
+                datasource={dynamicFieldData}
+                onClickConvertToImage={onClickConvertToImage}
+            />
         </>
     );
 };
