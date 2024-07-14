@@ -8,12 +8,17 @@ import { ResultType } from '@/types/result.type';
 import { resolveUri } from '@/utils/common.helpers';
 import { Button } from '@mui/material';
 import ReactPDF from '@react-pdf/renderer';
+import { useState } from 'react';
+import DynamicResult from '@/components/others/dynamic-result/dynamic-result.component';
+import { dynamicFieldData } from '@/mocks/dynamic-field';
+import { FormType } from '@/enums/FormType';
 
 const PatientPage = () => {
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
     const { subscribeOnce } = useObservable();
 
     const onUploadFile = (props: ReactPDF.OnRenderProps, dataSource: ResultType) => {
-        if (props?.blob) {
+        if (props?.blob && isFirstLoad) {
             const pdfFile = new File([props.blob], `examination-result-${'c2d299de-2f73-4297-8ba1-cd132632839a'}.pdf`, {
                 type: 'application/pdf',
             });
@@ -30,6 +35,7 @@ const PatientPage = () => {
                     }
                 }
             );
+            setIsFirstLoad(false);
         }
     };
 
@@ -46,10 +52,11 @@ const PatientPage = () => {
 
     return (
         <>
-            <Button variant="contained" onClick={() => onClickGetFile()}>
+            {/* <Button variant="contained" onClick={() => onClickGetFile()}>
                 Get file
             </Button>
-            <TestResult onUploadFile={onUploadFile} />
+            <TestResult onUploadFile={onUploadFile} /> */}
+            <DynamicResult type={FormType.Detail} datasource={dynamicFieldData} />
         </>
     );
 };

@@ -4,6 +4,8 @@ export const DEFAULT_DATE_FORMAT = 'DD/MM/YYYY';
 export const DEFAULT_MINUTES_SECONDS_FORMAT = 'mm:ss';
 export const REFRESH_TOKEN_KEY = '';
 
+export const GenderList: string[] = ['Male', 'Female', 'Other'];
+
 export const REF = {
     PASSSWORD: 'password',
     NEWPASSWORD: 'newPassword',
