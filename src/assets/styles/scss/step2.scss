@@ -1,0 +1,12 @@
+.second-step__wrapper {
+    .second-step__content {
+        .second-step-content__doctor {
+            &.selected {
+                background-color: #fafafa;
+                .time-selection__item.selected {
+                    background-color: #ddd !important;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,18 @@
+.base-people-select {
+    .MuiAutocomplete-popupIndicator,
+    .MuiAutocomplete-clearIndicator {
+        svg {
+            font-size: 20px !important;
+        }
+    }
+}
+
+.MuiAutocomplete-popper {
+    .MuiAutocomplete-option {
+        height: 44px;
+    }
+}
+
+.MuiSvgIcon-root.MuiSelect-icon.MuiSelect-iconOutlined {
+    font-size: 20px !important;
+}
