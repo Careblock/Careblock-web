@@ -1,13 +1,12 @@
 export interface Medicines {
     id: string;
-    organizationId: string;
+    medicineTypeId: string;
     name: string;
     price: number;
-    note?: string;
-    avatar?: string;
-    isDeleted: number;
-    createdBy?: string;
-    modifiedBy?: string;
+    unitPrice: number;
+    description?: string;
+    thumbnail?: string;
     createdDate?: string;
     modifiedDate?: string;
+    isDeleted: boolean;
 }

@@ -1,13 +1,16 @@
-import { BLOODTYPE, GENDER } from '../enums/Common';
+import { GENDER } from '../enums/Common';
 
 export interface AccountRequest {
-    identityId?: string;
+    stakeId?: string;
+    departmentId?: string;
     firstname: string;
     lastname?: string;
-    email?: string;
-    phone?: string;
-    avatar?: string;
-    gender: GENDER;
-    bloodType?: BLOODTYPE;
     dateOfBirth?: string;
+    gender: GENDER;
+    avatar?: string;
+    identityId?: string;
+    phone?: string;
+    email?: string;
+    description?: string;
+    seniority?: number;
 }

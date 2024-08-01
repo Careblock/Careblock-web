@@ -8,7 +8,7 @@ import MedicalService from '@/services/medicalService.service';
 import AccountService from '@/services/account.service';
 import { formatStandardDateTime } from '@/utils/datetime.helper';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
-import { MedicalServices } from '@/types/medical-services.type';
+import { Medicines } from '@/types/medicine.type';
 import { getStandardNumber } from '@/utils/number.helper';
 import { getFullName } from '@/utils/common.helpers';
 import useObservable from '@/hooks/use-observable.hook';
@@ -40,12 +40,13 @@ const SecondStep = ({ scheduleData, setScheduleData, organization }: SecondStepP
     }, []);
 
     useEffect(() => {
-        subscribeOnce(AccountService.filterByOrganization(organization!.id), (res: Doctors[]) => {
-            setDoctorData([...res]);
-            setDoctorDataDisplay([...res]);
-        });
+        // TODO: Update api get doctor by organization
+        // subscribeOnce(AccountService.filterByOrganization(organization!.id), (res: Doctors[]) => {
+        //     setDoctorData([...res]);
+        //     setDoctorDataDisplay([...res]);
+        // });
 
-        subscribeOnce(MedicalService.filterByOrganization(organization!.id), (res: MedicalServices[]) => {
+        subscribeOnce(MedicalService.filterByOrganization(organization!.id), (res: Medicines[]) => {
             setScheduleData({
                 ...scheduleData,
                 price: res[0]?.price ?? 0,
@@ -189,7 +190,8 @@ const SecondStep = ({ scheduleData, setScheduleData, organization }: SecondStepP
                                     <div className="right-location__heading text-[16px] uppercase mb-2">
                                         Medical examination address
                                     </div>
-                                    <div className="right-location__text text-[16px]">{organization?.location}</div>
+                                    {/* TODO: Update location */}
+                                    {/* <div className="right-location__text text-[16px]">{organization?.location}</div> */}
                                 </div>
                                 <div className="wrapper-right__price mt-2 pt-2 border-t border-solid border-[#ddd] flex items-baseline">
                                     <div className="right-price-text mr-[6px] uppercase text-[16px]">{`Price: $${scheduleData.price}`}</div>

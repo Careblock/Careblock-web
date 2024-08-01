@@ -137,9 +137,10 @@ const DoctorSchedulePage = () => {
     };
 
     const handleClickItem = (id: string) => {
-        subscribeOnce(AccountService.getById(id), (res: Accounts) => {
-            setDetailsInfo(res);
-        });
+        // TODO: Update api get details
+        // subscribeOnce(AccountService.getById(id), (res: Accounts) => {
+        //     setDetailsInfo(res);
+        // });
     };
 
     return (

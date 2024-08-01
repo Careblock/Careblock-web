@@ -84,12 +84,13 @@ const DetailsInfo = ({ dataSource, clickedSave }: DetailsInfoType) => {
                             <div className="text text-[#4e4e4e] ml-1">{dataSource.phone}</div>
                         </div>
                     )}
-                    {dataSource.bloodType && (
+                    {/* TODO: Update blood type */}
+                    {/* {dataSource.bloodType && (
                         <div className="blood-type flex items-center">
                             <Images.BloodtypeIcon className="text-[18px] text-[#4e4e4e]" />
                             <div className="text text-[#4e4e4e] ml-1">{dataSource.bloodType}</div>
                         </div>
-                    )}
+                    )} */}
                 </div>
                 <div className="details__content shadow-3 w-full px-4 mt-4 py-8">
                     <div className="details-content__nodata flex items-center flex-col justify-center">

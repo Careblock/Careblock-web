@@ -31,7 +31,7 @@ const Homepage = () => {
                     data.forEach((org) => {
                         temp.push({
                             id: org.id,
-                            avatar: org.avatar ?? '',
+                            avatar: org.thumbnail ?? '',
                             title: `${org.name} Hospital`,
                         });
                     });

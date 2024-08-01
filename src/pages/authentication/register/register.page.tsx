@@ -40,8 +40,14 @@ function Register() {
         setTitle('Register | CareBlock');
     }, []);
 
+    // TODO: Update formik
     const formik = useFormik({
-        initialValues: INITIAL_VALUES.REGISTER,
+        // initialValues: INITIAL_VALUES.REGISTER,
+        // validationSchema: role === ROLES.PATIENT ? registerPatientSchema : registerDoctorSchema,
+        // onSubmit: (values) => {
+        //     handleSubmit(values);
+        // },
+        initialValues: {} as any,
         validationSchema: role === ROLES.PATIENT ? registerPatientSchema : registerDoctorSchema,
         onSubmit: (values) => {
             handleSubmit(values);
@@ -75,7 +81,8 @@ function Register() {
         if (values.role === ROLES.PATIENT) {
             if ('seniority' in values || 'organizationId' in values) {
                 delete values?.seniority;
-                delete values?.organizationId;
+                // TODO: Update organization id
+                // delete values?.organizationId;
             }
         }
         subscribeOnce(AuthService.register({ ...values, stakeId: stakeId, avatar: selectedFile }), (res: any) => {
@@ -89,7 +96,8 @@ function Register() {
     };
 
     const handleChangeRole = (e: any) => {
-        formik.handleChange(e);
+        // TODO: Update formik
+        // formik.handleChange(e);
         setRole(e.target.value);
         setShowAdditionalInfo(e.target.value !== ROLES.PATIENT);
     };
@@ -146,7 +154,8 @@ function Register() {
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.stakeId && Boolean(formik.errors.stakeId)}
-                                    helperText={formik.touched.stakeId && formik.errors.stakeId}
+                                    // TODO: Update helper text
+                                    // helperText={formik.touched.stakeId && formik.errors.stakeId}
                                 />
                             </div>
                             <div className="flex gap-3 mb-2">
@@ -162,7 +171,8 @@ function Register() {
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         error={formik.touched.firstname && Boolean(formik.errors.firstname)}
-                                        helperText={formik.touched.firstname && formik.errors.firstname}
+                                        // TODO: Update helper text
+                                        // helperText={formik.touched.firstname && formik.errors.firstname}
                                     />
                                 </div>
                                 <div className="flex flex-col w-1/2">
@@ -177,7 +187,8 @@ function Register() {
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         error={formik.touched.lastname && Boolean(formik.errors.lastname)}
-                                        helperText={formik.touched.lastname && formik.errors.lastname}
+                                        // TODO: Update helper text
+                                        // helperText={formik.touched.lastname && formik.errors.lastname}
                                     />
                                 </div>
                             </div>
@@ -194,7 +205,8 @@ function Register() {
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
-                                        helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
+                                        // TODO: Update helper text
+                                        // helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
                                     />
                                 </div>
                                 <div className="flex flex-col w-1/2">
@@ -209,7 +221,8 @@ function Register() {
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         error={formik.touched.email && Boolean(formik.errors.email)}
-                                        helperText={formik.touched.email && formik.errors.email}
+                                        // TODO: Update helper text
+                                        // helperText={formik.touched.email && formik.errors.email}
                                     />
                                 </div>
                             </div>
@@ -226,7 +239,8 @@ function Register() {
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         error={formik.touched.identityId && Boolean(formik.errors.identityId)}
-                                        helperText={formik.touched.identityId && formik.errors.identityId}
+                                        // TODO: Update helper text
+                                        // helperText={formik.touched.identityId && formik.errors.identityId}
                                     />
                                 </div>
                                 <div className="flex flex-col w-1/2">
@@ -241,7 +255,8 @@ function Register() {
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         error={formik.touched.phone && Boolean(formik.errors.phone)}
-                                        helperText={formik.touched.phone && formik.errors.phone}
+                                        // TODO: Update helper text
+                                        // helperText={formik.touched.phone && formik.errors.phone}
                                     />
                                 </div>
                             </div>
@@ -249,7 +264,8 @@ function Register() {
                                 <div className="mb-2 gap-3 flex">
                                     <div className="flex flex-col w-1/2">
                                         <h4 className="text-left mb-1">Organization</h4>
-                                        <Select
+                                        {/* TODO: Update organization field */}
+                                        {/* <Select
                                             className="w-full"
                                             name="organizationId"
                                             size="small"
@@ -265,7 +281,7 @@ function Register() {
                                                     {item.name}
                                                 </MenuItem>
                                             ))}
-                                        </Select>
+                                        </Select> */}
                                     </div>
                                     <div className="flex flex-col w-1/2">
                                         <h4 className="text-left mb-1">Experience Year</h4>
@@ -279,7 +295,8 @@ function Register() {
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             error={formik.touched.seniority && Boolean(formik.errors.seniority)}
-                                            helperText={formik.touched.seniority && formik.errors.seniority}
+                                            // TODO: Update helper text
+                                            // helperText={formik.touched.seniority && formik.errors.seniority}
                                         />
                                     </div>
                                 </div>
@@ -305,7 +322,8 @@ function Register() {
                                 </div>
                                 <div className="w-1/2">
                                     <h4 className="text-left mb-1">Blood Type</h4>
-                                    <Select
+                                    {/* TODO: Update blood type */}
+                                    {/* <Select
                                         name="bloodType"
                                         className="w-full"
                                         size="small"
@@ -319,7 +337,7 @@ function Register() {
                                                 {item.name}
                                             </MenuItem>
                                         ))}
-                                    </Select>
+                                    </Select> */}
                                 </div>
                             </div>
                             <div className="mb-5">

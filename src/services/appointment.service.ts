@@ -12,7 +12,7 @@ class _AppointmentService {
     }
 
     public getAppointmentHistories(patientId: string) {
-        return HttpService.get<any>(`/Appointment/get-by-patient/${patientId}`);
+        return HttpService.get<any>(`/appointment/get-by-patient/${patientId}`);
     }
 
     public updateStatus(status: APPOINTMENT_STATUS, id: string) {

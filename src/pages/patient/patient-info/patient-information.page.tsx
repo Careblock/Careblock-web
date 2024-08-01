@@ -233,7 +233,8 @@ function PatientInfo() {
                         </div>
                         <div className="w-1/2">
                             <h4 className="text-left mb-2">Blood type</h4>
-                            <Select
+                            {/* TODO: Update blood type */}
+                            {/* <Select
                                 name="bloodType"
                                 className="w-full"
                                 size="small"
@@ -247,7 +248,7 @@ function PatientInfo() {
                                         {item.name}
                                     </MenuItem>
                                 ))}
-                            </Select>
+                            </Select> */}
                         </div>
                     </div>
                 </div>

@@ -74,25 +74,26 @@ const AppointmentPage = () => {
     const toggleIsShowConfirm = (type: boolean) => setIsShowConfirmPopup(type);
 
     const insertAppoinment = () => {
-        let { startDate, endDate } = convertSeparateToDateTime(scheduleData);
+        // let { startDate, endDate } = convertSeparateToDateTime(scheduleData);
         if (userData) {
-            subscribeOnce(
-                AppointmentService.insert({
-                    doctorId: scheduleData.doctor!.id,
-                    patientId: userData.id,
-                    status: APPOINTMENT_STATUS.ACTIVE,
-                    note: '',
-                    reason: reason,
-                    startTime: startDate,
-                    endTime: endDate,
-                } as Appointments),
-                (res: any) => {
-                    addToast({ text: SystemMessage.MAKE_AN_APPOINTMENT_SUCCESS, position: 'top-right' });
-                    setTimeout(() => {
-                        res && navigate(PATHS.HOME);
-                    }, 100);
-                }
-            );
+            // Update api insert appointment
+            // subscribeOnce(
+            //     AppointmentService.insert({
+            //         doctorId: scheduleData.doctor!.id,
+            //         patientId: userData.id,
+            //         status: APPOINTMENT_STATUS.ACTIVE,
+            //         note: '',
+            //         reason: reason,
+            //         startTime: startDate,
+            //         endTime: endDate,
+            //     } as Appointments),
+            //     (res: any) => {
+            //         addToast({ text: SystemMessage.MAKE_AN_APPOINTMENT_SUCCESS, position: 'top-right' });
+            //         setTimeout(() => {
+            //             res && navigate(PATHS.HOME);
+            //         }, 100);
+            //     }
+            // );
         }
     };
 

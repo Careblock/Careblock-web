@@ -6,9 +6,10 @@ export interface EditProfilePatientInitialValues {
     lastname: string;
     dateOfBirth: string;
     gender: GENDER;
+    avatar?: string;
     email: string;
+    phone: string;
     identityId: string;
     bloodType: BLOODTYPE;
-    phone: string;
     role: ROLES;
 }

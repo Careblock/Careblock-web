@@ -12,11 +12,11 @@ import { CreateConsultationType, DiagnosticsFieldType } from './create-consultat
 import { selectDiagnosticOptions, vitalsDynamicField } from './create-consultation.const';
 import BaseSelectBox from '@/components/base/select-box/select-box.component';
 import { addToast } from '@/components/base/toast/toast.service';
-import DiagnosticService from '@/services/diagnostic.service';
+import AppointmentDetailService from '@/services/appointmentDetail.service';
 import { DIAGNOSTIC_STATUS, DataType } from '@/enums/Common';
 import { SystemMessage } from '@/constants/message.const';
 import useObservable from '@/hooks/use-observable.hook';
-import { Diagnostics } from '@/types/diagnostics.type';
+import { AppointmentDetails } from '@/types/appointmentDetail.type';
 import { AuthContextType } from '@/types/auth.type';
 import { useAuth } from '@/contexts/auth.context';
 import { Images } from '@/assets/images';
@@ -50,7 +50,8 @@ export default function CreateConsultation({ visible, setVisible, patientId, cli
     const { userData } = useAuth() as AuthContextType;
     const [isShowVitals, setIsShowVitals] = useState(false);
     const [isShowAttachments, setIsShowAttachments] = useState(false);
-    const [diagnostics, setDiagnostics] = useState<Diagnostics>(getInitialValue());
+    // TODO: Update type AppointmentDetails
+    const [diagnostics, setDiagnostics] = useState<any>(getInitialValue());
     const [file, setFile] = useState<File | null>(null);
 
     const VisuallyHiddenInput = styled('input')({
@@ -65,7 +66,7 @@ export default function CreateConsultation({ visible, setVisible, patientId, cli
         width: 1,
     });
 
-    function getInitialValue(): Diagnostics {
+    function getInitialValue(): any {
         return {
             doctorId: userData?.id,
             patientId: patientId,
@@ -90,7 +91,7 @@ export default function CreateConsultation({ visible, setVisible, patientId, cli
     };
 
     const handleClickSave = () => {
-        subscribeOnce(DiagnosticService.insert(diagnostics), (_: string) => {
+        subscribeOnce(AppointmentDetailService.insert(diagnostics), (_: string) => {
             addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: 'top-right' });
             clickedSave();
         });

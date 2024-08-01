@@ -47,7 +47,8 @@ const FinalStep = ({ reason, setReason, organization, schedule }: FinalStepProps
                     </div>
                     <div className="content-right__location text-[16px] mb-1">
                         <b className="mr-1 text-[16px]">Location:</b>
-                        {organization?.location}
+                        {/* TODO: Update location */}
+                        {/* {organization?.location} */}
                     </div>
                     <div className="content-right__price text-[16px] mb-2">
                         <b className="mr-1 text-[16px]">Price:</b>

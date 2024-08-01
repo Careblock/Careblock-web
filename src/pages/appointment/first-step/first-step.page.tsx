@@ -43,16 +43,17 @@ const FirstStep = ({ organization, onClickAnOrganization }: FirstStepProps) => {
 
     useEffect(() => {
         if (!initialized) {
-            let result = organizations.filter((org) => {
-                if (
-                    org.code.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ??
-                    org.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ??
-                    org.location?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ??
-                    org.description?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())
-                )
-                    return org;
-            });
-            setOrganizationDisplay(result);
+            // TODO: Update set organization display
+            // let result = organizations.filter((org) => {
+            //     if (
+            //         org.code.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ??
+            //         org.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ??
+            //         org.location?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ??
+            //         org.description?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())
+            //     )
+            //         return org;
+            // });
+            // setOrganizationDisplay(result);
         } else setInitialized(false);
     }, [searchValue]);
 
@@ -84,7 +85,8 @@ const FirstStep = ({ organization, onClickAnOrganization }: FirstStepProps) => {
                 {organization && (
                     <div className="steps-toolbar__choose flex items-center">
                         <div className="toolbar-choose__text font-bold text-[16px]">{`Your choice:`}</div>
-                        <div
+                        {/* TODO: Update organization */}
+                        {/* <div
                             title={organization.description}
                             className="first-steps-content__item ml-[10px] w-[220px] relative select-none rounded-lg border border-solid border-[#ddd] bg-white h-[110px] flex items-center justify-center flex-col p-[10px] cursor-pointer"
                         >
@@ -107,13 +109,14 @@ const FirstStep = ({ organization, onClickAnOrganization }: FirstStepProps) => {
                             >
                                 {getCityFromLocaltion(organization.location)}
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 )}
             </div>
             {organizationDisplay?.length ? (
                 <div className="first-steps__content mt-5 grid pt-[10px] px-[10px] pb-0 gap-[30px] grid-cols-5">
-                    {organizationDisplay.map((org) => (
+                    {/* TODO: Update organization */}
+                    {/* {organizationDisplay.map((org) => (
                         <div
                             key={org.id}
                             title={org.description}
@@ -140,7 +143,7 @@ const FirstStep = ({ organization, onClickAnOrganization }: FirstStepProps) => {
                                 {getCityFromLocaltion(org.location)}
                             </div>
                         </div>
-                    ))}{' '}
+                    ))}{' '} */}
                 </div>
             ) : (
                 <div className="mt-6 flex items-center flex-col justify-center w-full">
