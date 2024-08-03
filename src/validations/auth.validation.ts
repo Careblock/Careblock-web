@@ -10,7 +10,7 @@ export const registerPatientSchema = createValidation(commonUserSchema);
 
 export const registerDoctorSchema = createValidation({
     ...commonUserSchema,
-    organizationId: Yup.string().required(formatString(Resource.validation.required, 'Organization')),
+    departmentId: Yup.string().required(formatString(Resource.validation.required, 'Department')),
     seniority: Yup.string().required(formatString(Resource.validation.required, 'Seniority')),
 });
 

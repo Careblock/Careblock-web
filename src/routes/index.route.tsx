@@ -7,7 +7,7 @@ import HomePage from '../pages/home/home.page';
 import Logout from '@/pages/authentication/logout/log-out.page';
 import { ProtectedRoute } from './auth.guard';
 import { PATHS } from '../enums/RoutePath';
-import { ROLES } from '@/enums/Common';
+import { ROLE_NAMES } from '@/enums/Common';
 import { Login } from '@/pages/authentication/login/login.page';
 import PatientPage from '@/pages/patient/patient.page';
 
@@ -26,7 +26,7 @@ export const routesForPublic = [
 export const routesForDoctor = [
     {
         path: PATHS.DEFAULT,
-        element: <ProtectedRoute allowedRoles={[ROLES.DOCTOR]} />,
+        element: <ProtectedRoute allowedRoles={[ROLE_NAMES.DOCTOR]} />,
         children: [{ path: PATHS.DOCTOR_SCHEDULE, element: <DoctorSchedulePage /> }],
     },
 ];
@@ -34,7 +34,7 @@ export const routesForDoctor = [
 export const routesForPatient = [
     {
         path: PATHS.DEFAULT,
-        element: <ProtectedRoute allowedRoles={[ROLES.PATIENT]} />,
+        element: <ProtectedRoute allowedRoles={[ROLE_NAMES.PATIENT]} />,
         children: [
             { path: PATHS.PATIENT_PAGE, element: <PatientPage /> },
             { path: PATHS.PATIENT_APPOINTMENT_HISTORY, element: <AppointmentHistory /> },

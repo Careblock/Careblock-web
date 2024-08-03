@@ -20,7 +20,7 @@ import { PATHS } from '@/enums/RoutePath';
 import { Box, Button, Dialog, DialogTitle, List, ListItem, Modal, Typography } from '@mui/material';
 import { style } from './appointment-page.const';
 import { Login } from '@/pages/authentication/login/login.page';
-import { ROLES } from '@/enums/Common';
+import { ROLE_NAMES } from '@/enums/Common';
 
 const steps: StepType[] = [
     {
@@ -98,7 +98,7 @@ const AppointmentPage = () => {
     };
 
     const handleClickFinished = () => {
-        if (userData && userData.role == ROLES.PATIENT) insertAppoinment();
+        if (userData && userData.role == ROLE_NAMES.PATIENT) insertAppoinment();
         else toggleIsShowConfirm(true);
     };
 

@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { GENDER, ROLES } from '../enums/Common';
 
 export interface SignUpInitialValues {
-    departmentId: string;
+    departmentId?: string;
     stakeId: string;
     firstname: string;
     lastname: string;

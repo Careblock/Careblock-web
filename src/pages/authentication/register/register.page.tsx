@@ -8,7 +8,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import { Button, CardContent, Checkbox, FormControlLabel, MenuItem, Select, TextField } from '@mui/material';
 import { registerPatientSchema, registerDoctorSchema } from '@/validations/auth.validation';
 import { SignUpInitialValues } from '@/types/auth.type';
-import { dropDownBloodTypes, dropDownGenders, dropDownRoles } from '@/constants/dropdown.const';
+import { dropDownGenders, dropDownRoles } from '@/constants/dropdown.const';
 import { INITIAL_VALUES } from '@/constants/common.const';
 import { SystemMessage } from '@/constants/message.const';
 import OrganizationService from '@/services/organization.service';
@@ -29,25 +29,19 @@ function Register() {
     const { subscribeOnce } = useObservable();
     const [role, setRole] = useState(ROLES.PATIENT);
     const [imageSrc, setImageSrc] = useState<string>('');
-    const [organization, setOrganization] = useState([]);
+    const [deparment, setDepartment] = useState([]);
     const [selectedFile, setSelectedFile] = useState<any>();
     const [isChecked, setIsChecked] = useState<boolean>(false);
     const [showAdditionalInfo, setShowAdditionalInfo] = useState<boolean>(false);
     const stakeIdCookie = getCookie('stakeId');
-    const stakeId = stakeIdCookie ? JSON.stringify(stakeIdCookie).slice(1, -1) : '';
+    const stakeId = stakeIdCookie ?? '';
 
     useEffect(() => {
         setTitle('Register | CareBlock');
     }, []);
 
-    // TODO: Update formik
     const formik = useFormik({
-        // initialValues: INITIAL_VALUES.REGISTER,
-        // validationSchema: role === ROLES.PATIENT ? registerPatientSchema : registerDoctorSchema,
-        // onSubmit: (values) => {
-        //     handleSubmit(values);
-        // },
-        initialValues: {} as any,
+        initialValues: INITIAL_VALUES.REGISTER,
         validationSchema: role === ROLES.PATIENT ? registerPatientSchema : registerDoctorSchema,
         onSubmit: (values) => {
             handleSubmit(values);
@@ -69,20 +63,20 @@ function Register() {
 
     useEffect(() => {
         subscribeOnce(OrganizationService.getAllOrganization(), (res: any) => {
-            setOrganization(res.map((data: any) => ({ name: data.name, organizationId: data.id })));
+            setDepartment(res.map((data: any) => ({ name: data.name, departmentId: data.id })));
         });
     }, []);
 
     const handleSubmit = (values: SignUpInitialValues) => {
+        console.log('nnhiep');
         if (stakeId === '') {
             addToast({ text: SystemMessage.LOGIN_AGAIN, position: 'top-right', status: 'warn' });
             return;
         }
         if (values.role === ROLES.PATIENT) {
-            if ('seniority' in values || 'organizationId' in values) {
+            if ('seniority' in values || 'departmentId' in values) {
                 delete values?.seniority;
-                // TODO: Update organization id
-                // delete values?.organizationId;
+                delete values?.departmentId;
             }
         }
         subscribeOnce(AuthService.register({ ...values, stakeId: stakeId, avatar: selectedFile }), (res: any) => {
@@ -96,8 +90,7 @@ function Register() {
     };
 
     const handleChangeRole = (e: any) => {
-        // TODO: Update formik
-        // formik.handleChange(e);
+        formik.handleChange(e);
         setRole(e.target.value);
         setShowAdditionalInfo(e.target.value !== ROLES.PATIENT);
     };
@@ -119,7 +112,7 @@ function Register() {
                         <div className="mb-15">
                             <div className="flex flex-col items-center">
                                 <img
-                                    src={imageSrc ? imageSrc : avatarDefault}
+                                    src={imageSrc ?? avatarDefault}
                                     alt="Selected Avatar"
                                     className="w-[80px] h-[80px] object-cover rounded-[175px] border"
                                     aria-hidden="true"
@@ -154,8 +147,7 @@ function Register() {
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.stakeId && Boolean(formik.errors.stakeId)}
-                                    // TODO: Update helper text
-                                    // helperText={formik.touched.stakeId && formik.errors.stakeId}
+                                    helperText={formik.touched.stakeId && formik.errors.stakeId}
                                 />
                             </div>
                             <div className="flex gap-3 mb-2">
@@ -171,8 +163,7 @@ function Register() {
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         error={formik.touched.firstname && Boolean(formik.errors.firstname)}
-                                        // TODO: Update helper text
-                                        // helperText={formik.touched.firstname && formik.errors.firstname}
+                                        helperText={formik.touched.firstname && formik.errors.firstname}
                                     />
                                 </div>
                                 <div className="flex flex-col w-1/2">
@@ -187,8 +178,7 @@ function Register() {
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         error={formik.touched.lastname && Boolean(formik.errors.lastname)}
-                                        // TODO: Update helper text
-                                        // helperText={formik.touched.lastname && formik.errors.lastname}
+                                        helperText={formik.touched.lastname && formik.errors.lastname}
                                     />
                                 </div>
                             </div>
@@ -205,104 +195,10 @@ function Register() {
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
-                                        // TODO: Update helper text
-                                        // helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
+                                        helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
                                     />
                                 </div>
                                 <div className="flex flex-col w-1/2">
-                                    <h3 className="text-left mb-1">Email</h3>
-                                    <TextField
-                                        className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
-                                        name="email"
-                                        placeholder="Type value"
-                                        type="text"
-                                        size="small"
-                                        value={formik.values.email}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.email && Boolean(formik.errors.email)}
-                                        // TODO: Update helper text
-                                        // helperText={formik.touched.email && formik.errors.email}
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex gap-3 mb-2">
-                                <div className="flex flex-col w-1/2">
-                                    <h3 className="text-left mb-1">Indentity ID</h3>
-                                    <TextField
-                                        className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
-                                        name="identityId"
-                                        placeholder="Type value"
-                                        type="text"
-                                        size="small"
-                                        value={formik.values.identityId}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.identityId && Boolean(formik.errors.identityId)}
-                                        // TODO: Update helper text
-                                        // helperText={formik.touched.identityId && formik.errors.identityId}
-                                    />
-                                </div>
-                                <div className="flex flex-col w-1/2">
-                                    <h3 className="text-left mb-1">Phone number</h3>
-                                    <TextField
-                                        className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
-                                        name="phone"
-                                        placeholder="Type value"
-                                        type="text"
-                                        size="small"
-                                        value={formik.values.phone}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.phone && Boolean(formik.errors.phone)}
-                                        // TODO: Update helper text
-                                        // helperText={formik.touched.phone && formik.errors.phone}
-                                    />
-                                </div>
-                            </div>
-                            {showAdditionalInfo && (
-                                <div className="mb-2 gap-3 flex">
-                                    <div className="flex flex-col w-1/2">
-                                        <h4 className="text-left mb-1">Organization</h4>
-                                        {/* TODO: Update organization field */}
-                                        {/* <Select
-                                            className="w-full"
-                                            name="organizationId"
-                                            size="small"
-                                            value={formik.values.organizationId}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={
-                                                formik.touched.organizationId && Boolean(formik.errors.organizationId)
-                                            }
-                                        >
-                                            {organization.map((item: any) => (
-                                                <MenuItem key={item.organizationId} value={item.organizationId}>
-                                                    {item.name}
-                                                </MenuItem>
-                                            ))}
-                                        </Select> */}
-                                    </div>
-                                    <div className="flex flex-col w-1/2">
-                                        <h4 className="text-left mb-1">Experience Year</h4>
-                                        <TextField
-                                            className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
-                                            name="seniority"
-                                            placeholder="Type value"
-                                            type="number"
-                                            size="small"
-                                            value={formik.values.seniority}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.seniority && Boolean(formik.errors.seniority)}
-                                            // TODO: Update helper text
-                                            // helperText={formik.touched.seniority && formik.errors.seniority}
-                                        />
-                                    </div>
-                                </div>
-                            )}
-                            <div className="flex gap-3 mb-2">
-                                <div className="w-1/2">
                                     <h4 className="text-left mb-1">Gender</h4>
                                     <Select
                                         name="gender"
@@ -320,43 +216,113 @@ function Register() {
                                         ))}
                                     </Select>
                                 </div>
-                                <div className="w-1/2">
-                                    <h4 className="text-left mb-1">Blood Type</h4>
-                                    {/* TODO: Update blood type */}
-                                    {/* <Select
-                                        name="bloodType"
-                                        className="w-full"
+                            </div>
+                            <div className="flex gap-3 mb-2">
+                                <div className="flex flex-col w-1/2">
+                                    <h3 className="text-left mb-1">Indentity ID</h3>
+                                    <TextField
+                                        className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
+                                        name="identityId"
+                                        placeholder="Type value"
+                                        type="text"
                                         size="small"
-                                        value={formik.values.bloodType}
+                                        value={formik.values.identityId}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
-                                        error={formik.touched.bloodType && Boolean(formik.errors.bloodType)}
+                                        error={formik.touched.identityId && Boolean(formik.errors.identityId)}
+                                        helperText={formik.touched.identityId && formik.errors.identityId}
+                                    />
+                                </div>
+                                <div className="flex flex-col w-1/2">
+                                    <h3 className="text-left mb-1">Phone number</h3>
+                                    <TextField
+                                        className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
+                                        name="phone"
+                                        placeholder="Type value"
+                                        type="text"
+                                        size="small"
+                                        value={formik.values.phone}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.phone && Boolean(formik.errors.phone)}
+                                        helperText={formik.touched.phone && formik.errors.phone}
+                                    />
+                                </div>
+                            </div>
+                            {showAdditionalInfo && (
+                                <div className="mb-2 gap-3 flex">
+                                    <div className="flex flex-col w-1/2">
+                                        <h4 className="text-left mb-1">Department</h4>
+                                        {/* TODO: Update Department field */}
+                                        {/* <Select
+                                            className="w-full"
+                                            name="departmentId"
+                                            size="small"
+                                            value={formik.values.departmentId}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={
+                                                formik.touched.departmentId && Boolean(formik.errors.departmentId)
+                                            }
+                                        >
+                                            {department.map((item: any) => (
+                                                <MenuItem key={item.departmentId} value={item.departmentId}>
+                                                    {item.name}
+                                                </MenuItem>
+                                            ))}
+                                        </Select> */}
+                                    </div>
+                                    <div className="flex flex-col w-1/2">
+                                        <h4 className="text-left mb-1">Experience Year</h4>
+                                        <TextField
+                                            className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
+                                            name="seniority"
+                                            placeholder="Type value"
+                                            type="number"
+                                            size="small"
+                                            value={formik.values.seniority}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.seniority && Boolean(formik.errors.seniority)}
+                                            helperText={formik.touched.seniority && formik.errors.seniority}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                            <div className="flex gap-3 mb-5">
+                                <div className="w-1/2">
+                                    <h3 className="text-left mb-1">Email</h3>
+                                    <TextField
+                                        className="rounded-[10px] focus:outline-none focus:border-blue-500 w-full"
+                                        name="email"
+                                        placeholder="Type value"
+                                        type="text"
+                                        size="small"
+                                        value={formik.values.email}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.email && Boolean(formik.errors.email)}
+                                        helperText={formik.touched.email && formik.errors.email}
+                                    />
+                                </div>
+                                <div className="w-1/2">
+                                    <h4 className="text-left mb-1">Role</h4>
+                                    <Select
+                                        name="role"
+                                        className="w-full"
+                                        size="small"
+                                        value={formik.values.role}
+                                        onChange={handleChangeRole}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.role && Boolean(formik.errors.role)}
                                     >
-                                        {dropDownBloodTypes.map((item) => (
-                                            <MenuItem key={item.bloodType} value={item.bloodType}>
+                                        {dropDownRoles.map((item) => (
+                                            <MenuItem key={item.role} value={item.role}>
                                                 {item.name}
                                             </MenuItem>
                                         ))}
-                                    </Select> */}
+                                    </Select>
                                 </div>
-                            </div>
-                            <div className="mb-5">
-                                <h4 className="text-left mb-1">Role</h4>
-                                <Select
-                                    name="role"
-                                    className="w-full"
-                                    size="small"
-                                    value={formik.values.role}
-                                    onChange={handleChangeRole}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.role && Boolean(formik.errors.role)}
-                                >
-                                    {dropDownRoles.map((item) => (
-                                        <MenuItem key={item.role} value={item.role}>
-                                            {item.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
                             </div>
                         </div>
                         <Accordion>

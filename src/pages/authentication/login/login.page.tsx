@@ -1,7 +1,7 @@
 import { addToast } from '@/components/base/toast/toast.service';
 import { SystemMessage } from '@/constants/message.const';
 import { useAuth } from '@/contexts/auth.context';
-import { ROLES } from '@/enums/Common';
+import { ROLE_NAMES } from '@/enums/Common';
 import { PATHS } from '@/enums/RoutePath';
 import useObservable from '@/hooks/use-observable.hook';
 import AuthService from '@/services/auth.service';
@@ -11,6 +11,7 @@ import { CookieManager } from '@/utils/cookie';
 import { setTitle } from '@/utils/document';
 import { CardanoWallet, useWallet } from '@meshsdk/react';
 import { Button, Container, Grid } from '@mui/material';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -48,12 +49,13 @@ export const Login = ({ handleClose }: any) => {
                     addToast({ text: SystemMessage.LOGIN_SUCCESS, position: 'top-right', status: 'valid' });
                     subscribeOnce(AuthService.authenticate(stakeId[0]), (res: any) => {
                         const { jwtToken, ...rest } = res;
-                        startSession({ accessToken: res.jwtToken, user: rest });
+                        const role = (jwtDecode<JwtPayload>(jwtToken) as any)?.role;
+                        startSession({ accessToken: res.jwtToken, user: { ...rest, role } });
                         dispatch(storeUser(res) as any);
-                        if (rest.role === ROLES.DOCTOR) {
+                        if (role === ROLE_NAMES.DOCTOR) {
                             setTitle('Doctor schedule | CareBlock');
                             navigate(PATHS.DOCTOR_SCHEDULE);
-                        } else if (rest.role === ROLES.PATIENT) {
+                        } else if (role === ROLE_NAMES.PATIENT) {
                             setTitle('Home | CareBlock');
                             navigate(PATHS.DEFAULT);
                         } else {

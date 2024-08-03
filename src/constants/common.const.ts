@@ -1,3 +1,4 @@
+import { GENDER, ROLES } from '@/enums/Common';
 import { LoginInitialValues, SignUpInitialValues } from '../types/auth.type';
 
 export const DEFAULT_DATE_FORMAT = 'DD/MM/YYYY';
@@ -17,38 +18,39 @@ export const localStorageKeys = {
 };
 
 export const INITIAL_VALUES = {
-    // TODO: Update initial values
-    // SEARCH: { q: '' },
-    // REGISTER: {
-    //     stakeId: '',
-    //     firstname: '',
-    //     lastname: '',
-    //     dateOfBirth: '',
-    //     gender: 1,
-    //     email: '',
-    //     identityId: '',
-    //     bloodType: 1,
-    //     organizationId: '',
-    //     phone: '',
-    //     role: 1,
-    //     seniority: 0,
-    //     avatar: '',
-    // } as SignUpInitialValues,
-    // LOGIN: { email: '', password: '' } as LoginInitialValues,
-    // FORGOT_PASSWORD: { email: '' },
-    // CHANGE_PASSWORD: { newPassword: '', confirmPassword: '' },
-    // EDIT_PROFILE_PATIENT: {
-    //     stakeId: '',
-    //     firstname: '',
-    //     lastname: '',
-    //     dateOfBirth: '',
-    //     gender: 1,
-    //     email: '',
-    //     identityId: '',
-    //     bloodType: 1,
-    //     phone: '',
-    //     role: 1,
-    //     avatar: '',
-    // } as SignUpInitialValues,
-    // CHANGE_PASSWORD_PROFILE: { oldPassword: '', newPassword: '', confirmPassword: '' },
+    SEARCH: { q: '' },
+    REGISTER: {
+        departmentId: '',
+        stakeId: '',
+        firstname: '',
+        lastname: '',
+        dateOfBirth: '',
+        gender: GENDER.MALE,
+        identityId: '',
+        phone: '',
+        email: '',
+        role: ROLES.PATIENT,
+        avatar: '',
+        seniority: 0,
+        description: '',
+    } as SignUpInitialValues,
+    LOGIN: { email: '', password: '' } as LoginInitialValues,
+    FORGOT_PASSWORD: { email: '' },
+    CHANGE_PASSWORD: { newPassword: '', confirmPassword: '' },
+    EDIT_PROFILE_PATIENT: {
+        departmentId: '',
+        stakeId: '',
+        firstname: '',
+        lastname: '',
+        dateOfBirth: '',
+        gender: GENDER.MALE,
+        identityId: '',
+        phone: '',
+        email: '',
+        role: ROLES.PATIENT,
+        avatar: '',
+        seniority: 0,
+        description: '',
+    } as SignUpInitialValues,
+    CHANGE_PASSWORD_PROFILE: { oldPassword: '', newPassword: '', confirmPassword: '' },
 };
