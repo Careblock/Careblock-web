@@ -2,7 +2,7 @@ import { GENDER } from '../enums/Common';
 
 export interface Accounts {
     id: string;
-    departmentId: string;
+    departmentId?: string;
     stakeId: string;
     firstname: string;
     lastname?: string;
