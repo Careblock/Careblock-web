@@ -40,18 +40,16 @@ const SecondStep = ({ scheduleData, setScheduleData, organization }: SecondStepP
     }, []);
 
     useEffect(() => {
-        // TODO: Update api get doctor by organization
-        // subscribeOnce(AccountService.filterByOrganization(organization!.id), (res: Doctors[]) => {
-        //     setDoctorData([...res]);
-        //     setDoctorDataDisplay([...res]);
-        // });
-
-        subscribeOnce(MedicalService.filterByOrganization(organization!.id), (res: Medicines[]) => {
-            setScheduleData({
-                ...scheduleData,
-                price: res[0]?.price ?? 0,
-            });
+        subscribeOnce(AccountService.filterByOrganization(organization!.id), (res: Doctors[]) => {
+            setDoctorData([...res]);
+            setDoctorDataDisplay([...res]);
         });
+        // subscribeOnce(MedicalService.filterByOrganization(organization!.id), (res: Medicines[]) => {
+        //     setScheduleData({
+        //         ...scheduleData,
+        //         price: res[0]?.price ?? 0,
+        //     });
+        // });
     }, []);
 
     useEffect(() => {

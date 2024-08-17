@@ -46,7 +46,7 @@ const Carousel = ({ title, buttonText, dataSource, onClickSeeMore, onClickItem }
                     {buttonText ? buttonText : 'See More'}
                 </Button>
             </div>
-            <div className="base-carousel__slider flex items-center gap-x-7">
+            <div className="base-carousel__slider flex items-center justify-around">
                 {data.map(({ id, title, avatar }) => (
                     <CarouselItem id={id} title={title} avatar={avatar} key={id} onClickItem={() => onClickItem(id)} />
                 ))}

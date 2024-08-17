@@ -10,7 +10,7 @@ export interface Doctors {
     phone?: string;
     avatar?: string;
     gender: GENDER;
-    role: ROLES;
+    role?: ROLES;
     dateOfBirth?: string;
     seniority?: number;
     email?: string;
