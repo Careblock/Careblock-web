@@ -68,7 +68,6 @@ function Register() {
     }, []);
 
     const handleSubmit = (values: SignUpInitialValues) => {
-        console.log('nnhiep');
         if (stakeId === '') {
             addToast({ text: SystemMessage.LOGIN_AGAIN, position: 'top-right', status: 'warn' });
             return;

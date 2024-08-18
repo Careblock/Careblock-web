@@ -1,6 +1,6 @@
-import { Organizations } from '@/types/organization.type';
+import { ExaminationTypes } from '@/types/examinationType.type';
 
 export interface FirstStepProps {
-    organization: Organizations | undefined;
-    onClickAnOrganization: Function;
+    examinationType: ExaminationTypes | undefined;
+    onClickAnExaminationType: Function;
 }

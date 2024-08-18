@@ -8,7 +8,6 @@ import useObservable from '@/hooks/use-observable.hook';
 import { useAuth } from '@/contexts/auth.context';
 import Steps from '@/components/base/steps/steps.component';
 import { StepType } from '@/components/base/steps/steps.type';
-import { Organizations } from '@/types/organization.type';
 import { AuthContextType } from '@/types/auth.type';
 import { convertSeparateToDateTime } from '@/utils/datetime.helper';
 import AppointmentService from '@/services/appointment.service';
@@ -21,15 +20,16 @@ import { Box, Button, Dialog, DialogTitle, List, ListItem, Modal, Typography } f
 import { style } from './appointment-page.const';
 import { Login } from '@/pages/authentication/login/login.page';
 import { ROLE_NAMES } from '@/enums/Common';
+import { ExaminationTypes } from '@/types/examinationType.type';
 
 const steps: StepType[] = [
     {
         id: 0,
-        text: `1. Choose a medical facility`,
+        text: `1. Choose a medical service`,
     },
     {
         id: 1,
-        text: `2. Choose a doctor`,
+        text: `2. Choose an examination package`,
     },
     {
         id: 2,
@@ -44,14 +44,13 @@ const AppointmentPage = () => {
     const { userData } = useAuth() as AuthContextType;
     const [activeStep, setActiveStep] = useState(0);
     const [isNext, setIsNext] = useState<boolean>(false);
-    const [organization, setOrganization] = useState<Organizations | undefined>();
+    const [examinationType, setExaminationType] = useState<ExaminationTypes | undefined>();
     const [isShowConfirmPopup, setIsShowConfirmPopup] = useState(false);
     const [isShowLoginPopup, setIsShowLoginPopup] = useState(false);
     const [scheduleData, setScheduleData] = useState<ExposeData>({
-        doctor: undefined,
+        examinationPackage: undefined,
         date: null,
         time: '',
-        price: 0,
     });
 
     useEffect(() => {
@@ -60,12 +59,12 @@ const AppointmentPage = () => {
     }, [activeStep]);
 
     useEffect(() => {
-        if (scheduleData.doctor && scheduleData.date) setIsNext(true);
+        if (scheduleData.examinationPackage && scheduleData.date) setIsNext(true);
     }, [scheduleData]);
 
     useEffect(() => {
-        if (organization?.id) setIsNext(true);
-    }, [organization]);
+        if (examinationType?.id) setIsNext(true);
+    }, [examinationType]);
 
     const handleChangeStep = (step: number) => {
         setActiveStep(step);
@@ -107,8 +106,8 @@ const AppointmentPage = () => {
         setActiveStep(activeStep - 1);
     };
 
-    const handleChoseOrganization = (org: Organizations) => {
-        setOrganization(org);
+    const handleChoseExaminationType = (type: ExaminationTypes) => {
+        setExaminationType(type);
     };
 
     const handleChangeSchedule = (schedule: ExposeData) => {
@@ -120,7 +119,7 @@ const AppointmentPage = () => {
     };
 
     const handleClickNextOrBack = (isNextStep: boolean = !isNext) => {
-        if (activeStep === steps[0].id && scheduleData.doctor !== undefined) isNextStep = true;
+        if (activeStep === steps[0].id && scheduleData.examinationPackage !== undefined) isNextStep = true;
         setIsNext(isNextStep);
     };
 
@@ -167,19 +166,22 @@ const AppointmentPage = () => {
                 </div>
                 <div className="appointment-first__content">
                     {activeStep === steps[0].id ? (
-                        <FirstStep organization={organization} onClickAnOrganization={handleChoseOrganization} />
+                        <FirstStep
+                            examinationType={examinationType}
+                            onClickAnExaminationType={handleChoseExaminationType}
+                        />
                     ) : activeStep === steps[1].id ? (
                         <SecondStep
                             scheduleData={scheduleData}
                             setScheduleData={handleChangeSchedule}
-                            organization={organization}
+                            examinationType={examinationType}
                         />
                     ) : (
                         <FinalStep
                             reason={reason}
                             setReason={handleChangeReason}
-                            organization={organization}
                             schedule={scheduleData}
+                            // organization={examinationType}
                         />
                     )}
                 </div>
