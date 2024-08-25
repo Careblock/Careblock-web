@@ -18,6 +18,7 @@ export default function Steps({
     setActiveStep,
     onClickFinished,
     onClickNextOrBack,
+    alwaysShowFinaLText = false,
 }: StepProps) {
     const [skipped, setSkipped] = useState(new Set<number>());
 
@@ -89,7 +90,7 @@ export default function Steps({
                         );
                     })}
                 </Stepper>
-                {activeStep === steps.length ? (
+                {activeStep === steps.length && !alwaysShowFinaLText ? (
                     <>
                         {isShowDescription && (
                             <Typography sx={{ mt: 2, mb: 1 }}>All steps completed - you're finished</Typography>

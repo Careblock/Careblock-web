@@ -1,6 +1,6 @@
 export interface Organizations {
     id: string;
-    code: string;
+    code?: string;
     name: string;
     city?: string;
     district?: string;

@@ -1,26 +1,22 @@
 import FirstStep from '../first-step/first-step.page';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SecondStep from '../second-step/second-step.page';
 import FinalStep from '../final-step/final-step.page';
 import { ExposeData } from '../second-step/second-step.type';
-import { useNavigate } from 'react-router-dom';
 import useObservable from '@/hooks/use-observable.hook';
 import { useAuth } from '@/contexts/auth.context';
 import Steps from '@/components/base/steps/steps.component';
 import { StepType } from '@/components/base/steps/steps.type';
 import { AuthContextType } from '@/types/auth.type';
-import { convertSeparateToDateTime } from '@/utils/datetime.helper';
-import AppointmentService from '@/services/appointment.service';
-import { APPOINTMENT_STATUS } from '@/enums/Appointment';
-import { Appointments } from '@/types/appointment.type';
-import { addToast } from '@/components/base/toast/toast.service';
-import { SystemMessage } from '@/constants/message.const';
 import { PATHS } from '@/enums/RoutePath';
 import { Box, Button, Dialog, DialogTitle, List, ListItem, Modal, Typography } from '@mui/material';
 import { style } from './appointment-page.const';
 import { Login } from '@/pages/authentication/login/login.page';
 import { ROLE_NAMES } from '@/enums/Common';
 import { ExaminationTypes } from '@/types/examinationType.type';
+import { Organizations } from '@/types/organization.type';
+import AccountService from '@/services/account.service';
+import { Accounts } from '@/types/account.type';
 
 const steps: StepType[] = [
     {
@@ -38,9 +34,9 @@ const steps: StepType[] = [
 ];
 
 const AppointmentPage = () => {
-    const navigate = useNavigate();
+    const finalStepRef = useRef<any>(null);
     const { subscribeOnce } = useObservable();
-    const [reason, setReason] = useState('');
+    const [extraData, setExtraData] = useState<any>();
     const { userData } = useAuth() as AuthContextType;
     const [activeStep, setActiveStep] = useState(0);
     const [isNext, setIsNext] = useState<boolean>(false);
@@ -52,6 +48,14 @@ const AppointmentPage = () => {
         date: null,
         time: '',
     });
+
+    useEffect(() => {
+        subscribeOnce(AccountService.getById(userData?.id), (res: Accounts) => {
+            if (res) {
+                setExtraData(res);
+            }
+        });
+    }, []);
 
     useEffect(() => {
         if (activeStep === steps[2].id) setIsNext(true);
@@ -67,38 +71,15 @@ const AppointmentPage = () => {
     }, [examinationType]);
 
     const handleChangeStep = (step: number) => {
-        setActiveStep(step);
+        if (step !== steps[2].id + 1) setActiveStep(step);
     };
 
     const toggleIsShowConfirm = (type: boolean) => setIsShowConfirmPopup(type);
 
-    const insertAppoinment = () => {
-        // let { startDate, endDate } = convertSeparateToDateTime(scheduleData);
-        if (userData) {
-            // Update api insert appointment
-            // subscribeOnce(
-            //     AppointmentService.insert({
-            //         doctorId: scheduleData.doctor!.id,
-            //         patientId: userData.id,
-            //         status: APPOINTMENT_STATUS.ACTIVE,
-            //         note: '',
-            //         reason: reason,
-            //         startTime: startDate,
-            //         endTime: endDate,
-            //     } as Appointments),
-            //     (res: any) => {
-            //         addToast({ text: SystemMessage.MAKE_AN_APPOINTMENT_SUCCESS, position: 'top-right' });
-            //         setTimeout(() => {
-            //             res && navigate(PATHS.HOME);
-            //         }, 100);
-            //     }
-            // );
-        }
-    };
-
     const handleClickFinished = () => {
-        if (userData && userData.role == ROLE_NAMES.PATIENT) insertAppoinment();
-        else toggleIsShowConfirm(true);
+        if (userData && userData.role == ROLE_NAMES.PATIENT) {
+            finalStepRef.current!.onSubmitForm();
+        } else toggleIsShowConfirm(true);
     };
 
     const handleCancelPopup = () => {
@@ -114,13 +95,13 @@ const AppointmentPage = () => {
         setScheduleData(schedule);
     };
 
-    const handleChangeReason = (newValue: string) => {
-        setReason(newValue);
+    const handleChangeExtraData = (newValue: string) => {
+        setExtraData(newValue);
     };
 
     const handleClickNextOrBack = (isNextStep: boolean = !isNext) => {
         if (activeStep === steps[0].id && scheduleData.examinationPackage !== undefined) isNextStep = true;
-        setIsNext(isNextStep);
+        if (activeStep !== steps[2].id) setIsNext(isNextStep);
     };
 
     const handleChangePath = (step: number) => {
@@ -150,6 +131,15 @@ const AppointmentPage = () => {
         );
     }
 
+    const getOrganizationInfor = () => {
+        const orgInfor = {
+            id: scheduleData.examinationPackage?.organizationId,
+            name: scheduleData.examinationPackage?.organizationName,
+            address: scheduleData.examinationPackage?.organizationLocation,
+        } as Organizations;
+        return orgInfor;
+    };
+
     return (
         <>
             <div className="appointment-container pt-[10px] pb-[20px] text-sm">
@@ -159,6 +149,7 @@ const AppointmentPage = () => {
                         isNext={isNext}
                         activeStep={activeStep}
                         finalText="Confirm"
+                        alwaysShowFinaLText={true}
                         setActiveStep={handleChangeStep}
                         onClickNextOrBack={handleClickNextOrBack}
                         onClickFinished={handleClickFinished}
@@ -178,10 +169,12 @@ const AppointmentPage = () => {
                         />
                     ) : (
                         <FinalStep
-                            reason={reason}
-                            setReason={handleChangeReason}
+                            ref={finalStepRef}
+                            userData={userData}
+                            extraData={extraData}
+                            setExtraData={handleChangeExtraData}
                             schedule={scheduleData}
-                            // organization={examinationType}
+                            organization={getOrganizationInfor()}
                         />
                     )}
                 </div>

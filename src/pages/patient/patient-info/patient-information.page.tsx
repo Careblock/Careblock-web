@@ -96,7 +96,7 @@ function PatientInfo() {
                             className="w-[80px] h-[80px] object-cover rounded-[175px] border shadow-xl"
                             aria-hidden="true"
                             alt="avatar"
-                            src={imageSrc ? imageSrc : userInfo?.avatar ? userInfo?.avatar : DefaultAvatar}
+                            src={imageSrc ? imageSrc : userInfo?.avatar ? userInfo.avatar : DefaultAvatar}
                         />
                         <div className="my-3">
                             <label

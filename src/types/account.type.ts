@@ -17,6 +17,7 @@ export interface Accounts {
     createdDate?: string;
     modifiedDate?: string;
     IsDisable: boolean;
+    address?: string;
 }
 
 export interface AccountSimple {

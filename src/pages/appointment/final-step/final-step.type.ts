@@ -2,8 +2,9 @@ import { Organizations } from '@/types/organization.type';
 import { ExposeData } from '../second-step/second-step.type';
 
 export interface FinalStepProps {
-    reason: string;
-    setReason: Function;
+    userData: any;
+    extraData: any;
+    setExtraData: Function;
     organization?: Organizations;
     schedule?: ExposeData;
 }

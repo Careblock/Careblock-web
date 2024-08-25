@@ -4,13 +4,13 @@ import { GENDER } from '@/enums/Common';
 export interface Appointments {
     id?: string;
     patientId: string;
-    doctorId: string;
+    doctorId?: string;
     status: APPOINTMENT_STATUS;
-    name: string;
+    name?: string;
     gender: GENDER;
     phone: string;
-    email: string;
-    address: string;
+    email?: string;
+    address?: string;
     symptom?: string;
     note?: string;
     reason?: string;
