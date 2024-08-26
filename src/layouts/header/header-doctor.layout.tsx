@@ -188,7 +188,7 @@ const HeaderDoctor = () => {
 
     return (
         <>
-            <Box sx={{ flexGrow: 1 }}>
+            <Box>
                 <AppBar position="fixed">
                     <Toolbar className="w-full text-white flex justify-between items-center !h-[52px] !min-h-[52px] bg-primary">
                         <div

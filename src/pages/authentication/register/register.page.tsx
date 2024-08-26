@@ -22,6 +22,7 @@ import avatarRegister from '@/assets/images/auth/background.png';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
 import 'react-toastify/dist/ReactToastify.css';
 import { setTitle } from '@/utils/document';
+import DepartmentService from '@/services/department.service';
 
 function Register() {
     const navigate = useNavigate();
@@ -29,7 +30,8 @@ function Register() {
     const { subscribeOnce } = useObservable();
     const [role, setRole] = useState(ROLES.PATIENT);
     const [imageSrc, setImageSrc] = useState<string>('');
-    const [deparment, setDepartment] = useState([]);
+    const [organization, setOrganization] = useState<any[]>([]);
+    const [department, setDepartment] = useState<any[]>([]);
     const [selectedFile, setSelectedFile] = useState<any>();
     const [isChecked, setIsChecked] = useState<boolean>(false);
     const [showAdditionalInfo, setShowAdditionalInfo] = useState<boolean>(false);
@@ -63,9 +65,15 @@ function Register() {
 
     useEffect(() => {
         subscribeOnce(OrganizationService.getAllOrganization(), (res: any) => {
-            setDepartment(res.map((data: any) => ({ name: data.name, departmentId: data.id })));
+            setOrganization(res.map((data: any) => ({ name: data.name, organizationId: data.id })));
         });
     }, []);
+
+    const onChangeOrganization = (event: any) => {
+        subscribeOnce(DepartmentService.getByOrganization(event.target.value), (res: any) => {
+            setDepartment(res.map((data: any) => ({ name: data.name, departmentId: data.id })));
+        });
+    };
 
     const handleSubmit = (values: SignUpInitialValues) => {
         if (stakeId === '') {
@@ -73,8 +81,9 @@ function Register() {
             return;
         }
         if (values.role === ROLES.PATIENT) {
-            if ('seniority' in values || 'departmentId' in values) {
+            if ('seniority' in values || 'organizationId' in values || 'departmentId' in values) {
                 delete values?.seniority;
+                delete values?.organizationId;
                 delete values?.departmentId;
             }
         }
@@ -111,7 +120,7 @@ function Register() {
                         <div className="mb-15">
                             <div className="flex flex-col items-center">
                                 <img
-                                    src={imageSrc ?? avatarDefault}
+                                    src={imageSrc ? imageSrc : avatarDefault}
                                     alt="Selected Avatar"
                                     className="w-[80px] h-[80px] object-cover rounded-[175px] border"
                                     aria-hidden="true"
@@ -251,30 +260,54 @@ function Register() {
                             {showAdditionalInfo && (
                                 <div className="mb-2 gap-3 flex">
                                     <div className="flex flex-col w-1/2">
+                                        <h4 className="text-left mb-1">Organization</h4>
+                                        <Select
+                                            className="w-full"
+                                            name="organizationId"
+                                            size="small"
+                                            value={formik.values.organizationId}
+                                            onChange={($event: any) => {
+                                                formik.handleChange($event);
+                                                onChangeOrganization($event);
+                                            }}
+                                            onBlur={formik.handleBlur}
+                                            error={
+                                                formik.touched.organizationId && Boolean(formik.errors.organizationId)
+                                            }
+                                        >
+                                            {organization.map((item: any) => (
+                                                <MenuItem key={item.organizationId} value={item.organizationId}>
+                                                    {item.name}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                    <div className="flex flex-col w-1/2">
                                         <h4 className="text-left mb-1">Department</h4>
-                                        {/* TODO: Update Department field */}
-                                        {/* <Select
+                                        <Select
                                             className="w-full"
                                             name="departmentId"
                                             size="small"
                                             value={formik.values.departmentId}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
-                                            error={
-                                                formik.touched.departmentId && Boolean(formik.errors.departmentId)
-                                            }
+                                            error={formik.touched.departmentId && Boolean(formik.errors.departmentId)}
                                         >
                                             {department.map((item: any) => (
                                                 <MenuItem key={item.departmentId} value={item.departmentId}>
                                                     {item.name}
                                                 </MenuItem>
                                             ))}
-                                        </Select> */}
+                                        </Select>
                                     </div>
-                                    <div className="flex flex-col w-1/2">
+                                </div>
+                            )}
+                            {showAdditionalInfo && (
+                                <div className="flex mb-5">
+                                    <div className="w-full">
                                         <h4 className="text-left mb-1">Experience Year</h4>
                                         <TextField
-                                            className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
+                                            className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto w-full"
                                             name="seniority"
                                             placeholder="Type value"
                                             type="number"

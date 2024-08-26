@@ -3,6 +3,7 @@ import { GENDER, ROLES } from '../enums/Common';
 
 export interface SignUpInitialValues {
     departmentId?: string;
+    organizationId?: string;
     stakeId: string;
     firstname: string;
     lastname: string;

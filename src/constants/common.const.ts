@@ -21,6 +21,7 @@ export const INITIAL_VALUES = {
     SEARCH: { q: '' },
     REGISTER: {
         departmentId: '',
+        organizationId: '',
         stakeId: '',
         firstname: '',
         lastname: '',
