@@ -1,3 +1,4 @@
+import { APPOINTMENT_STATUS } from '@/enums/Appointment';
 import { TimeSlots } from './timeSlot.type';
 
 export interface ExaminationPackagesResponse {
@@ -10,4 +11,12 @@ export interface ExaminationPackagesResponse {
     organizationName: string;
     organizationLocation?: string;
     timeSlots?: TimeSlots[];
+    appointments?: ExistedAppointment[];
+}
+
+export interface ExistedAppointment {
+    id?: string;
+    status: APPOINTMENT_STATUS;
+    startDateExpectation?: string;
+    endDateExpectation?: string;
 }

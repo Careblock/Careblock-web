@@ -11,10 +11,6 @@ class _AccountService {
         return HttpService.get<Accounts>(`/Account/${id}`);
     }
 
-    public filterByOrganization(organizationID: string) {
-        return HttpService.get<Accounts[]>(`/account/filter-by-organization/${organizationID}`);
-    }
-
     public getScheduledPatient(doctorID: string, status: APPOINTMENT_STATUS) {
         return HttpService.get<Patients[]>(`/account/get-scheduled-patient/${status}/${doctorID}`);
     }

@@ -5,7 +5,16 @@ import Accordion from '@mui/material/Accordion';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import { Button, CardContent, Checkbox, FormControlLabel, MenuItem, Select, TextField } from '@mui/material';
+import {
+    Button,
+    CardContent,
+    Checkbox,
+    FormControlLabel,
+    FormHelperText,
+    MenuItem,
+    Select,
+    TextField,
+} from '@mui/material';
 import { registerPatientSchema, registerDoctorSchema } from '@/validations/auth.validation';
 import { SignUpInitialValues } from '@/types/auth.type';
 import { dropDownGenders, dropDownRoles } from '@/constants/dropdown.const';
@@ -281,6 +290,11 @@ function Register() {
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        <FormHelperText>
+                                            <p className="text-[#d32f2f] mt-[2px] mx-[14px]">
+                                                {formik.errors.organizationId}
+                                            </p>
+                                        </FormHelperText>
                                     </div>
                                     <div className="flex flex-col w-1/2">
                                         <h4 className="text-left mb-1">Department</h4>
@@ -299,6 +313,11 @@ function Register() {
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        <FormHelperText>
+                                            <p className="text-[#d32f2f] mt-[2px] mx-[14px]">
+                                                {formik.errors.departmentId}
+                                            </p>
+                                        </FormHelperText>
                                     </div>
                                 </div>
                             )}

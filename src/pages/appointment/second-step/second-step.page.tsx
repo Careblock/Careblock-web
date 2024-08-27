@@ -1,7 +1,7 @@
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { InputAdornment, TextField } from '@mui/material';
+import { FormHelperText, InputAdornment, MenuItem, Select, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Dayjs } from 'dayjs';
 import { formatStandardDateTime } from '@/utils/datetime.helper';
@@ -14,12 +14,16 @@ import { setTitle } from '@/utils/document';
 import ExaminationPackageService from '@/services/examinationPackage.service';
 import { ExaminationPackagesResponse } from '@/types/examinationPackageResponse.type';
 import { cloneDeep } from 'lodash';
+import { Organizations } from '@/types/organization.type';
+import OrganizationService from '@/services/organization.service';
 
 const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondStepProps) => {
     const { subscribeOnce } = useObservable();
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState('');
     const [timeRanges, setTimeRanges] = useState<any[]>([]);
+    const [organization, setOrganization] = useState<string>('');
+    const [organizations, setOrganizations] = useState<Organizations[]>([]);
     const [examinationPackages, setExaminationPackages] = useState<ExaminationPackagesResponse[]>([]);
     const [examinationPackagesDisplay, setExaminationPackagesDisplay] = useState<
         ExaminationPackagesResponse[] | undefined
@@ -30,41 +34,66 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
     }, []);
 
     useEffect(() => {
-        subscribeOnce(ExaminationPackageService.getByType(examinationType!.id!), (res: any) => {
-            const data = res as ExaminationPackagesResponse[];
-            setExaminationPackages([...data]);
-            setExaminationPackagesDisplay([...data]);
-            let timeRangesTemp: any[] = [];
-            data.forEach((item) => {
-                const timeSlots = item.timeSlots;
-                let temp: any = {
-                    slots: [],
-                };
-                if (timeSlots) {
-                    timeSlots.forEach((timeSlot) => {
-                        const { startTime, endTime, period } = timeSlot;
-
-                        const start = new Date(`2024-08-18 ${startTime}`);
-                        const end = new Date(`2024-08-18 ${endTime}`);
-                        const totalMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
-                        const slots: any[] = [];
-
-                        for (let i = 0; i <= totalMinutes - period!; i += period!) {
-                            const startSlot = new Date(start.getTime() + i * (1000 * 60));
-                            const endSlot = new Date(start.getTime() + (i + period!) * (1000 * 60));
-                            slots.push(
-                                `${startSlot.toTimeString().slice(0, 5)} - ${endSlot.toTimeString().slice(0, 5)}`
-                            );
-                        }
-
-                        temp.slots = [...temp.slots, ...slots];
-                        temp.slots.sort();
-                    });
-                }
-                timeRangesTemp.push(temp.slots);
-            });
-            setTimeRanges(timeRangesTemp);
+        subscribeOnce(OrganizationService.getAllOrganization(), (res: any) => {
+            setOrganizations(res.map((data: any) => ({ name: data.name, organizationId: data.id })));
         });
+    }, []);
+
+    const getExaminationPackageByType = () => {
+        subscribeOnce(ExaminationPackageService.getByType(examinationType!.id!), (res: any) => {
+            handleSetDatasource(res);
+        });
+    };
+
+    const handleSetDatasource = (res: any) => {
+        const data = res as ExaminationPackagesResponse[];
+        setExaminationPackages([...data]);
+        setExaminationPackagesDisplay([...data]);
+        let timeRangesTemp: any[] = [];
+        data.forEach((item) => {
+            const timeSlots = item.timeSlots;
+            let temp: any = {
+                slots: [],
+            };
+            if (timeSlots) {
+                timeSlots.forEach((timeSlot) => {
+                    const { startTime, endTime, period } = timeSlot;
+
+                    const start = new Date(`2024-08-18 ${startTime}`);
+                    const end = new Date(`2024-08-18 ${endTime}`);
+                    const totalMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
+                    const slots: any[] = [];
+
+                    for (let i = 0; i <= totalMinutes - period!; i += period!) {
+                        const startSlot = new Date(start.getTime() + i * (1000 * 60));
+                        const endSlot = new Date(start.getTime() + (i + period!) * (1000 * 60));
+                        slots.push(`${startSlot.toTimeString().slice(0, 5)} - ${endSlot.toTimeString().slice(0, 5)}`);
+                    }
+
+                    temp.slots = [...temp.slots, ...slots];
+                    temp.slots.sort();
+                });
+            }
+            timeRangesTemp.push(temp.slots);
+        });
+        setTimeRanges(timeRangesTemp);
+    };
+
+    useEffect(() => {
+        if (organization) {
+            subscribeOnce(
+                ExaminationPackageService.getByTypeAndOrganization(examinationType!.id!, organization),
+                (res: any) => {
+                    handleSetDatasource(res);
+                }
+            );
+        } else {
+            getExaminationPackageByType();
+        }
+    }, [organization]);
+
+    useEffect(() => {
+        getExaminationPackageByType();
     }, []);
 
     useEffect(() => {
@@ -84,19 +113,19 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
     };
 
     const isDisabledDateTime = (examPackage: ExaminationPackagesResponse, time: string) => {
-        // if (doctor.appointments && scheduleData.date) {
-        //     for (let appointment of doctor.appointments) {
-        //         const tempDate = scheduleData.date.format('YYYY-MM-DD').toString();
-        //         const startDate = new Date(appointment.startTime);
-        //         const endDate = new Date(appointment.endTime);
-        //         const startTime = getStandardNumber(startDate.getHours());
-        //         const endTime = getStandardNumber(endDate.getHours());
-        //         const timeRange = `${startTime}:00 - ${endTime}:00`;
-        //         if (timeRange === time && tempDate === formatStandardDateTime(startDate).split(' ')[0]) {
-        //             return true;
-        //         }
-        //     }
-        // }
+        if (examPackage.appointments && scheduleData.date) {
+            for (let appointment of examPackage.appointments) {
+                const tempDate = scheduleData.date.format('YYYY-MM-DD').toString();
+                const startDate = new Date(appointment.startDateExpectation!);
+                const endDate = new Date(appointment.endDateExpectation!);
+                const startTime = getStandardNumber(startDate.getHours());
+                const endTime = getStandardNumber(endDate.getHours());
+                const timeRange = `${startTime}:00 - ${endTime}:00`;
+                if (timeRange === time && tempDate === formatStandardDateTime(startDate).split(' ')[0]) {
+                    return true;
+                }
+            }
+        }
         return false;
     };
 
@@ -137,6 +166,26 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                         ),
                     }}
                 />
+                <div className="flex flex-col ml-[20px] w-[260px]">
+                    <Select
+                        className="w-full"
+                        size="medium"
+                        value={organization}
+                        onChange={($event: any) => setOrganization($event.target.value)}
+                    >
+                        <MenuItem value="">
+                            <em>All</em>
+                        </MenuItem>
+                        {organizations.map((item: any) => (
+                            <MenuItem key={item.organizationId} value={item.organizationId}>
+                                {item.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <FormHelperText>
+                        <span className="block mt-[2px] mx-[14px]">Choose a hospital</span>
+                    </FormHelperText>
+                </div>
             </div>
             {examinationPackagesDisplay?.length ? (
                 <div className="second-step__content">

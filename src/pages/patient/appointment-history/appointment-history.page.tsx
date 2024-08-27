@@ -39,7 +39,8 @@ const AppointmentHistory = () => {
             phone: appointment.phone?.trim(),
             email: appointment.email?.trim(),
             address: appointment.address?.trim(),
-            hospitalName: appointment.hospitalName?.trim(),
+            organizationName: appointment.organizationName?.trim(),
+            examinationPackageName: appointment.examinationPackageName?.trim(),
             reason: appointment.reason?.trim(),
             endDateExpectation: format(new Date(appointment.endDateExpectation), 'HH:mm'),
             startDateExpectation: format(new Date(appointment.startDateExpectation), 'HH:mm'),
@@ -88,70 +89,80 @@ const AppointmentHistory = () => {
                 {formattedAppointments.map((appointment: any) => (
                     <div className="w-[440px] bg-white" key={appointment.id}>
                         <Card>
-                            <div className="flex p-4 border-xl shadow-xl h-[222px]">
-                                <div className="flex flex-col items-center w-[40%] gap-2 pr-2">
-                                    <img
-                                        aria-hidden="true"
-                                        alt="avatar"
-                                        className="w-[60px] h-[60px] object-cover rounded-[175px] border mb-2"
-                                        src={appointment.doctorAvatar ? appointment.doctorAvatar : avatarDefault}
-                                    />
-                                    <div className="items-center justify-center">
-                                        <div className="flex gap-2 items-center">
-                                            <Images.LuClock size={18} />
-                                            <span>
-                                                {appointment.startDateExpectation} - {appointment.endDateExpectation}
-                                            </span>
+                            <div className="flex flex-col p-4 border border-[#ccc] border-solid h-[258px]">
+                                <p
+                                    className="text-center mb-[14px] font-bold text-[16px] border-b border-[#ccc] pb-[10px] truncate"
+                                    title={appointment.examinationPackageName}
+                                >
+                                    {appointment.examinationPackageName}
+                                </p>
+                                <div className="flex justify-between">
+                                    <div className="flex flex-col items-center w-[40%] gap-2 pr-2">
+                                        <img
+                                            aria-hidden="true"
+                                            alt="avatar"
+                                            className="w-[60px] h-[60px] object-cover rounded-[175px] border mb-1"
+                                            src={appointment.doctorAvatar ? appointment.doctorAvatar : avatarDefault}
+                                        />
+                                        {appointment.doctorName && <p>{appointment.doctorName}</p>}
+                                        <div className="items-center justify-center">
+                                            <div className="flex gap-2 items-center">
+                                                <Images.LuClock size={18} />
+                                                <span>
+                                                    {appointment.startDateExpectation} -{' '}
+                                                    {appointment.endDateExpectation}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="items-center justify-center">
+                                            <div className="flex gap-2 items-center">
+                                                <Images.FaRegCalendarAlt size={18} />
+                                                <span>{appointment.dateExpectation}</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <Button
+                                                className="mt-6 p-4 w-[120px] font-bold"
+                                                variant="contained"
+                                                color={getStatusColor(appointment.status)}
+                                            >
+                                                {getStatusText(appointment.status)}
+                                            </Button>
                                         </div>
                                     </div>
-                                    <div className="items-center justify-center">
-                                        <div className="flex gap-2 items-center">
-                                            <Images.FaRegCalendarAlt size={18} />
-                                            <span>{appointment.dateExpectation}</span>
+                                    <div className="flex flex-col gap-y-1 flex-1">
+                                        <div className="flex gap-x-2">
+                                            <p className="font-bold">Hospital:</p>
+                                            <p>{appointment.organizationName}</p>
                                         </div>
-                                    </div>
-                                    <div>
-                                        <Button
-                                            className="mt-6 p-4 w-[120px] font-bold"
-                                            variant="contained"
-                                            color={getStatusColor(appointment.status)}
-                                        >
-                                            {getStatusText(appointment.status)}
-                                        </Button>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-y-1 flex-1">
-                                    {appointment.doctorName && (
-                                        <div className="flex items-center gap-x-2">
-                                            <p className="font-bold">Doctor:</p>
-                                            <p>{appointment.doctorName}</p>
+                                        {appointment.reason && (
+                                            <div className="flex gap-x-2">
+                                                <p className="font-bold">Reason:</p>
+                                                <p>{appointment.reason}</p>
+                                            </div>
+                                        )}
+                                        <div className="flex gap-x-2">
+                                            <p className="font-bold">Patient:</p>
+                                            <p>{appointment.name}</p>
                                         </div>
-                                    )}
-                                    <div className="flex items-center gap-x-2">
-                                        <p className="font-bold">Hospital:</p>
-                                        <p>{appointment.address}</p>
-                                    </div>
-                                    {appointment.reason && (
-                                        <div className="flex items-center gap-x-2">
-                                            <p className="font-bold">Reason:</p>
-                                            <p>{appointment.reason}</p>
+                                        <div className="flex gap-x-2">
+                                            <p className="font-bold">Gender:</p>
+                                            <p>{appointment.gender}</p>
                                         </div>
-                                    )}
-                                    <div className="flex items-center gap-x-2">
-                                        <p className="font-bold">Patient:</p>
-                                        <p>{appointment.name}</p>
-                                    </div>
-                                    <div className="flex items-center gap-x-2">
-                                        <p className="font-bold">Gender:</p>
-                                        <p>{appointment.gender}</p>
-                                    </div>
-                                    <div className="flex items-center gap-x-2">
-                                        <p className="font-bold">Phone:</p>
-                                        <p>{appointment.phone}</p>
-                                    </div>
-                                    <div className="flex items-center gap-x-2">
-                                        <p className="font-bold">Email:</p>
-                                        <p>{appointment.email}</p>
+                                        <div className="flex gap-x-2">
+                                            <p className="font-bold">Phone:</p>
+                                            <p>{appointment.phone}</p>
+                                        </div>
+                                        <div className="flex gap-x-2">
+                                            <p className="font-bold">Email:</p>
+                                            <p>{appointment.email}</p>
+                                        </div>
+                                        {appointment.reason && (
+                                            <div className="flex gap-x-2">
+                                                <p className="font-bold">Address:</p>
+                                                <p>{appointment.address}</p>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

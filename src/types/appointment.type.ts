@@ -5,6 +5,7 @@ export interface Appointments {
     id?: string;
     patientId: string;
     doctorId?: string;
+    examinationPackageId?: string;
     status: APPOINTMENT_STATUS;
     name?: string;
     gender: GENDER;

@@ -62,8 +62,9 @@ const FirstStep = ({ examinationType, onClickAnExaminationType }: FirstStepProps
             <div className="first-steps__toolbar flex items-center rounded-lg p-5 bg-[#f5f5f5] mt-5 justify-between">
                 <TextField
                     variant="outlined"
+                    size="medium"
                     label="Search"
-                    helperText="Enter health service's name"
+                    placeholder="Enter service's name"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{

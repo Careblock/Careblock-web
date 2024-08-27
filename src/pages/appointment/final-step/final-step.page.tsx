@@ -48,6 +48,8 @@ const FinalStep = forwardRef(({ userData, extraData, organization, schedule }: F
                     patientId: userData.id,
                     reason: values?.reason,
                     status: APPOINTMENT_STATUS.ACTIVE,
+                    organizationId: organization?.id,
+                    examinationPackageId: schedule?.examinationPackage?.id,
                     address: values?.address,
                     email: values?.email,
                     gender: values?.gender,
