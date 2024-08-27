@@ -87,7 +87,7 @@ const HeaderPatient = () => {
             }}
             onClose={handleMenuClose}
         >
-            <MenuItem className="!p-0 w-[160px]">
+            <MenuItem className="!p-0 min-w-[160px]">
                 <div className="flex flex-col w-full">
                     <div className="flex flex-col items-center justify-center pt-1 mb-1">
                         <img

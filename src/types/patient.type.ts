@@ -16,5 +16,6 @@ export interface Patients {
     appointmentId?: string;
     createdDate?: string;
     modifiedDate?: string;
+    startDateExpectation?: string;
     IsDisable: boolean;
 }

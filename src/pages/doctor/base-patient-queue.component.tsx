@@ -33,7 +33,7 @@ const BasePatientQueue = ({
                 <div className="right space-y-1 flex-1">
                     <div className="name font-bold text-[18px]">{getFullName(patient)}</div>
                     <div className="other-infor text-[#4e4e4e]">{getGenderAndDOB()}</div>
-                    <div className="queue-at text-[#4e4e4e]">{`Queue at: ${displayStandardDateTime(new Date(patient.createdDate!))}`}</div>
+                    <div className="queue-at text-[#4e4e4e]">{`Queue at: ${displayStandardDateTime(new Date(patient.startDateExpectation!))}`}</div>
                 </div>
             </div>
             {scheduleTab !== ScheduleTabs.CHECKEDIN && (
