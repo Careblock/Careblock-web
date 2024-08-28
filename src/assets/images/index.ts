@@ -43,6 +43,7 @@ import {
     MdOutlineNotifications,
     MdOutlineShoppingCart,
     MdQuiz,
+    MdAddCircleOutline,
 } from 'react-icons/md';
 import {
     IoIosAttach,
@@ -99,12 +100,13 @@ import { GrClose, GrDocumentPerformance } from 'react-icons/gr';
 import { IoCartOutline, IoFilterOutline, IoLogOutOutline, IoPeople, IoReorderThree, IoSettings } from 'react-icons/io5';
 import { RiCloseLine, RiDeleteBin6Line, RiFlag2Line, RiMenu3Line, RiPencilFill } from 'react-icons/ri';
 import { FaAngleLeft, FaAngleRight, FaCircleInfo, FaFacebook, FaHouseUser, FaPlus, FaXTwitter } from 'react-icons/fa6';
-import { MdAddCircleOutline } from "react-icons/md";
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 
 export const Images = {
     Logo,
     PageNotFound,
     MdAddCircleOutline,
+    MailOutlineIcon,
     IoLogOutOutline,
     IoMdHelp,
     FaUser,

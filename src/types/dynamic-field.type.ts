@@ -4,6 +4,7 @@ export interface DynamicFieldType {
     type: FieldType;
     fieldName: string;
     value: any;
+    displayValue?: any;
     colspan?: number;
     rowspan?: number;
     rowIndex: number;

@@ -97,7 +97,6 @@ export default function PrimarySearchAppBar() {
                             onClick={() => handleMoveToPage(PATHS.HOME)}
                         >
                             <img
-                                aria-hidden="true"
                                 alt="Selected Avatar"
                                 className="w-10 h-10 object-cover rounded-[175px] mr-3"
                                 src={Images.Logo}

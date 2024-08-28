@@ -99,7 +99,6 @@ const AppointmentHistory = () => {
                                 <div className="flex justify-between">
                                     <div className="flex flex-col items-center w-[40%] gap-2 pr-2">
                                         <img
-                                            aria-hidden="true"
                                             alt="avatar"
                                             className="w-[60px] h-[60px] object-cover rounded-[175px] border mb-1"
                                             src={appointment.doctorAvatar ? appointment.doctorAvatar : avatarDefault}

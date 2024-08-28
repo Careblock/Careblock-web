@@ -94,7 +94,6 @@ function PatientInfo() {
                     <div className="flex flex-col items-center mb-2">
                         <img
                             className="w-[80px] h-[80px] object-cover rounded-[175px] border shadow-xl"
-                            aria-hidden="true"
                             alt="avatar"
                             src={imageSrc ? imageSrc : userInfo?.avatar ? userInfo.avatar : DefaultAvatar}
                         />

@@ -92,7 +92,6 @@ const HeaderPatient = () => {
                     <div className="flex flex-col items-center justify-center pt-1 mb-1">
                         <img
                             alt="avatar"
-                            aria-hidden="true"
                             className="w-10 h-10 object-cover rounded-full mb-2"
                             src={userInfo?.avatar ? userInfo?.avatar : avatarDefault}
                         />
@@ -167,7 +166,6 @@ const HeaderPatient = () => {
                         src={userInfo?.avatar ? userInfo?.avatar : avatarDefault}
                         alt="Selected Avatar"
                         className="w-8 h-8 object-cover rounded-[175px] mr-2"
-                        aria-hidden="true"
                     />
                 </IconButton>
                 <p>Profile</p>
@@ -189,7 +187,6 @@ const HeaderPatient = () => {
                                     src={Images.Logo}
                                     alt="Selected Avatar"
                                     className="w-10 h-10 object-cover rounded-full mr-3"
-                                    aria-hidden="true"
                                 />
                             </div>
                             <div className="header-brand__text select-none font-bold text-xl uppercase text-white">
@@ -232,7 +229,6 @@ const HeaderPatient = () => {
                                     src={userInfo?.avatar ? userInfo?.avatar : avatarDefault}
                                     alt="Selected Avatar"
                                     className="w-10 h-10 object-cover rounded-[175px]"
-                                    aria-hidden="true"
                                 />
                             </IconButton>
                         </Box>

@@ -13,7 +13,6 @@ import AccountService from '@/services/account.service';
 import useObservable from '@/hooks/use-observable.hook';
 import { AuthContextType } from '@/types/auth.type';
 import { Patients } from '@/types/patient.type';
-import { Accounts } from '@/types/account.type';
 import { ScheduleTabs } from '@/enums/Common';
 import { Images } from '@/assets/images';
 import { setTitle } from '@/utils/document';
@@ -136,11 +135,13 @@ const DoctorSchedulePage = () => {
         }, 500);
     };
 
-    const handleClickItem = (id: string) => {
-        // TODO: Update api get details
-        // subscribeOnce(AccountService.getById(id), (res: Accounts) => {
-        //     setDetailsInfo(res);
-        // });
+    const handleClickItem = (id: string, appointmentId: string) => {
+        subscribeOnce(AccountService.getById(id), (res: any) => {
+            setDetailsInfo({
+                ...res,
+                appointmentId,
+            });
+        });
     };
 
     return (

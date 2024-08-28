@@ -5,6 +5,8 @@ import { Patients } from '@/types/patient.type';
 import { AccountRequest } from '@/types/accountRequest.type';
 import { RequestContentType } from './http/http.type';
 import { User } from '@/types/auth.type';
+import { DataDefaults } from '@/types/dataDefault.type';
+import { Doctors } from '@/types/doctor.type';
 
 class _AccountService {
     public getById(id: string) {
@@ -13,6 +15,14 @@ class _AccountService {
 
     public getScheduledPatient(doctorID: string, status: APPOINTMENT_STATUS) {
         return HttpService.get<Patients[]>(`/account/get-scheduled-patient/${status}/${doctorID}`);
+    }
+
+    public getDefaultData(id: string) {
+        return HttpService.get<DataDefaults>(`/account/get-default-data/${id}`);
+    }
+
+    public getAllDoctor() {
+        return HttpService.get<Doctors[]>(`/account/get-all-doctor`);
     }
 
     public update(id: string, account: AccountRequest) {

@@ -94,7 +94,6 @@ const HeaderDoctor = () => {
                     <div className="flex flex-col items-center justify-center pt-1 mb-1  px-[12px]">
                         <img
                             alt="avatar"
-                            aria-hidden="true"
                             className="w-10 h-10 object-cover rounded-full mb-2"
                             src={userInfo?.avatar ? userInfo?.avatar : avatarDefault}
                         />
@@ -170,14 +169,12 @@ const HeaderDoctor = () => {
                             src={userInfo?.avatar}
                             alt="Selected Avatar"
                             className="w-8 h-8 object-cover rounded-[175px] mr-2"
-                            aria-hidden="true"
                         />
                     ) : (
                         <img
                             src={avatarDefault}
                             alt="Selected Avatar"
                             className="w-8 h-8 object-cover rounded-[175px] mr-2"
-                            aria-hidden="true"
                         />
                     )}
                 </IconButton>
@@ -199,7 +196,6 @@ const HeaderDoctor = () => {
                                 src={Images.Logo}
                                 alt="Selected Avatar"
                                 className="w-10 h-10 object-cover rounded-full mr-3"
-                                aria-hidden="true"
                             />
                             <div className="header-brand__text select-none font-bold text-xl uppercase  text-white">
                                 Careblock
@@ -238,7 +234,6 @@ const HeaderDoctor = () => {
                                     src={userInfo?.avatar ? userInfo?.avatar : avatarDefault}
                                     alt="avatar"
                                     className="w-10 h-10 object-cover rounded-[175px]"
-                                    aria-hidden="true"
                                 />
                             </IconButton>
                         </Box>

@@ -116,12 +116,7 @@ function Register() {
         <div className="flex min-h-screen bg-center bg-cover rounded-xl">
             <div className="w-full flex items-center rounded-[10px] bg-blue-100 shadow-2xl">
                 <div className="flex flex-col justify-center items-center w-1/3 h-full">
-                    <img
-                        src={avatarRegister}
-                        alt="Register logo"
-                        className="w-full h-full object-contain rounded"
-                        aria-hidden="true"
-                    />
+                    <img src={avatarRegister} alt="Register logo" className="w-full h-full object-contain rounded" />
                 </div>
                 <div className="pb-8 w-2/3 min-h-screen flex-1 text-center rounded-xl shadow-sm bg-white">
                     <h2 className="my-4 text-[20px] font-bold text-center">Register</h2>
@@ -132,7 +127,6 @@ function Register() {
                                     src={imageSrc ? imageSrc : avatarDefault}
                                     alt="Selected Avatar"
                                     className="w-[80px] h-[80px] object-cover rounded-[175px] border"
-                                    aria-hidden="true"
                                 />
                                 <div className="mt-2 mb-4">
                                     <label

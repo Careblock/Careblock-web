@@ -2,22 +2,35 @@ import { DynamicFieldType } from '@/types/dynamic-field.type';
 import { Props } from './dynamic-result.type';
 import { FormType } from '@/enums/FormType';
 import { FieldType } from '@/enums/FieldType';
-import { ChangeEvent, ReactNode, useRef, useState } from 'react';
+import { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react';
 import { Button, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Dayjs } from 'dayjs';
 import { DateTimeValidationError, PickerChangeHandlerContext } from '@mui/x-date-pickers';
 import { GenderList } from '@/constants/common.const';
 import { Images } from '@/assets/images';
-import { selectList } from './dynamic-result.mock';
 import { getAlignmentStyle, isDynamicField } from './dynamic-result.util';
 import { uuidv4 } from '@/utils/common.helpers';
+import useObservable from '@/hooks/use-observable.hook';
+import AccountService from '@/services/account.service';
+import { Doctors } from '@/types/doctor.type';
+import { AuthContextType } from '@/types/auth.type';
+import { useAuth } from '@/contexts/auth.context';
 
 function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Props) {
+    const { userData } = useAuth() as AuthContextType;
+    const { subscribeOnce } = useObservable();
     const rowLength = datasource[datasource.length - 1].rowIndex;
     const rowArray = new Array(rowLength).fill(0);
     const [data, setData] = useState<DynamicFieldType[]>(datasource);
     const dynamicRef = useRef(null);
+    const [doctorList, setDoctorList] = useState<Doctors[]>([]);
+
+    useEffect(() => {
+        subscribeOnce(AccountService.getAllDoctor(), (res: Doctors[]) => {
+            setDoctorList(res);
+        });
+    }, []);
 
     const getRowData = (rowIndex: number): DynamicFieldType[] => {
         return data.filter((field) => field.rowIndex === rowIndex);
@@ -32,8 +45,6 @@ function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Pro
 
             tempData.splice(theIndex, 0, theField);
             setData([...tempData]);
-
-            console.log(data);
         }
     };
 
@@ -76,6 +87,14 @@ function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Pro
         console.log(temp);
     };
 
+    const getDisplayDateTime = (field: DynamicFieldType) => {
+        const dateTime = new Date();
+        const date = dateTime.getDate().toString();
+        const month = (dateTime.getMonth() + 1).toString();
+        const year = dateTime.getFullYear().toString();
+        return <div>{`${month.padStart(2, '0')}/${date.padStart(2, '0')}/${year}`}</div>;
+    };
+
     const handleClickRemoveField = (field: DynamicFieldType) => {
         let theIndex = data.findIndex((item) => item.fieldName === field.fieldName);
         if (theIndex !== -1) {
@@ -97,7 +116,7 @@ function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Pro
                         ))}
                     </ul>
                 ) : (
-                    <p>{field.value}</p>
+                    <p>{field.displayValue ?? field.value}</p>
                 );
             case FieldType.Input:
                 return (
@@ -132,7 +151,7 @@ function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Pro
                 return (
                     <Select
                         name={field.fieldName}
-                        value={field.value ? field.value : field.fieldName === 'gender' ? GenderList[0] : selectList[0]}
+                        value={field.value ? field.value : field.fieldName === 'gender' ? GenderList[0] : userData!.id}
                         size="small"
                         onChange={(event: SelectChangeEvent<any>) => handleSetFieldValue(field, event.target.value)}
                     >
@@ -142,9 +161,9 @@ function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Pro
                                       {item}
                                   </MenuItem>
                               ))
-                            : selectList.map((item) => (
-                                  <MenuItem key={item} value={item}>
-                                      {item}
+                            : doctorList.map((item) => (
+                                  <MenuItem key={item.id} value={item.id}>
+                                      {`${item.firstname} ${item.lastname}`}
                                   </MenuItem>
                               ))}
                     </Select>
@@ -196,7 +215,11 @@ function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Pro
                                                         ))}
                                                     </ul>
                                                 ) : (
-                                                    <p>{field.value}</p>
+                                                    <p>
+                                                        {field.type === FieldType.AutoDate
+                                                            ? getDisplayDateTime(field)
+                                                            : field.displayValue ?? field.value}
+                                                    </p>
                                                 )}
                                             </td>
                                         ))}
