@@ -1,70 +1,107 @@
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { InputAdornment, TextField } from '@mui/material';
+import { FormHelperText, InputAdornment, MenuItem, Select, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Dayjs } from 'dayjs';
-import MedicalService from '@/services/medicalService.service';
-import AccountService from '@/services/account.service';
 import { formatStandardDateTime } from '@/utils/datetime.helper';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
-import { MedicalServices } from '@/types/medical-services.type';
 import { getStandardNumber } from '@/utils/number.helper';
-import { getFullName } from '@/utils/common.helpers';
 import useObservable from '@/hooks/use-observable.hook';
 import { SecondStepProps } from './second-step.type';
-import { Doctors } from '@/types/doctor.type';
 import { Images } from '@/assets/images';
 import { setTitle } from '@/utils/document';
+import ExaminationPackageService from '@/services/examinationPackage.service';
+import { ExaminationPackagesResponse } from '@/types/examinationPackageResponse.type';
+import { cloneDeep } from 'lodash';
+import { Organizations } from '@/types/organization.type';
+import OrganizationService from '@/services/organization.service';
 
-const timeRanges = [
-    '07:00 - 08:00',
-    '08:00 - 09:00',
-    '09:00 - 10:00',
-    '10:00 - 11:00',
-    '13:00 - 14:00',
-    '14:00 - 15:00',
-    '15:00 - 16:00',
-    '16:00 - 17:00',
-];
-
-const SecondStep = ({ scheduleData, setScheduleData, organization }: SecondStepProps) => {
+const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondStepProps) => {
     const { subscribeOnce } = useObservable();
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState('');
-    const [doctorData, setDoctorData] = useState<Doctors[]>([]);
-    const [doctorDataDisplay, setDoctorDataDisplay] = useState<Doctors[] | undefined>([]);
+    const [timeRanges, setTimeRanges] = useState<any[]>([]);
+    const [organization, setOrganization] = useState<string>('');
+    const [organizations, setOrganizations] = useState<Organizations[]>([]);
+    const [examinationPackages, setExaminationPackages] = useState<ExaminationPackagesResponse[]>([]);
+    const [examinationPackagesDisplay, setExaminationPackagesDisplay] = useState<
+        ExaminationPackagesResponse[] | undefined
+    >([]);
 
     useEffect(() => {
         setTitle('Second step | CareBlock');
     }, []);
 
     useEffect(() => {
-        subscribeOnce(AccountService.filterByOrganization(organization!.id), (res: Doctors[]) => {
-            setDoctorData([...res]);
-            setDoctorDataDisplay([...res]);
+        subscribeOnce(OrganizationService.getAllOrganization(), (res: any) => {
+            setOrganizations(res.map((data: any) => ({ name: data.name, organizationId: data.id })));
         });
+    }, []);
 
-        subscribeOnce(MedicalService.filterByOrganization(organization!.id), (res: MedicalServices[]) => {
-            setScheduleData({
-                ...scheduleData,
-                price: res[0]?.price ?? 0,
-            });
+    const getExaminationPackageByType = () => {
+        subscribeOnce(ExaminationPackageService.getByType(examinationType!.id!), (res: any) => {
+            handleSetDatasource(res);
         });
+    };
+
+    const handleSetDatasource = (res: any) => {
+        const data = res as ExaminationPackagesResponse[];
+        setExaminationPackages([...data]);
+        setExaminationPackagesDisplay([...data]);
+        let timeRangesTemp: any[] = [];
+        data.forEach((item) => {
+            const timeSlots = item.timeSlots;
+            let temp: any = {
+                slots: [],
+            };
+            if (timeSlots) {
+                timeSlots.forEach((timeSlot) => {
+                    const { startTime, endTime, period } = timeSlot;
+
+                    const start = new Date(`2024-08-18 ${startTime}`);
+                    const end = new Date(`2024-08-18 ${endTime}`);
+                    const totalMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
+                    const slots: any[] = [];
+
+                    for (let i = 0; i <= totalMinutes - period!; i += period!) {
+                        const startSlot = new Date(start.getTime() + i * (1000 * 60));
+                        const endSlot = new Date(start.getTime() + (i + period!) * (1000 * 60));
+                        slots.push(`${startSlot.toTimeString().slice(0, 5)} - ${endSlot.toTimeString().slice(0, 5)}`);
+                    }
+
+                    temp.slots = [...temp.slots, ...slots];
+                    temp.slots.sort();
+                });
+            }
+            timeRangesTemp.push(temp.slots);
+        });
+        setTimeRanges(timeRangesTemp);
+    };
+
+    useEffect(() => {
+        if (organization) {
+            subscribeOnce(
+                ExaminationPackageService.getByTypeAndOrganization(examinationType!.id!, organization),
+                (res: any) => {
+                    handleSetDatasource(res);
+                }
+            );
+        } else {
+            getExaminationPackageByType();
+        }
+    }, [organization]);
+
+    useEffect(() => {
+        getExaminationPackageByType();
     }, []);
 
     useEffect(() => {
         if (!initialized) {
-            let result = doctorData.filter((doctor) => {
-                if (
-                    `${doctor.firstname.toLocaleLowerCase()} ${doctor.lastname?.toLocaleLowerCase()}`.includes(
-                        searchValue?.toLocaleLowerCase()
-                    ) ||
-                    doctor.phone?.includes(searchValue?.toLocaleLowerCase())
-                )
-                    return doctor;
+            let result = examinationPackages.filter((examPackage) => {
+                if (examPackage.name?.includes(searchValue?.toLocaleLowerCase())) return examPackage;
             });
-            setDoctorDataDisplay(result);
+            setExaminationPackagesDisplay(result);
         } else setInitialized(false);
     }, [searchValue]);
 
@@ -75,12 +112,12 @@ const SecondStep = ({ scheduleData, setScheduleData, organization }: SecondStepP
         });
     };
 
-    const isDisabledDateTime = (doctor: Doctors, time: string) => {
-        if (doctor.appointments && scheduleData.date) {
-            for (let appointment of doctor.appointments) {
+    const isDisabledDateTime = (examPackage: ExaminationPackagesResponse, time: string) => {
+        if (examPackage.appointments && scheduleData.date) {
+            for (let appointment of examPackage.appointments) {
                 const tempDate = scheduleData.date.format('YYYY-MM-DD').toString();
-                const startDate = new Date(appointment.startTime);
-                const endDate = new Date(appointment.endTime);
+                const startDate = new Date(appointment.startDateExpectation!);
+                const endDate = new Date(appointment.endDateExpectation!);
                 const startTime = getStandardNumber(startDate.getHours());
                 const endTime = getStandardNumber(endDate.getHours());
                 const timeRange = `${startTime}:00 - ${endTime}:00`;
@@ -92,18 +129,24 @@ const SecondStep = ({ scheduleData, setScheduleData, organization }: SecondStepP
         return false;
     };
 
-    const handleChooseDoctor = (doctor: Doctors, time: string) => {
-        if (!isDisabledDateTime(doctor, time)) {
-            setScheduleData({
-                ...scheduleData,
-                doctor: { ...doctor },
-                time: time,
-            });
+    const handleChoosePackage = (examPackage: ExaminationPackagesResponse, time: string) => {
+        if (!isDisabledDateTime(examPackage, time)) {
+            setScheduleData(
+                cloneDeep({
+                    ...scheduleData,
+                    examinationPackage: examPackage,
+                    time: time,
+                })
+            );
         }
     };
 
     const handleSearchValueChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(event.target.value);
+    };
+
+    const isSelectedTime = (examPackage: ExaminationPackagesResponse, time: string) => {
+        return examPackage.id === scheduleData.examinationPackage?.id && time === scheduleData.time;
     };
 
     return (
@@ -112,7 +155,7 @@ const SecondStep = ({ scheduleData, setScheduleData, organization }: SecondStepP
                 <TextField
                     variant="outlined"
                     label="Search"
-                    helperText="Enter name or phone number"
+                    helperText="Enter examination package's name"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -123,27 +166,49 @@ const SecondStep = ({ scheduleData, setScheduleData, organization }: SecondStepP
                         ),
                     }}
                 />
+                <div className="flex flex-col ml-[20px] w-[260px]">
+                    <Select
+                        className="w-full"
+                        size="medium"
+                        value={organization}
+                        onChange={($event: any) => setOrganization($event.target.value)}
+                    >
+                        <MenuItem value="">
+                            <em>All</em>
+                        </MenuItem>
+                        {organizations.map((item: any) => (
+                            <MenuItem key={item.organizationId} value={item.organizationId}>
+                                {item.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <FormHelperText>
+                        <span className="block mt-[2px] mx-[14px]">Choose a hospital</span>
+                    </FormHelperText>
+                </div>
             </div>
-            {doctorDataDisplay?.length ? (
+            {examinationPackagesDisplay?.length ? (
                 <div className="second-step__content">
-                    {doctorDataDisplay.map((doctor) => (
+                    {examinationPackagesDisplay.map((examPackage, i: number) => (
                         <div
-                            className={`second-step-content__doctor select-none flex border border-solid border-[#ddd] rounded-lg p-5 first:mt-0 mt-4 ${doctor.id === scheduleData.doctor?.id ? 'selected' : ''}`}
-                            key={doctor.id}
+                            className={`second-step-content__package select-none flex border border-solid border-[#ddd] rounded-lg p-5 first:mt-0 mt-4 ${examPackage.id === scheduleData.examinationPackage?.id ? 'selected' : ''}`}
+                            key={examPackage.id}
                         >
-                            <div className="second-step-wrapper__left block md:flex w-[40%] pr-[50px] border-r border-solid border-[#ccc]">
-                                <div className="wrapper-left__avatar w-[60px] h-[60px] min-w-[60px] overflow-hidden rounded-full mr-4">
-                                    <img
-                                        className="w-[60px] h-[60px] min-h-[60px] object-cover"
-                                        src={doctor?.avatar ? doctor?.avatar : avatarDefault}
-                                        alt={getFullName(doctor)}
-                                    />
-                                </div>
+                            <div className="second-step-wrapper__left flex flex-col justify-center space-y-[16px] w-[40%] pr-[50px] border-r border-solid border-[#ccc] max-h-[256px]">
                                 <div className="wrapper-left__information">
-                                    <div className="left-information__name font-bold text-[20px] text-primary mb-2">{`Doctor ${getFullName(doctor)} `}</div>
-                                    <div className="left-information__seniority text-[16px]">
-                                        {`Has ${doctor?.seniority} years of experience in the industry`}
+                                    <div className="left-information__name font-bold text-[20px] text-primary mb-2">
+                                        {examPackage.name}
                                     </div>
+                                    <div className="left-information__seniority text-[16px]">
+                                        {`${examPackage?.organizationName} Hospital`}
+                                    </div>
+                                </div>
+                                <div className="wrapper-left__avatar flex-1 min-w-[60px] overflow-hidden rounded mr-4">
+                                    <img
+                                        className="w-full h-full min-h-[60px] object-cover"
+                                        src={examPackage?.thumbnail ? examPackage.thumbnail : avatarDefault}
+                                        alt={examPackage.name}
+                                    />
                                 </div>
                             </div>
                             <div className="second-step-wrapper__right w-[60%] pl-10">
@@ -152,6 +217,7 @@ const SecondStep = ({ scheduleData, setScheduleData, organization }: SecondStepP
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <DatePicker
                                                 disablePast
+                                                className="w-[360px]"
                                                 value={scheduleData.date}
                                                 slotProps={{ textField: { size: 'small' } }}
                                                 onChange={(newValue) => handleDateChange(newValue)}
@@ -166,15 +232,19 @@ const SecondStep = ({ scheduleData, setScheduleData, organization }: SecondStepP
                                             </div>
                                         </div>
                                         <div className="schedule-time__selection flex items-center flex-wrap">
-                                            {timeRanges.map((time, index) => (
-                                                <div
-                                                    className={`time-selection__item cursor-pointer text-center w-[110px] bg-[#eee] rounded py-[6px] px-2 mr-[10px] mb-2 text-[13px] ${doctor.id === scheduleData.doctor?.id && time === scheduleData.time ? 'selected' : ''} ${isDisabledDateTime(doctor, time) ? '!cursor-not-allowed bg-[#bbb] opacity-50' : ''}`}
-                                                    key={index}
-                                                    onClick={() => handleChooseDoctor(doctor, time)}
-                                                >
-                                                    {time}
-                                                </div>
-                                            ))}
+                                            {timeRanges[i].length > 0 ? (
+                                                timeRanges[i].map((time: any, index: number) => (
+                                                    <div
+                                                        className={`time-selection__item cursor-pointer text-center w-[110px] bg-[#eee] rounded py-[6px] px-2 mr-[10px] mb-2 text-[13px] ${isSelectedTime(examPackage, time) ? 'selected' : ''} ${isDisabledDateTime(examPackage, time) ? '!cursor-not-allowed bg-[#bbb] opacity-50' : ''}`}
+                                                        key={index}
+                                                        onClick={() => handleChoosePackage(examPackage, time)}
+                                                    >
+                                                        {time}
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p className="italic mb-[8px]">No specific examination time</p>
+                                            )}
                                         </div>
                                         <div className="schedule-time__description">
                                             <div className="time-description__text mb-[2px] font-light flex items-center text-[13px]">
@@ -189,10 +259,12 @@ const SecondStep = ({ scheduleData, setScheduleData, organization }: SecondStepP
                                     <div className="right-location__heading text-[16px] uppercase mb-2">
                                         Medical examination address
                                     </div>
-                                    <div className="right-location__text text-[16px]">{organization?.location}</div>
+                                    <div className="right-location__text text-[16px]">
+                                        {examPackage?.organizationLocation}
+                                    </div>
                                 </div>
                                 <div className="wrapper-right__price mt-2 pt-2 border-t border-solid border-[#ddd] flex items-baseline">
-                                    <div className="right-price-text mr-[6px] uppercase text-[16px]">{`Price: $${scheduleData.price}`}</div>
+                                    <div className="right-price-text mr-[6px] uppercase text-[16px]">{`Price: $${examPackage.price}`}</div>
                                 </div>
                             </div>
                         </div>

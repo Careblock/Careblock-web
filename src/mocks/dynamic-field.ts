@@ -230,7 +230,7 @@ export const dynamicFieldData: DynamicFieldType[] = [
     {
         type: FieldType.SelectBox,
         fieldName: 'doctor-name',
-        value: 'DD. Kaya',
+        value: '',
         alignment: 'right',
         style: 'font-bold',
         isDefault: true,
@@ -239,7 +239,7 @@ export const dynamicFieldData: DynamicFieldType[] = [
     {
         type: FieldType.SelectBox,
         fieldName: 'doctor-dd',
-        value: 'DD. Lena',
+        value: '',
         alignment: 'right',
         style: 'font-bold',
         isDefault: false,

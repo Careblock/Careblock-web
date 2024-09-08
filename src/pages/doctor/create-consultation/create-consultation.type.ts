@@ -1,6 +1,7 @@
 import { DataType } from '@/enums/Common';
 
 export interface CreateConsultationType {
+    appointmentId: string;
     patientId: string;
     visible: boolean;
     setVisible: Function;

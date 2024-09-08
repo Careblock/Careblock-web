@@ -9,6 +9,7 @@ export interface StepProps {
     setActiveStep: Function;
     onClickFinished: Function;
     onClickNextOrBack: Function;
+    alwaysShowFinaLText?: boolean;
 }
 
 export interface StepType {

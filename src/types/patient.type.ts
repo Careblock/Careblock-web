@@ -1,15 +1,16 @@
-import { BLOODTYPE, GENDER, ROLES } from '../enums/Common';
+import { GENDER } from '../enums/Common';
 
 export interface Patients {
     id: string;
-    firstname: string;
-    lastname?: string;
-    dateOfBirth?: string;
+    name: string;
+    reason: string;
+    examinationPackageName: string;
+    address: string;
+    email?: string;
     gender: GENDER;
-    bloodType?: BLOODTYPE;
     phone?: string;
-    role: ROLES;
+    dateOfBirth?: string;
     avatar?: string;
-    createdDate?: string;
+    startDateExpectation?: string;
     appointmentId?: string;
 }

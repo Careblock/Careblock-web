@@ -1,5 +1,5 @@
 export interface AppointmentState {
-    organizationId: string;
+    examinationTypeId: string | number;
 }
 
 export enum AppointmentActionType {

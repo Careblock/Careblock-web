@@ -1,25 +1,23 @@
-import { BLOODTYPE, GENDER, ROLES } from '../enums/Common';
+import { GENDER } from '../enums/Common';
 
 export interface Accounts {
     id: string;
-    organizationId?: string;
+    departmentId?: string;
     stakeId: string;
-    identityId?: string;
     firstname: string;
     lastname?: string;
-    email?: string;
-    phone?: string;
-    avatar?: string;
-    gender: GENDER;
-    bloodType?: BLOODTYPE;
-    role: ROLES;
     dateOfBirth?: string;
+    gender: GENDER;
+    avatar?: string;
+    identityId?: string;
+    phone?: string;
+    email?: string;
+    description?: string;
     seniority?: number;
-    isDeleted: boolean;
-    createdBy?: string;
     createdDate?: string;
-    modifiedBy?: string;
     modifiedDate?: string;
+    IsDisable: boolean;
+    address?: string;
 }
 
 export interface AccountSimple {

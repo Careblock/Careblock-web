@@ -2,7 +2,7 @@ import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { updatePatientSchema } from '@/validations/user.validation';
-import { dropDownBloodTypes, dropDownGenders } from '@/constants/dropdown.const';
+import { dropDownGenders } from '@/constants/dropdown.const';
 import { INITIAL_VALUES, localStorageKeys } from '@/constants/common.const';
 import { SystemMessage } from '@/constants/message.const';
 import { AuthContextType, User } from '@/types/auth.type';
@@ -14,6 +14,7 @@ import { useAuth } from '@/contexts/auth.context';
 import { Button, MenuItem, Select, TextField } from '@mui/material';
 import { setTitle } from '@/utils/document';
 import { AccountRequest } from '@/types/accountRequest.type';
+import DefaultAvatar from '@/assets/images/auth/avatarDefault.png';
 
 function PatientInfo() {
     const { subscribeOnce } = useObservable();
@@ -48,11 +49,11 @@ function PatientInfo() {
             formik.setFieldValue('firstname', updatedUserInfo.firstname);
             formik.setFieldValue('lastname', updatedUserInfo.lastname);
             formik.setFieldValue('dateOfBirth', updatedUserInfo.dateOfBirth);
-            formik.setFieldValue('email', updatedUserInfo.email);
-            formik.setFieldValue('identityId', updatedUserInfo.identityId);
-            formik.setFieldValue('phone', updatedUserInfo.phone);
             formik.setFieldValue('gender', updatedUserInfo.gender);
-            formik.setFieldValue('bloodType', updatedUserInfo.bloodType);
+            formik.setFieldValue('identityId', updatedUserInfo.identityId);
+            formik.setFieldValue('email', updatedUserInfo.email);
+            formik.setFieldValue('phone', updatedUserInfo.phone);
+            formik.setFieldValue('avatar', updatedUserInfo.avatar);
         }
     }, [userInfo]);
 
@@ -86,16 +87,15 @@ function PatientInfo() {
     };
 
     return (
-        <div className="w-full text-center rounded-gray-300">
+        <div className="w-[740px] mx-auto text-center rounded-gray-300">
             <form onSubmit={formik.handleSubmit} className="w-full py-[12px] px-[20px] bg-white">
                 <h2 className="text-[20px] font-bold text-center mb-4">PERSONAL PROFILE</h2>
                 <div>
                     <div className="flex flex-col items-center mb-2">
                         <img
                             className="w-[80px] h-[80px] object-cover rounded-[175px] border shadow-xl"
-                            aria-hidden="true"
                             alt="avatar"
-                            src={imageSrc ? imageSrc : userInfo?.avatar}
+                            src={imageSrc ? imageSrc : userInfo?.avatar ? userInfo.avatar : DefaultAvatar}
                         />
                         <div className="my-3">
                             <label
@@ -150,6 +150,24 @@ function PatientInfo() {
                     </div>
                     <div className="flex mb-3 gap-x-3">
                         <div className="flex flex-col w-1/2">
+                            <h4 className="text-left mb-2">Gender</h4>
+                            <Select
+                                name="gender"
+                                className="w-full"
+                                size="small"
+                                value={formik.values.gender}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.gender && Boolean(formik.errors.gender)}
+                            >
+                                {dropDownGenders.map((item) => (
+                                    <MenuItem key={item.gender} value={item.gender}>
+                                        {item.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </div>
+                        <div className="flex flex-col w-1/2">
                             <h4 className="text-left mb-2">Date of birth</h4>
                             <TextField
                                 className="w-full rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
@@ -162,21 +180,6 @@ function PatientInfo() {
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
                                 helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
-                            />
-                        </div>
-                        <div className="flex flex-col w-1/2">
-                            <h4 className="text-left mb-2">Email</h4>
-                            <TextField
-                                className="w-full rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
-                                name="email"
-                                placeholder="Type value"
-                                type="text"
-                                size="small"
-                                value={formik.values.email}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.email && Boolean(formik.errors.email)}
-                                helperText={formik.touched.email && formik.errors.email}
                             />
                         </div>
                     </div>
@@ -213,41 +216,20 @@ function PatientInfo() {
                         </div>
                     </div>
                     <div className="flex mb-3 gap-x-3">
-                        <div className="w-1/2">
-                            <h4 className="text-left mb-2">Gender</h4>
-                            <Select
-                                name="gender"
-                                className="w-full"
+                        <div className="w-full">
+                            <h4 className="text-left mb-2">Email</h4>
+                            <TextField
+                                className="w-full rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
+                                name="email"
+                                placeholder="Type value"
+                                type="text"
                                 size="small"
-                                value={formik.values.gender}
+                                value={formik.values.email}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                error={formik.touched.gender && Boolean(formik.errors.gender)}
-                            >
-                                {dropDownGenders.map((item) => (
-                                    <MenuItem key={item.gender} value={item.gender}>
-                                        {item.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </div>
-                        <div className="w-1/2">
-                            <h4 className="text-left mb-2">Blood type</h4>
-                            <Select
-                                name="bloodType"
-                                className="w-full"
-                                size="small"
-                                value={formik.values.bloodType}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.bloodType && Boolean(formik.errors.bloodType)}
-                            >
-                                {dropDownBloodTypes.map((item) => (
-                                    <MenuItem key={item.bloodType} value={item.bloodType}>
-                                        {item.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                                error={formik.touched.email && Boolean(formik.errors.email)}
+                                helperText={formik.touched.email && formik.errors.email}
+                            />
                         </div>
                     </div>
                 </div>

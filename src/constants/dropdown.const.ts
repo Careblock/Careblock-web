@@ -27,7 +27,7 @@ export const dropDownRoles: DropDownRole[] = [
     },
     {
         name: 'Doctor Manager',
-        role: ROLES.DOCTOR_MANAGER,
+        role: ROLES.MANAGER,
     },
 ];
 

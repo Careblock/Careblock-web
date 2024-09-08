@@ -17,7 +17,6 @@ export const commonUserSchema = {
         .required(formatString(Resource.validation.required, 'Email'))
         .matches(REGEX.EMAIL, formatString(Resource.validation.invalid, 'email')),
     identityId: Yup.string().required(formatString(Resource.validation.required, 'Identity ID')),
-    bloodType: Yup.string().required(formatString(Resource.validation.required, 'Blood type')),
     role: Yup.string().required(formatString(Resource.validation.required, 'Role')),
 };
 

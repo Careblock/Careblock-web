@@ -1,20 +1,21 @@
 import { ReactNode } from 'react';
-import { BLOODTYPE, GENDER, ROLES } from '../enums/Common';
+import { GENDER, ROLES } from '../enums/Common';
 
 export interface SignUpInitialValues {
+    departmentId?: string;
+    organizationId?: string;
     stakeId: string;
     firstname: string;
     lastname: string;
     dateOfBirth: string;
     gender: GENDER;
-    email: string;
     identityId: string;
-    bloodType: BLOODTYPE;
     phone: string;
+    email: string;
     role: ROLES;
     avatar?: string;
-    organizationId?: string;
     seniority?: number;
+    description?: string;
 }
 
 export interface SignUpRequest extends SignUpInitialValues {}

@@ -4,7 +4,7 @@ import Footer from '../footer/footer.layout';
 import { useAuth } from '@/contexts/auth.context';
 import { AuthContextType } from '@/types/auth.type';
 import HeaderPatient from '../header/header-patient.layout';
-import { ROLES } from '@/enums/Common';
+import { ROLE_NAMES } from '@/enums/Common';
 import HeaderDoctor from '../header/header-doctor.layout';
 
 const DefaultLayout = () => {
@@ -12,9 +12,9 @@ const DefaultLayout = () => {
 
     return (
         <main className="min-h-screen flex flex-col">
-            {userData && userData.role == ROLES.PATIENT ? (
+            {userData && userData.role == ROLE_NAMES.PATIENT ? (
                 <HeaderPatient />
-            ) : userData && userData.role == ROLES.DOCTOR ? (
+            ) : userData && userData.role == ROLE_NAMES.DOCTOR ? (
                 <HeaderDoctor />
             ) : (
                 <Navbar />

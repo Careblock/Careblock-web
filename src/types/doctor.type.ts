@@ -1,8 +1,8 @@
-import { BLOODTYPE, GENDER, ROLES } from '@/enums/Common';
+import { GENDER, ROLES } from '@/enums/Common';
 
 export interface Doctors {
     id: string;
-    organizationId?: string;
+    departmentId: string;
     stakeId: string;
     identityId?: string;
     firstname: string;
@@ -10,16 +10,17 @@ export interface Doctors {
     phone?: string;
     avatar?: string;
     gender: GENDER;
-    bloodType?: BLOODTYPE;
-    role: ROLES;
+    role?: ROLES;
     dateOfBirth?: string;
     seniority?: number;
-    isDeleted: boolean;
+    email?: string;
     createdBy?: string;
     createdDate?: string;
     modifiedBy?: string;
     modifiedDate?: string;
     appointments?: ExistedAppointment[];
+    IsDisable: boolean;
+    description?: string;
 }
 
 interface ExistedAppointment {

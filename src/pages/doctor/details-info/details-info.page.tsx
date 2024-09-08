@@ -2,7 +2,7 @@ import { Button } from '@mui/material';
 import { useState } from 'react';
 import CreateConsultation from '../create-consultation/create-consultation.page';
 import { formatStandardDate } from '@/utils/datetime.helper';
-import { getFullName } from '@/utils/common.helpers';
+import { getFullName, getGenderName } from '@/utils/common.helpers';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
 import { DetailsInfoType } from './details-info.type';
 import { Images } from '@/assets/images';
@@ -67,7 +67,7 @@ const DetailsInfo = ({ dataSource, clickedSave }: DetailsInfoType) => {
                             ) : (
                                 <Images.MaleIcon className="text-[18px] text-[#4e4e4e]" />
                             )}
-                            <div className="text text-[#4e4e4e] ml-1">{dataSource.gender}</div>
+                            <div className="text text-[#4e4e4e] ml-1">{getGenderName(dataSource.gender)}</div>
                         </div>
                     )}
                     {dataSource.dateOfBirth && (
@@ -84,10 +84,10 @@ const DetailsInfo = ({ dataSource, clickedSave }: DetailsInfoType) => {
                             <div className="text text-[#4e4e4e] ml-1">{dataSource.phone}</div>
                         </div>
                     )}
-                    {dataSource.bloodType && (
-                        <div className="blood-type flex items-center">
-                            <Images.BloodtypeIcon className="text-[18px] text-[#4e4e4e]" />
-                            <div className="text text-[#4e4e4e] ml-1">{dataSource.bloodType}</div>
+                    {dataSource.email && (
+                        <div className="email flex items-center">
+                            <Images.MailOutlineIcon className="text-[18px] text-[#4e4e4e]" />
+                            <div className="text text-[#4e4e4e] ml-1">{dataSource.email}</div>
                         </div>
                     )}
                 </div>
@@ -101,6 +101,7 @@ const DetailsInfo = ({ dataSource, clickedSave }: DetailsInfoType) => {
                 </div>
             </div>
             <CreateConsultation
+                appointmentId={dataSource.appointmentId!}
                 patientId={dataSource.id}
                 visible={isShowCreatePopup}
                 setVisible={handleSetIsShowCreatePopup}

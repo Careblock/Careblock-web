@@ -1,5 +1,5 @@
 import { GENDER } from '@/enums/Common';
-import { ResultType } from '@/types/result.type';
+import { Template_Result_1 } from '@/types/template.type';
 
 export const resultData = JSON.stringify({
     general: {
@@ -78,4 +78,4 @@ export const resultData = JSON.stringify({
     },
     note: 'Pathology that needs consultation and treatment: Refractive errors require wearing glasses of the correct number. Sore throat: limit eating and drinking cold foods. Gargle regularly with light salt water. Thyroid cysts are monitored and checked periodically. Dental plaque needs to be removed periodically every 6 months.',
     healthClassification: 2,
-} as ResultType);
+} as Template_Result_1);

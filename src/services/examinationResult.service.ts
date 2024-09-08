@@ -1,17 +1,17 @@
-import { ExaminationResults } from '@/types/examinationResult.type';
+import { ExaminationOptions } from '@/types/examinationOption.type';
 import HttpService from './http/http.service';
 import { RequestContentType } from './http/http.type';
 
-class _ExaminationResultService {
-    public insert(result: ExaminationResults) {
-        return HttpService.post<string>(`/ExaminationResult/create`, {
+class _ExaminationOptionService {
+    public insert(result: ExaminationOptions) {
+        return HttpService.post<string>(`/ExaminationOption/create`, {
             body: { ...result },
             requestContentType: RequestContentType.MULTIPART,
         });
     }
 
-    public getExaminationResult(patientId: string) {
-        return HttpService.get<string>(`/ExaminationResult/get-file-by-patient/${patientId}`, {
+    public getExaminationOption(patientId: string) {
+        return HttpService.get<string>(`/ExaminationOption/get-file-by-patient/${patientId}`, {
             headers: {
                 'Content-Disposition': 'attachment; filename=examination-result.pdf',
                 'Content-Type': 'application/pdf',
@@ -20,6 +20,6 @@ class _ExaminationResultService {
     }
 }
 
-const ExaminationResultService = new _ExaminationResultService();
+const ExaminationOptionService = new _ExaminationOptionService();
 
-export default ExaminationResultService;
+export default ExaminationOptionService;

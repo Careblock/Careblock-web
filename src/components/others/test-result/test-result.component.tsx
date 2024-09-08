@@ -2,14 +2,14 @@ import { setTitle } from '@/utils/document';
 import { useEffect, useState } from 'react';
 import { resultData } from '@/mocks/result';
 import { getGenderName, getTestResult, numberToRoman } from '@/utils/common.helpers';
-import { ResultType } from '@/types/result.type';
+import { Template_Result_1 } from '@/types/template.type';
 import { TestResultEnum } from '@/enums/TestResultEnum';
 import ReactPDF, { Document, Page, Text, View, PDFViewer } from '@react-pdf/renderer';
 import { styles } from './test-result.const';
 import { Props } from './test-result.type';
 
 const TestResult = ({ onUploadFile }: Props) => {
-    const [dataSource, setDataSource] = useState<ResultType | null>();
+    const [dataSource, setDataSource] = useState<Template_Result_1 | null>();
 
     useEffect(() => {
         setTitle('Patient | CareBlock');

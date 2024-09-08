@@ -1,6 +1,5 @@
-import { displayStandardDateTime, formatStandardDate } from '@/utils/datetime.helper';
+import { displayStandardDateTime } from '@/utils/datetime.helper';
 import { BasePatientType } from './base-patient.type';
-import { getFullName } from '@/utils/common.helpers';
 import { ScheduleTabs } from '@/enums/Common';
 import { Images } from '@/assets/images';
 
@@ -12,28 +11,36 @@ const BasePatientQueue = ({
     scheduleTab,
     handleClickItem,
 }: BasePatientType) => {
-    const getGenderAndDOB = () => {
-        if (patient.gender && patient.dateOfBirth)
-            return `${patient.gender} - ${formatStandardDate(new Date(patient.dateOfBirth))}`;
-        if (patient.gender) return patient.gender;
-        if (patient.dateOfBirth) return formatStandardDate(new Date(patient.dateOfBirth));
+    const handleClickWrapper = () => {
+        if (handleClickItem !== null && handleClickItem !== undefined) {
+            handleClickItem(patient.id);
+        }
+    };
+
+    const getTitle = (): string => {
+        let result = '';
+        if (patient.phone) result += `Phone: ${patient.phone}`;
+        if (patient.email) result += result ? ` | Email: ${patient.email}` : `Email: ${patient.email}`;
+        if (patient.address) result += result ? ` | Address: ${patient.address}` : `Address: ${patient.address}`;
+        return result;
     };
 
     return (
         <div
             className={`base-patient-queue select-none hover:bg-gray p-2 rounded flex items-center justify-between first:mt-0 mt-2 group hover:bg-[#f5f5f5] ${handleClickItem !== null && handleClickItem !== undefined ? 'cursor-pointer' : ''}`}
-            onClick={() => {
-                if (handleClickItem !== null && handleClickItem !== undefined) {
-                    handleClickItem(patient.id);
-                }
-            }}
+            onClick={handleClickWrapper}
+            title={getTitle()}
         >
             <div className="flex items-center">
                 <div className="left text-primary w-[30px] flex items-center justify-center mr-4 text-[18px]">{`# ${no}`}</div>
-                <div className="right space-y-1 flex-1">
-                    <div className="name font-bold text-[18px]">{getFullName(patient)}</div>
-                    <div className="other-infor text-[#4e4e4e]">{getGenderAndDOB()}</div>
-                    <div className="queue-at text-[#4e4e4e]">{`Queue at: ${displayStandardDateTime(new Date(patient.createdDate!))}`}</div>
+                <div className="right space-y-1 w-[250px]">
+                    <div className="flex items-center">
+                        <p className="name font-bold text-[18px]">{patient.name}</p>
+                        <p className="other-infor text-[#4e4e4e] ml-[4px]">{`(${patient.gender})`}</p>
+                    </div>
+                    <div className="other-infor text-[#4e4e4e] italic text-[12px]">{patient.reason}</div>
+                    <div className="other-infor text-[#4e4e4e] text-[12px]">{patient.examinationPackageName}</div>
+                    <div className="queue-at text-[#4e4e4e]">{`Queue at: ${displayStandardDateTime(new Date(patient.startDateExpectation!))}`}</div>
                 </div>
             </div>
             {scheduleTab !== ScheduleTabs.CHECKEDIN && (
