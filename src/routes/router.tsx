@@ -1,12 +1,19 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { AuthContextType } from '@/types/auth.type';
 import { useAuth } from '@/contexts/auth.context';
-import { routesForDoctor, routesForNotAuthenticatedOnly, routesForPatient, routesForPublic } from './index.route';
+import {
+    routesForDoctor,
+    routesForDoctorManager,
+    routesForNotAuthenticatedOnly,
+    routesForPatient,
+    routesForPublic,
+} from './index.route';
 import Loading from '@/components/base/loading/loading.component';
 import DefaultLayout from '../layouts/default/default.layout';
 import NotFoundPage from '../pages/error/notfound.page';
 import DoctorLayout from '@/layouts/doctor/doctor.layout';
 import PatientLayout from '@/layouts/patient/patient.layout';
+import DoctorManagerLayout from '@/layouts/doctor-manager/doctor-manager.layout';
 
 const Routes = () => {
     const { userData, isLoading } = useAuth() as AuthContextType;
@@ -30,6 +37,11 @@ const Routes = () => {
             element: <PatientLayout />,
             errorElement: <NotFoundPage />,
             children: [...routesForPatient],
+        },
+        {
+            element: <DoctorManagerLayout />,
+            errorElement: <NotFoundPage />,
+            children: [...routesForDoctorManager],
         },
     ]);
 

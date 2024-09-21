@@ -116,7 +116,7 @@ function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Pro
                         ))}
                     </ul>
                 ) : (
-                    <p>{field.displayValue ?? field.value}</p>
+                    <div>{field.displayValue ?? field.value}</div>
                 );
             case FieldType.Input:
                 return (
@@ -207,7 +207,7 @@ function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Pro
                                                 key={field.fieldName}
                                                 className={`px-[32px] ${Array.isArray(field.value) ? '' : 'flex items-center'} ${field.style ?? ''} ${getAlignmentStyle(field.alignment)}`}
                                             >
-                                                {field.caption && <p className="mr-[8px]">{`${field.caption}:`}</p>}
+                                                {field.caption && <div className="mr-[8px]">{`${field.caption}:`}</div>}
                                                 {Array.isArray(field.value) ? (
                                                     <ul className="list-disc ml-[50px]">
                                                         {field.value.map((item: any) => (
@@ -215,11 +215,11 @@ function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Pro
                                                         ))}
                                                     </ul>
                                                 ) : (
-                                                    <p>
+                                                    <div>
                                                         {field.type === FieldType.AutoDate
                                                             ? getDisplayDateTime(field)
                                                             : field.displayValue ?? field.value}
-                                                    </p>
+                                                    </div>
                                                 )}
                                             </td>
                                         ))}
@@ -243,9 +243,9 @@ function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Pro
                                                 className={`${isDynamicField(field.type) ? 'my-[6px]' : ''} px-[32px] flex items-center ${field.style ?? ''} ${getAlignmentStyle(field.alignment)}`}
                                             >
                                                 {field.caption && !field.isCustomField && (
-                                                    <p
+                                                    <div
                                                         className={`mr-[8px] ${isDynamicField(field.type) ? 'min-w-[134px]' : ''}`}
-                                                    >{`${field.caption}:`}</p>
+                                                    >{`${field.caption}:`}</div>
                                                 )}
                                                 {field.isCustomField && (
                                                     <TextField

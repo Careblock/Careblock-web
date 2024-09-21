@@ -18,7 +18,7 @@ import {
 import { registerPatientSchema, registerDoctorSchema } from '@/validations/auth.validation';
 import { SignUpInitialValues } from '@/types/auth.type';
 import { dropDownGenders, dropDownRoles } from '@/constants/dropdown.const';
-import { INITIAL_VALUES } from '@/constants/common.const';
+import { INITIAL_USER_VALUES } from '@/constants/common.const';
 import { SystemMessage } from '@/constants/message.const';
 import OrganizationService from '@/services/organization.service';
 import { addToast } from '@/components/base/toast/toast.service';
@@ -52,7 +52,7 @@ function Register() {
     }, []);
 
     const formik = useFormik({
-        initialValues: INITIAL_VALUES.REGISTER,
+        initialValues: INITIAL_USER_VALUES.REGISTER,
         validationSchema: role === ROLES.PATIENT ? registerPatientSchema : registerDoctorSchema,
         onSubmit: (values) => {
             handleSubmit(values);

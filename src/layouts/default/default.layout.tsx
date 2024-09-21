@@ -6,6 +6,7 @@ import { AuthContextType } from '@/types/auth.type';
 import HeaderPatient from '../header/header-patient.layout';
 import { ROLE_NAMES } from '@/enums/Common';
 import HeaderDoctor from '../header/header-doctor.layout';
+import HeaderDoctorManager from '../header/header-doctor-manager.layout';
 
 const DefaultLayout = () => {
     const { userData } = useAuth() as AuthContextType;
@@ -16,6 +17,8 @@ const DefaultLayout = () => {
                 <HeaderPatient />
             ) : userData && userData.role == ROLE_NAMES.DOCTOR ? (
                 <HeaderDoctor />
+            ) : userData && userData.role == ROLE_NAMES.MANAGER ? (
+                <HeaderDoctorManager />
             ) : (
                 <Navbar />
             )}

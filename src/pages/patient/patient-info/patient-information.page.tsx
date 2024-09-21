@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { updatePatientSchema } from '@/validations/user.validation';
 import { dropDownGenders } from '@/constants/dropdown.const';
-import { INITIAL_VALUES, localStorageKeys } from '@/constants/common.const';
+import { INITIAL_USER_VALUES, localStorageKeys } from '@/constants/common.const';
 import { SystemMessage } from '@/constants/message.const';
 import { AuthContextType, User } from '@/types/auth.type';
 import { addToast } from '@/components/base/toast/toast.service';
@@ -28,7 +28,7 @@ function PatientInfo() {
     }, []);
 
     const formik = useFormik({
-        initialValues: INITIAL_VALUES.EDIT_PROFILE_PATIENT,
+        initialValues: INITIAL_USER_VALUES.EDIT_PROFILE_PATIENT,
         validationSchema: updatePatientSchema,
         onSubmit: (values) => {
             handleSubmit(values);

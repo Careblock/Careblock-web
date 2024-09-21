@@ -22,6 +22,9 @@ export enum PATHS {
     APPOINTMENT_STEP3 = '/appointment/3',
     PATIENT_INFO = '/patient/detail_info',
     PATIENT_APPOINTMENT_HISTORY = '/patient/appointment-history',
+    // Doctor manager
+    MANAGER_PAGE = '/manager',
+    ORGANIZATION_INFOR = '/organization',
     // Error
     NOTFOUND = '*',
 }
