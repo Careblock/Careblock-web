@@ -56,7 +56,6 @@ import {
     IoMdStarHalf,
     IoMdStarOutline,
 } from 'react-icons/io';
-import { GoOrganization } from 'react-icons/go';
 import Logo from '@/assets/images/common/logo.jpg';
 import PageNotFound from '@/assets/images/common/notfound.png';
 import NoData from '@/assets/images/common/nodata.png';
@@ -97,9 +96,9 @@ import { PiChatsBold, PiVideoFill } from 'react-icons/pi';
 import { BiSolidLogOut, BiSolidMedal } from 'react-icons/bi';
 import { BsSendFill, BsThreeDotsVertical } from 'react-icons/bs';
 import { CiCirclePlus, CiHeart, CiShoppingCart } from 'react-icons/ci';
-import { GrClose, GrDocumentPerformance } from 'react-icons/gr';
+import { GrClose, GrDocumentPerformance, GrOrganization } from 'react-icons/gr';
 import { IoCartOutline, IoFilterOutline, IoLogOutOutline, IoPeople, IoReorderThree, IoSettings } from 'react-icons/io5';
-import { RiCloseLine, RiDeleteBin6Line, RiFlag2Line, RiMenu3Line, RiPencilFill } from 'react-icons/ri';
+import { RiCloseLine, RiDeleteBin6Line, RiFlag2Line, RiMenu3Line, RiPencilFill, RiTeamFill } from 'react-icons/ri';
 import { FaAngleLeft, FaAngleRight, FaCircleInfo, FaFacebook, FaHouseUser, FaPlus, FaXTwitter } from 'react-icons/fa6';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 
@@ -143,7 +142,6 @@ export const Images = {
     HistoryIcon,
     BookOnlineIcon,
     FaGoogle,
-    GoOrganization,
     FaFacebook,
     FaXTwitter,
     AiOutlineSearch,
@@ -183,6 +181,7 @@ export const Images = {
     CiCirclePlus,
     UndoIcon,
     RiPencilFill,
+    RiTeamFill,
     MdDelete,
     FaBold,
     FaItalic,
@@ -200,6 +199,7 @@ export const Images = {
     FaCircleInfo,
     FaFacebookMessenger,
     GrDocumentPerformance,
+    GrOrganization,
     FaPlus,
     FaSpinner,
     MdBlockFlipped,

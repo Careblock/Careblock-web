@@ -11,5 +11,6 @@ export enum SystemMessage {
     INSERT_DIAGNOSTIC_SUCCESS = 'Successfully inserted a dianostic',
     EDIT_PROFILE = 'Edit profile successfully!',
     EDIT_ORGANIZATION = 'Edit organization successfully!',
+    REMOVE_FROM_ORGANIZATION_SUCCESS = 'Successfully remove the doctor',
     UPLOAD_RESULT = 'Upload examination result successfully!',
 }

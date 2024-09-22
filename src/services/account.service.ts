@@ -7,6 +7,7 @@ import { RequestContentType } from './http/http.type';
 import { User } from '@/types/auth.type';
 import { DataDefaults } from '@/types/dataDefault.type';
 import { Doctors } from '@/types/doctor.type';
+import { Place } from '@/enums/Place';
 
 class _AccountService {
     public getById(id: string) {
@@ -23,6 +24,14 @@ class _AccountService {
 
     public getAllDoctor() {
         return HttpService.get<Doctors[]>(`/account/get-all-doctor`);
+    }
+
+    public getDoctorsOrg(place: Place, doctorId: string) {
+        return HttpService.get<Doctors[]>(`/account/get-doctors-org/${place}/${doctorId}`);
+    }
+
+    public removeDoctorFromOrg(doctorId: string) {
+        return HttpService.post<boolean>(`/account/remove-doctors-org/${doctorId}`);
     }
 
     public update(id: string, account: AccountRequest) {

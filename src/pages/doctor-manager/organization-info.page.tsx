@@ -13,7 +13,7 @@ import DefaultThumbnail from '@/assets/images/common/organization.png';
 import OrganizationService from '@/services/organization.service';
 import { Organizations } from '@/types/organization.type';
 
-function DoctorManagerPage() {
+function OrganizationInfoPage() {
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [organizationInfo, setOrganizationInfo] = useState<any>();
@@ -214,4 +214,4 @@ function DoctorManagerPage() {
     );
 }
 
-export default DoctorManagerPage;
+export default OrganizationInfoPage;

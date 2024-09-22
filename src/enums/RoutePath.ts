@@ -25,6 +25,7 @@ export enum PATHS {
     // Doctor manager
     MANAGER_PAGE = '/manager',
     ORGANIZATION_INFOR = '/organization',
+    TEAM_MEMBERS = '/team',
     // Error
     NOTFOUND = '*',
 }
