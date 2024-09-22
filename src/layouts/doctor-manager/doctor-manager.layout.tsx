@@ -1,15 +1,15 @@
 import { Outlet } from 'react-router-dom';
-import HeaderPatient from '../header/header-patient.layout';
+import HeaderDoctorManager from '../header/header-doctor-manager.layout';
 import Footer from '../footer/footer.layout';
-import PatientSidebar from '../sidebar/patient-sidebar.component';
+import ManagerSidebar from '../sidebar/manager-sidebar.component';
 
-function PatientLayout() {
+function DoctorManagerLayout() {
     return (
         <main className="min-h-screen flex flex-col h-fit">
-            <HeaderPatient />
+            <HeaderDoctorManager />
             <div className="flex flex-1 w-full overflow-hidden">
                 <div>
-                    <PatientSidebar />
+                    <ManagerSidebar />
                 </div>
                 <div className="flex-1 pt-[10px] pb-[20px] px-[24px]">
                     <Outlet />
@@ -20,4 +20,4 @@ function PatientLayout() {
     );
 }
 
-export default PatientLayout;
+export default DoctorManagerLayout;

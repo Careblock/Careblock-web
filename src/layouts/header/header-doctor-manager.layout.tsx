@@ -203,13 +203,6 @@ const HeaderDoctor = () => {
                         </div>
                         <Box sx={{ flexGrow: 1 }} />
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }} className="gap-x-2">
-                            <IconButton
-                                size="medium"
-                                color="inherit"
-                                onClick={() => handleMoveToPage(PATHS.DOCTOR_SCHEDULE)}
-                            >
-                                <Images.CalendarMonthIcon className="text-[26px]" />
-                            </IconButton>
                             <IconButton size="medium" aria-label="show 4 new mails" color="inherit">
                                 <Badge badgeContent={4} color="error">
                                     <Images.MdOutlineNotifications size={26} />

@@ -10,6 +10,7 @@ import { PATHS } from '../enums/RoutePath';
 import { ROLE_NAMES } from '@/enums/Common';
 import { Login } from '@/pages/authentication/login/login.page';
 import PatientPage from '@/pages/patient/patient.page';
+import DoctorManagerPage from '@/pages/doctor-manager/doctor-manager.page';
 
 export const routesForNotAuthenticatedOnly = [
     { path: PATHS.REGISTER, element: <Register /> },
@@ -40,5 +41,13 @@ export const routesForPatient = [
             { path: PATHS.PATIENT_APPOINTMENT_HISTORY, element: <AppointmentHistory /> },
             { path: PATHS.PATIENT_INFO, element: <PatientInfo /> },
         ],
+    },
+];
+
+export const routesForDoctorManager = [
+    {
+        path: PATHS.DEFAULT,
+        element: <ProtectedRoute allowedRoles={[ROLE_NAMES.MANAGER]} />,
+        children: [{ path: PATHS.ORGANIZATION_INFOR, element: <DoctorManagerPage /> }],
     },
 ];

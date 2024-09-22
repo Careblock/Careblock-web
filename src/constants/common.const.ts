@@ -17,7 +17,7 @@ export const localStorageKeys = {
     USER_INFO: 'user_info',
 };
 
-export const INITIAL_VALUES = {
+export const INITIAL_USER_VALUES = {
     SEARCH: { q: '' },
     REGISTER: {
         departmentId: '',

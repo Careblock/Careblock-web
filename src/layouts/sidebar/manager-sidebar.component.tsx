@@ -3,8 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { Images } from '@/assets/images';
+import { PATHS } from '@/enums/RoutePath';
 
-const Sidebar = () => {
+const ManagerSidebar = () => {
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
 
@@ -37,21 +38,15 @@ const Sidebar = () => {
 
             <SidebarContent style={{ backgroundColor: 'white' }}>
                 <Menu iconShape="circle" className="!p-0 hover:bg-gray">
-                    <MenuItem icon={<Images.BookOnlineIcon />}>
-                        <span className="text-black text-xl">Make a reservation</span>
-                        <Link to="/" />
-                    </MenuItem>
-                </Menu>
-                <Menu iconShape="circle" className="!p-0 hover:bg-gray">
                     <MenuItem icon={<Images.MdDashboard />}>
                         <span className="text-black text-xl">Dashboard</span>
-                        <Link to="/patient" />
+                        <Link to={PATHS.ORGANIZATION_INFOR} />
                     </MenuItem>
                 </Menu>
                 <Menu iconShape="circle" className="!p-0 hover:bg-gray">
-                    <MenuItem icon={<Images.HistoryIcon />}>
-                        <span className="text-black text-xl">Appointment History</span>
-                        <Link to="/patient/appointment-history" />
+                    <MenuItem icon={<Images.GoOrganization />}>
+                        <span className="text-black text-xl">Organization</span>
+                        <Link to={PATHS.ORGANIZATION_INFOR} />
                     </MenuItem>
                 </Menu>
             </SidebarContent>
@@ -59,4 +54,4 @@ const Sidebar = () => {
     );
 };
 
-export default Sidebar;
+export default ManagerSidebar;

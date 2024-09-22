@@ -58,6 +58,9 @@ export const Login = ({ handleClose }: any) => {
                         } else if (role === ROLE_NAMES.PATIENT) {
                             setTitle('Home | CareBlock');
                             navigate(PATHS.DEFAULT);
+                        } else if (role === ROLE_NAMES.MANAGER) {
+                            setTitle('Doctor Manager | CareBlock');
+                            navigate(PATHS.ORGANIZATION_INFOR);
                         } else {
                             setTitle('Home | CareBlock');
                             navigate(PATHS.HOME);

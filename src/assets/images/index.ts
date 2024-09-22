@@ -56,6 +56,7 @@ import {
     IoMdStarHalf,
     IoMdStarOutline,
 } from 'react-icons/io';
+import { GoOrganization } from 'react-icons/go';
 import Logo from '@/assets/images/common/logo.jpg';
 import PageNotFound from '@/assets/images/common/notfound.png';
 import NoData from '@/assets/images/common/nodata.png';
@@ -142,6 +143,7 @@ export const Images = {
     HistoryIcon,
     BookOnlineIcon,
     FaGoogle,
+    GoOrganization,
     FaFacebook,
     FaXTwitter,
     AiOutlineSearch,
