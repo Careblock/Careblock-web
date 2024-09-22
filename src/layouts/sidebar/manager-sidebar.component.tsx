@@ -50,6 +50,12 @@ const ManagerSidebar = () => {
                     </MenuItem>
                 </Menu>
                 <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                    <MenuItem icon={<Images.MdMeetingRoom />}>
+                        <span className="text-black text-xl">Departments</span>
+                        <Link to={PATHS.DEPARTMENT_MANAGEMENT} />
+                    </MenuItem>
+                </Menu>
+                <Menu iconShape="circle" className="!p-0 hover:bg-gray">
                     <MenuItem icon={<Images.RiTeamFill />}>
                         <span className="text-black text-xl">Team members</span>
                         <Link to={PATHS.TEAM_MEMBERS} />

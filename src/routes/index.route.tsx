@@ -10,8 +10,9 @@ import { PATHS } from '../enums/RoutePath';
 import { ROLE_NAMES } from '@/enums/Common';
 import { Login } from '@/pages/authentication/login/login.page';
 import PatientPage from '@/pages/patient/patient.page';
-import OrganizationInfoPage from '@/pages/doctor-manager/organization-info.page';
-import TeamMembersPage from '@/pages/doctor-manager/team-members.page';
+import TeamMembersPage from '@/pages/doctor-manager/team-members/team-members.page';
+import OrganizationInfoPage from '@/pages/doctor-manager/organization-info/organization-info.page';
+import DepartmentManagement from '@/pages/doctor-manager/department-management/department-management.page';
 
 export const routesForNotAuthenticatedOnly = [
     { path: PATHS.REGISTER, element: <Register /> },
@@ -51,6 +52,7 @@ export const routesForDoctorManager = [
         element: <ProtectedRoute allowedRoles={[ROLE_NAMES.MANAGER]} />,
         children: [
             { path: PATHS.ORGANIZATION_INFOR, element: <OrganizationInfoPage /> },
+            { path: PATHS.DEPARTMENT_MANAGEMENT, element: <DepartmentManagement /> },
             { path: PATHS.TEAM_MEMBERS, element: <TeamMembersPage /> },
         ],
     },

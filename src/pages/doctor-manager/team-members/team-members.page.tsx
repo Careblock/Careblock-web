@@ -3,7 +3,7 @@ import useObservable from '@/hooks/use-observable.hook';
 import { setTitle } from '@/utils/document';
 import { FormHelperText, InputAdornment, MenuItem, Select, TextField } from '@mui/material';
 import { Images } from '@/assets/images';
-import BaseTeamCard from './team-card.component';
+import BaseTeamCard from '../team-card.component';
 import AccountService from '@/services/account.service';
 import { Doctors } from '@/types/doctor.type';
 import { AuthContextType } from '@/types/auth.type';
