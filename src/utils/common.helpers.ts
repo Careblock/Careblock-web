@@ -3,6 +3,7 @@ import { DIAGNOSTIC_STATUS, GENDER } from '../enums/Common';
 import { AccountSimple, Accounts } from '../types/account.type';
 import { Patients } from '../types/patient.type';
 import { Environment } from '@/environment';
+import { Doctors } from '@/types/doctor.type';
 
 export const nullSafetyJSONStringify = (obj: any): string => {
     return JSON.stringify(obj, (_, v) => (v === null ? undefined : v));
@@ -23,7 +24,7 @@ export function scrollToTop() {
     }, 15);
 }
 
-export const getFullName = (account: Accounts | Patients | AccountSimple) => {
+export const getFullName = (account: Accounts | Patients | AccountSimple | Doctors) => {
     return `${account?.firstname} ${account?.lastname}`;
 };
 
