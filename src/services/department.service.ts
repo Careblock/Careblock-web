@@ -5,6 +5,10 @@ class _DepartmentService {
     public getByOrganization(organizationId: string) {
         return HttpService.get<Departments[]>(`/department/get-by-organization/${organizationId}`);
     }
+
+    public getByUserId(userId: string) {
+        return HttpService.get<Departments[]>(`/department/get-by-user/${userId}`);
+    }
 }
 
 const DepartmentService = new _DepartmentService();
