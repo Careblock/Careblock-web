@@ -46,6 +46,7 @@ import {
     MdAddCircleOutline,
     MdMeetingRoom,
     MdEdit,
+    MdCancel,
 } from 'react-icons/md';
 import {
     IoIosAttach,
@@ -110,6 +111,7 @@ export const Images = {
     MdAddCircleOutline,
     MdMeetingRoom,
     MdEdit,
+    MdCancel,
     MailOutlineIcon,
     IoLogOutOutline,
     IoMdHelp,
