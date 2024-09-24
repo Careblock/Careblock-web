@@ -8,6 +8,10 @@ import DepartmentService from '@/services/department.service';
 import { Departments } from '@/types/department.type';
 import {
     Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     InputAdornment,
     Paper,
     Table,
@@ -21,6 +25,12 @@ import {
 } from '@mui/material';
 import { columns } from './department-management.const';
 import { Images } from '@/assets/images';
+import { useFormik } from 'formik';
+import { INITIAL_DEPARTMENT_VALUES } from '@/constants/department.const';
+import { departmentSchema } from '@/validations/department.validation';
+import { SystemMessage } from '@/constants/message.const';
+import { FormMode } from '@/enums/FormMode';
+import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
 
 function DepartmentManagement() {
     const { subscribeOnce } = useObservable();
@@ -31,19 +41,33 @@ function DepartmentManagement() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [departments, setDepartments] = useState<any[]>([]);
     const [departmentDisplays, setDepartmentDisplays] = useState<any[]>([]);
+    const [organizationId, setOrganizationId] = useState<string>('');
+    const [isVisiblePopupAdd, setIsVisiblePopupAdd] = useState<boolean>(false);
+    const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
+    const [mode, setMode] = useState<FormMode>(FormMode.Add);
+
+    const formik = useFormik({
+        initialValues: INITIAL_DEPARTMENT_VALUES.INFORMATION,
+        validationSchema: departmentSchema,
+        onSubmit: (values) => {
+            handleSubmit(values);
+        },
+    });
 
     useEffect(() => {
         setTitle('Departments | CareBlock');
     }, []);
 
     useEffect(() => {
-        subscribeOnce(DepartmentService.getByUserId(userData?.id), (res: Departments[]) => {
-            if (res) {
-                setDepartments(res);
-                setDepartmentDisplays(res);
-            }
-        });
+        getDatasource();
     }, []);
+
+    useEffect(() => {
+        if (!isVisiblePopupAdd) {
+            formik.resetForm();
+            setMode(FormMode.Add);
+        }
+    }, [isVisiblePopupAdd]);
 
     useEffect(() => {
         if (!initialized) {
@@ -59,6 +83,16 @@ function DepartmentManagement() {
         } else setInitialized(false);
     }, [searchValue]);
 
+    const getDatasource = () => {
+        subscribeOnce(DepartmentService.getByUserId(userData?.id), (res: Departments[]) => {
+            if (res) {
+                setDepartments(res);
+                setOrganizationId(res[0].organizationId!);
+                setDepartmentDisplays(res);
+            }
+        });
+    };
+
     const handleSearchValueChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(event.target.value);
     };
@@ -73,15 +107,70 @@ function DepartmentManagement() {
     };
 
     const handleClickEdit = (department: Departments) => {
-        console.log(department);
+        setMode(FormMode.Update);
+        formik.setFieldValue('id', department.id);
+        formik.setFieldValue('name', department.name);
+        formik.setFieldValue('location', department.location);
+        setIsVisiblePopupAdd(true);
     };
 
     const handleClickRemove = (department: Departments) => {
-        console.log(department);
+        formik.setFieldValue('id', department.id);
+        setIsVisiblePopupConfirm(true);
     };
 
     const onClickAdd = () => {
-        console.log('Add');
+        setIsVisiblePopupAdd(true);
+    };
+
+    const handleClosePopupAdd = () => {
+        setIsVisiblePopupAdd(false);
+    };
+
+    const handleClosePopupDelete = () => {
+        setIsVisiblePopupConfirm(false);
+    };
+
+    const handleConfirmDelete = () => {
+        subscribeOnce(DepartmentService.delete(formik.values.id!), (res: any) => {
+            if (!res.isError) {
+                getDatasource();
+                setIsVisiblePopupConfirm(false);
+                addToast({ text: SystemMessage.DELETE_DEPARTMENT, position: 'top-right' });
+            }
+        });
+    };
+
+    const handleSubmit = (values: Departments) => {
+        if (mode === FormMode.Add) {
+            subscribeOnce(
+                DepartmentService.insert({
+                    ...values,
+                    organizationId: organizationId,
+                }),
+                (res: any) => {
+                    if (!res.isError) {
+                        getDatasource();
+                        setIsVisiblePopupAdd(false);
+                        addToast({ text: SystemMessage.ADD_DEPARTMENT, position: 'top-right' });
+                    }
+                }
+            );
+        } else {
+            subscribeOnce(
+                DepartmentService.update(values.id!, {
+                    ...values,
+                    organizationId: organizationId,
+                }),
+                (res: any) => {
+                    if (!res.isError) {
+                        getDatasource();
+                        setIsVisiblePopupAdd(false);
+                        addToast({ text: SystemMessage.EDIT_DEPARTMENT, position: 'top-right' });
+                    }
+                }
+            );
+        }
     };
 
     return (
@@ -173,6 +262,63 @@ function DepartmentManagement() {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
+
+            {/* Popup Add */}
+            <Dialog open={isVisiblePopupAdd} onClose={handleClosePopupAdd}>
+                <DialogTitle>
+                    <div className="flex items-center justify-between">
+                        <p>Add new department</p>
+                        <Images.MdCancel
+                            className="cursor-pointer hover:text-[red] text-[26px]"
+                            onClick={() => handleClosePopupAdd()}
+                        />
+                    </div>
+                </DialogTitle>
+                <DialogContent>
+                    <form onSubmit={formik.handleSubmit} className="w-[400px] flex flex-col gap-y-[10px]">
+                        <TextField
+                            id="name"
+                            name="name"
+                            placeholder="Department name"
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.name && Boolean(formik.errors.name)}
+                            helperText={formik.touched.name && formik.errors.name}
+                        />
+                        <TextField
+                            id="location"
+                            name="location"
+                            placeholder="Enter location"
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            value={formik.values.location}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.location && Boolean(formik.errors.location)}
+                            helperText={formik.touched.location && formik.errors.location}
+                        />
+                        <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
+                            <Button variant="text" onClick={handleClosePopupAdd}>
+                                Cancel
+                            </Button>
+                            <Button variant="contained" type="submit">
+                                {mode === FormMode.Add ? 'Add' : 'Update'}
+                            </Button>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
+
+            <PopupConfirmDelete
+                isVisible={isVisiblePopupConfirm}
+                onClickCancel={handleClosePopupDelete}
+                onClickConfirm={handleConfirmDelete}
+            />
         </div>
     );
 }
