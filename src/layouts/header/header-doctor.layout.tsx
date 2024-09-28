@@ -206,9 +206,18 @@ const HeaderDoctor = () => {
                             <IconButton
                                 size="medium"
                                 color="inherit"
+                                title="Doctor"
                                 onClick={() => handleMoveToPage(PATHS.DOCTOR_SCHEDULE)}
                             >
                                 <Images.CalendarMonthIcon className="text-[26px]" />
+                            </IconButton>
+                            <IconButton
+                                size="medium"
+                                color="inherit"
+                                title="Manager"
+                                onClick={() => handleMoveToPage(PATHS.ORGANIZATION_INFOR)}
+                            >
+                                <Images.IoSettings className="text-[26px]" />
                             </IconButton>
                             <IconButton size="medium" aria-label="show 4 new mails" color="inherit">
                                 <Badge badgeContent={4} color="error">

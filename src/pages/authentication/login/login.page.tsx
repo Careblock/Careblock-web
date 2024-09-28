@@ -50,15 +50,16 @@ export const Login = ({ handleClose }: any) => {
                     subscribeOnce(AuthService.authenticate(stakeId[0]), (res: any) => {
                         const { jwtToken, ...rest } = res;
                         const role = (jwtDecode<JwtPayload>(jwtToken) as any)?.role;
-                        startSession({ accessToken: res.jwtToken, user: { ...rest, role } });
+                        const roles = role.split(',');
+                        startSession({ accessToken: res.jwtToken, user: { ...rest, roles } });
                         dispatch(storeUser(res) as any);
-                        if (role === ROLE_NAMES.DOCTOR) {
+                        if (roles.includes(ROLE_NAMES.DOCTOR)) {
                             setTitle('Doctor schedule | CareBlock');
                             navigate(PATHS.DOCTOR_SCHEDULE);
-                        } else if (role === ROLE_NAMES.PATIENT) {
+                        } else if (roles.includes(ROLE_NAMES.PATIENT)) {
                             setTitle('Home | CareBlock');
                             navigate(PATHS.DEFAULT);
-                        } else if (role === ROLE_NAMES.MANAGER) {
+                        } else if (roles.includes(ROLE_NAMES.MANAGER)) {
                             setTitle('Doctor Manager | CareBlock');
                             navigate(PATHS.ORGANIZATION_INFOR);
                         } else {

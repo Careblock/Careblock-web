@@ -245,10 +245,10 @@ const AppointmentHistories = () => {
                     </div>
                 </div>
             </div>
-            <div className="flex justify-start items-center flex-wrap gap-4">
+            <div className="flex justify-start items-center flex-wrap gap-[20px]">
                 {appointmentData.length ? (
                     appointmentData.map((appointment: any) => (
-                        <div className="w-[440px] bg-white" key={appointment.id}>
+                        <div className="w-[30%] bg-white" key={appointment.id}>
                             <Card>
                                 <div className="flex flex-col p-4 border border-[#ccc] border-solid h-[258px]">
                                     <p
@@ -319,7 +319,7 @@ const AppointmentHistories = () => {
                                                 <p className="font-bold">Email:</p>
                                                 <p>{appointment.email}</p>
                                             </div>
-                                            {appointment.reason && (
+                                            {appointment.address && (
                                                 <div className="flex gap-x-2">
                                                     <p className="font-bold">Address:</p>
                                                     <p>{appointment.address}</p>

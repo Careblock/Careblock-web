@@ -156,7 +156,7 @@ const AppointmentHistory = () => {
                                             <p className="font-bold">Email:</p>
                                             <p>{appointment.email}</p>
                                         </div>
-                                        {appointment.reason && (
+                                        {appointment.address && (
                                             <div className="flex gap-x-2">
                                                 <p className="font-bold">Address:</p>
                                                 <p>{appointment.address}</p>
