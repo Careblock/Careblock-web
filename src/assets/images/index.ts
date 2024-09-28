@@ -26,6 +26,7 @@ import {
     FaSignOutAlt,
     FaSpinner,
     FaUser,
+    FaHistory,
 } from 'react-icons/fa';
 import {
     MdArticle,
@@ -99,7 +100,7 @@ import { PiChatsBold, PiVideoFill } from 'react-icons/pi';
 import { BiSolidLogOut, BiSolidMedal } from 'react-icons/bi';
 import { BsSendFill, BsThreeDotsVertical } from 'react-icons/bs';
 import { CiCirclePlus, CiHeart, CiShoppingCart } from 'react-icons/ci';
-import { GrClose, GrDocumentPerformance, GrOrganization } from 'react-icons/gr';
+import { GrClose, GrDocumentPerformance, GrOrganization, GrPowerReset } from 'react-icons/gr';
 import { IoCartOutline, IoFilterOutline, IoLogOutOutline, IoPeople, IoReorderThree, IoSettings } from 'react-icons/io5';
 import { RiCloseLine, RiDeleteBin6Line, RiFlag2Line, RiMenu3Line, RiPencilFill, RiTeamFill } from 'react-icons/ri';
 import { FaAngleLeft, FaAngleRight, FaCircleInfo, FaFacebook, FaHouseUser, FaPlus, FaXTwitter } from 'react-icons/fa6';
@@ -116,6 +117,7 @@ export const Images = {
     IoLogOutOutline,
     IoMdHelp,
     FaUser,
+    FaHistory,
     MdOutlineNotifications,
     PiChatsBold,
     FaHouseUser,
@@ -206,6 +208,7 @@ export const Images = {
     FaFacebookMessenger,
     GrDocumentPerformance,
     GrOrganization,
+    GrPowerReset,
     FaPlus,
     FaSpinner,
     MdBlockFlipped,

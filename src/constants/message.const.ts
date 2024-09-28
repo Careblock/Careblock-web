@@ -14,6 +14,7 @@ export enum SystemMessage {
     ADD_DEPARTMENT = 'Add new department successfully!',
     EDIT_DEPARTMENT = 'Edit department successfully!',
     DELETE_DEPARTMENT = 'Delete department successfully!',
+    DELETE_DEPARTMENT_FAILED = 'Delete department failed!',
     REMOVE_FROM_ORGANIZATION_SUCCESS = 'Successfully remove the doctor',
     UPLOAD_RESULT = 'Upload examination result successfully!',
 }

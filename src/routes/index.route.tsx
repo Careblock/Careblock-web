@@ -13,6 +13,7 @@ import PatientPage from '@/pages/patient/patient.page';
 import TeamMembersPage from '@/pages/doctor-manager/team-members/team-members.page';
 import OrganizationInfoPage from '@/pages/doctor-manager/organization-info/organization-info.page';
 import DepartmentManagement from '@/pages/doctor-manager/department-management/department-management.page';
+import AppointmentHistories from '@/pages/doctor-manager/appointment-histories/appointment-histories.page';
 
 export const routesForNotAuthenticatedOnly = [
     { path: PATHS.REGISTER, element: <Register /> },
@@ -54,6 +55,7 @@ export const routesForDoctorManager = [
             { path: PATHS.ORGANIZATION_INFOR, element: <OrganizationInfoPage /> },
             { path: PATHS.DEPARTMENT_MANAGEMENT, element: <DepartmentManagement /> },
             { path: PATHS.TEAM_MEMBERS, element: <TeamMembersPage /> },
+            { path: PATHS.APPOINTMENT_HISTORIES, element: <AppointmentHistories /> },
         ],
     },
 ];
