@@ -61,6 +61,12 @@ const ManagerSidebar = () => {
                         <Link to={PATHS.TEAM_MEMBERS} />
                     </MenuItem>
                 </Menu>
+                <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                    <MenuItem icon={<Images.FaHistory />}>
+                        <span className="text-black text-xl">Appoinment histories</span>
+                        <Link to={PATHS.APPOINTMENT_HISTORIES} />
+                    </MenuItem>
+                </Menu>
             </SidebarContent>
         </ProSidebar>
     );

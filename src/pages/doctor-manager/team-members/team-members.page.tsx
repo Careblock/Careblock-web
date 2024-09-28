@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/auth.context';
 import { Place } from '@/enums/Place';
 import { addToast } from '@/components/base/toast/toast.service';
 import { SystemMessage } from '@/constants/message.const';
+import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
 
 function TeamMembersPage() {
     const MAX_RECORE_PERPAGE = 9;
@@ -24,6 +25,8 @@ function TeamMembersPage() {
     const [searchValue, setSearchValue] = useState<string>('');
     const [pageIndex, setPageIndex] = useState<number>(1);
     const [totalPage, setTotalPage] = useState<number>(0);
+    const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
+    const [deletedId, setDeletedId] = useState<string>();
 
     useEffect(() => {
         setTitle('Team Members | CareBlock');
@@ -70,7 +73,6 @@ function TeamMembersPage() {
 
     const handleSelectDoctor = (data: any) => {
         setSelectedDoctor(data);
-        console.log(data);
     };
 
     const handleSearchValueChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,17 +103,28 @@ function TeamMembersPage() {
     };
 
     const handleClickRemove = (doctorId: string) => {
-        subscribeOnce(AccountService.removeDoctorFromOrg(doctorId), (res: boolean) => {
+        setDeletedId(doctorId);
+        setIsVisiblePopupConfirm(true);
+    };
+
+    const handleClosePopupDelete = () => {
+        setIsVisiblePopupConfirm(false);
+    };
+
+    const handleConfirmDelete = () => {
+        subscribeOnce(AccountService.removeDoctorFromOrg(deletedId!), (res: boolean) => {
             if (res === true) {
+                setIsVisiblePopupConfirm(false);
                 addToast({
-                    text: SystemMessage.REMOVE_FROM_ORGANIZATION_SUCCESS,
+                    text: SystemMessage.DELETE_DEPARTMENT,
                     position: 'top-right',
                     status: 'valid',
                 });
                 getDoctorDatas();
             } else {
+                setIsVisiblePopupConfirm(false);
                 addToast({
-                    text: SystemMessage.REMOVE_FROM_ORGANIZATION_SUCCESS,
+                    text: SystemMessage.DELETE_DEPARTMENT_FAILED,
                     position: 'top-right',
                     status: 'warn',
                 });
@@ -197,6 +210,12 @@ function TeamMembersPage() {
                     </div>
                 </div>
             </div>
+
+            <PopupConfirmDelete
+                isVisible={isVisiblePopupConfirm}
+                onClickCancel={handleClosePopupDelete}
+                onClickConfirm={handleConfirmDelete}
+            />
         </div>
     );
 }

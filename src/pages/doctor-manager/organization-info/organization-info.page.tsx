@@ -52,11 +52,6 @@ function OrganizationInfoPage() {
     }, [organizationInfo]);
 
     const handleSubmit = (values: Organizations) => {
-        console.log(organizationInfo?.id);
-        console.log({
-            ...values,
-            thumbnail: selectedFile ?? organizationInfo.thumbnail,
-        });
         subscribeOnce(
             OrganizationService.update(organizationInfo?.id, {
                 ...values,
