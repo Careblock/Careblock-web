@@ -17,4 +17,7 @@ export enum SystemMessage {
     DELETE_DEPARTMENT_FAILED = 'Delete department failed!',
     REMOVE_FROM_ORGANIZATION_SUCCESS = 'Successfully remove the doctor',
     UPLOAD_RESULT = 'Upload examination result successfully!',
+    AT_LEAST_ONE_ROLE = 'At least one role must be selected for the user',
+    GRANT_SUCCESS = 'Grant permission successfully!',
+    GRANT_FAILED = 'Grant permission failed!',
 }

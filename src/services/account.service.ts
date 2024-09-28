@@ -34,6 +34,14 @@ class _AccountService {
         return HttpService.post<boolean>(`/account/remove-doctors-org/${doctorId}`);
     }
 
+    public grantPermission(userId: string, permissions: string[]) {
+        return HttpService.post<boolean>(`/account/grant-permission/${userId}`, {
+            body: {
+                permissions,
+            },
+        });
+    }
+
     public update(id: string, account: AccountRequest) {
         return HttpService.put<User>(`/account/${id}`, {
             body: { ...account },

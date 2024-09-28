@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import useObservable from '@/hooks/use-observable.hook';
 import { setTitle } from '@/utils/document';
-import { FormHelperText, InputAdornment, MenuItem, Select, TextField } from '@mui/material';
+import { Checkbox, FormHelperText, InputAdornment, MenuItem, Select, TextField } from '@mui/material';
 import { Images } from '@/assets/images';
 import BaseTeamCard from '../team-card.component';
 import AccountService from '@/services/account.service';
@@ -12,11 +12,14 @@ import { Place } from '@/enums/Place';
 import { addToast } from '@/components/base/toast/toast.service';
 import { SystemMessage } from '@/constants/message.const';
 import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import PopupGrantPermission from '../popup-grant-permisstion/popup-grant-permission.component';
+import { ROLE_NAMES } from '@/enums/Common';
+import { useNavigate } from 'react-router-dom';
+import { PATHS } from '@/enums/RoutePath';
 
 function TeamMembersPage() {
     const MAX_RECORE_PERPAGE = 9;
     const { subscribeOnce } = useObservable();
-    const { userData } = useAuth() as AuthContextType;
     const [initialized, setInitialized] = useState(true);
     const [doctors, setDoctors] = useState<any[]>([]);
     const [doctorDisplays, setDoctorDisplays] = useState<any[]>([]);
@@ -26,7 +29,12 @@ function TeamMembersPage() {
     const [pageIndex, setPageIndex] = useState<number>(1);
     const [totalPage, setTotalPage] = useState<number>(0);
     const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
+    const [isVisiblePopupGrant, setIsVisiblePopupGrant] = useState<boolean>(false);
     const [deletedId, setDeletedId] = useState<string>();
+    const [grantedDoctor, setGrantedDoctor] = useState<any>();
+    const [permissionCheckedList, setPermissionCheckedList] = useState<boolean[]>([false, false]);
+    const { userData } = useAuth() as AuthContextType;
+    const navigate = useNavigate();
 
     useEffect(() => {
         setTitle('Team Members | CareBlock');
@@ -102,13 +110,28 @@ function TeamMembersPage() {
         }
     };
 
-    const handleClickRemove = (doctorId: string) => {
+    const handleClickRemove = (doctorId: string, event: any) => {
+        event.stopPropagation();
         setDeletedId(doctorId);
         setIsVisiblePopupConfirm(true);
     };
 
+    const handleClickItem = (doctor: any) => {
+        let temp = [false, false];
+        if (doctor.roles.includes(ROLE_NAMES.DOCTOR)) temp[0] = true;
+        if (doctor.roles.includes(ROLE_NAMES.MANAGER)) temp[1] = true;
+        setPermissionCheckedList([...temp]);
+
+        setGrantedDoctor(doctor);
+        setIsVisiblePopupGrant(true);
+    };
+
     const handleClosePopupDelete = () => {
         setIsVisiblePopupConfirm(false);
+    };
+
+    const handleClosePopupGrant = () => {
+        setIsVisiblePopupGrant(false);
     };
 
     const handleConfirmDelete = () => {
@@ -130,6 +153,59 @@ function TeamMembersPage() {
                 });
             }
         });
+    };
+
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        setPermissionCheckedList((oldValue) => {
+            let newValue = [...oldValue];
+            newValue[index] = event.target.checked;
+            if (newValue.every((checkItem: boolean) => !checkItem)) {
+                addToast({
+                    text: SystemMessage.AT_LEAST_ONE_ROLE,
+                    position: 'top-right',
+                    status: 'warn',
+                });
+                return [...oldValue];
+            }
+            return [...newValue];
+        });
+    };
+
+    const handleConfirmGrant = () => {
+        setIsVisiblePopupGrant(false);
+
+        const permissionRequest = permissionCheckedList.map((item: boolean, index: number) => {
+            if (index === 0 && item === true) return ROLE_NAMES.DOCTOR;
+            else if (index === 1 && item === true) return ROLE_NAMES.MANAGER;
+        });
+
+        subscribeOnce(
+            AccountService.grantPermission(grantedDoctor.id, permissionRequest as string[]),
+            (res: boolean) => {
+                if (res === true) {
+                    setIsVisiblePopupGrant(false);
+                    addToast({
+                        text: SystemMessage.GRANT_SUCCESS,
+                        position: 'top-right',
+                        status: 'valid',
+                    });
+                    getDoctorDatas();
+
+                    if (grantedDoctor.id === userData!.id && permissionCheckedList[1] === false) {
+                        navigate({
+                            pathname: PATHS.LOGOUT,
+                        });
+                    }
+                } else {
+                    setIsVisiblePopupGrant(false);
+                    addToast({
+                        text: SystemMessage.GRANT_FAILED,
+                        position: 'top-right',
+                        status: 'warn',
+                    });
+                }
+            }
+        );
     };
 
     return (
@@ -173,13 +249,14 @@ function TeamMembersPage() {
                     />
                 </div>
                 {/* Content */}
-                <div className="p-[16px] flex items-center flex-wrap border border-x-[#d7d7d7] justify-between gap-y-[14px]">
+                <div className="p-[16px] flex items-center flex-wrap border border-x-[#d7d7d7] gap-y-[14px] gap-x-[16px]">
                     {doctorDisplays.length > 0 ? (
                         doctorDisplays.map((doctor: Doctors) => (
                             <BaseTeamCard
                                 key={doctor.id}
                                 dataSource={doctor}
-                                onClickRemove={() => handleClickRemove(doctor.id)}
+                                onClickRemove={($event: any) => handleClickRemove(doctor.id, $event)}
+                                onClickItem={() => handleClickItem(doctor)}
                             />
                         ))
                     ) : (
@@ -211,6 +288,34 @@ function TeamMembersPage() {
                 </div>
             </div>
 
+            <PopupGrantPermission
+                isVisible={isVisiblePopupGrant}
+                onClickCancel={handleClosePopupGrant}
+                onClickConfirm={handleConfirmGrant}
+            >
+                {
+                    <div className="flex flex-col items-start w-[320px] select-none">
+                        <label className="flex items-center cursor-pointer">
+                            <Checkbox
+                                id="policy"
+                                size="small"
+                                checked={permissionCheckedList[0]}
+                                onChange={($event: any) => handleCheckboxChange($event, 0)}
+                            />
+                            <p>Doctor</p>
+                        </label>
+                        <label className="flex items-center cursor-pointer">
+                            <Checkbox
+                                id="policy"
+                                size="small"
+                                checked={permissionCheckedList[1]}
+                                onChange={($event: any) => handleCheckboxChange($event, 1)}
+                            />
+                            <p>Manager</p>
+                        </label>
+                    </div>
+                }
+            </PopupGrantPermission>
             <PopupConfirmDelete
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}
