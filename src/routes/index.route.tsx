@@ -14,6 +14,7 @@ import TeamMembersPage from '@/pages/doctor-manager/team-members/team-members.pa
 import OrganizationInfoPage from '@/pages/doctor-manager/organization-info/organization-info.page';
 import DepartmentManagement from '@/pages/doctor-manager/department-management/department-management.page';
 import AppointmentHistories from '@/pages/doctor-manager/appointment-histories/appointment-histories.page';
+import ExaminationPackage from '@/pages/doctor-manager/examination-package/examination-package.page';
 
 export const routesForNotAuthenticatedOnly = [
     { path: PATHS.REGISTER, element: <Register /> },
@@ -55,6 +56,7 @@ export const routesForDoctorManager = [
             { path: PATHS.ORGANIZATION_INFOR, element: <OrganizationInfoPage /> },
             { path: PATHS.DEPARTMENT_MANAGEMENT, element: <DepartmentManagement /> },
             { path: PATHS.TEAM_MEMBERS, element: <TeamMembersPage /> },
+            { path: PATHS.EXAMINATION_PACKAGE, element: <ExaminationPackage /> },
             { path: PATHS.APPOINTMENT_HISTORIES, element: <AppointmentHistories /> },
         ],
     },
