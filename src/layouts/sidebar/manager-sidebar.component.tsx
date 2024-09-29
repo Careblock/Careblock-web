@@ -62,6 +62,12 @@ const ManagerSidebar = () => {
                     </MenuItem>
                 </Menu>
                 <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                    <MenuItem icon={<Images.FaBriefcaseMedical />}>
+                        <span className="text-black text-xl">Examination Package</span>
+                        <Link to={PATHS.EXAMINATION_PACKAGE} />
+                    </MenuItem>
+                </Menu>
+                <Menu iconShape="circle" className="!p-0 hover:bg-gray">
                     <MenuItem icon={<Images.FaHistory />}>
                         <span className="text-black text-xl">Appoinment histories</span>
                         <Link to={PATHS.APPOINTMENT_HISTORIES} />

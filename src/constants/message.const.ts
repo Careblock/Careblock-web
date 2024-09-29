@@ -20,4 +20,8 @@ export enum SystemMessage {
     AT_LEAST_ONE_ROLE = 'At least one role must be selected for the user',
     GRANT_SUCCESS = 'Grant permission successfully!',
     GRANT_FAILED = 'Grant permission failed!',
+    ADD_EXAMINATION_PACKAGE = 'Add new examination package successfully!',
+    EDIT_EXAMINATION_PACKAGE = 'Edit examination package successfully!',
+    DELETE_EXAMINATION_PACKAGE = 'Delete examination package successfully!',
+    LACK_OF_TYPE = 'Examination type is required',
 }

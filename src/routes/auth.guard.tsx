@@ -16,7 +16,7 @@ export const ProtectedRoute = ({
     }
 
     allowedRoles.forEach((roles) => {
-        if (!userData.roles.includes(roles)) {
+        if (!userData.roles?.includes(roles)) {
             isValid = false;
             return <Navigate to={PATHS.NOTFOUND} replace />;
         }
