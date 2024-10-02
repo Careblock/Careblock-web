@@ -189,7 +189,7 @@ const HeaderDoctor = () => {
                 <AppBar position="fixed">
                     <Toolbar className="w-full text-white flex justify-between items-center !h-[52px] !min-h-[52px] bg-primary">
                         <div
-                            className="header__brand cursor-pointer flex items-center"
+                            className="header__brand cursor-pointer flex items-center select-none"
                             onClick={() => handleMoveToPage(PATHS.HOME)}
                         >
                             <img

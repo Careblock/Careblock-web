@@ -24,4 +24,6 @@ export enum SystemMessage {
     EDIT_EXAMINATION_PACKAGE = 'Edit examination package successfully!',
     DELETE_EXAMINATION_PACKAGE = 'Delete examination package successfully!',
     LACK_OF_TYPE = 'Examination type is required',
+    EDIT_SPECIALIST = 'Update specialist successfully!',
+    EDIT_SPECIALIST_FAILED = 'Update specialist failed!',
 }
