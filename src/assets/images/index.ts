@@ -102,7 +102,15 @@ import { BsSendFill, BsThreeDotsVertical } from 'react-icons/bs';
 import { CiCirclePlus, CiHeart, CiShoppingCart } from 'react-icons/ci';
 import { GrClose, GrDocumentPerformance, GrOrganization, GrPowerReset } from 'react-icons/gr';
 import { IoCartOutline, IoFilterOutline, IoLogOutOutline, IoPeople, IoReorderThree, IoSettings } from 'react-icons/io5';
-import { RiCloseLine, RiDeleteBin6Line, RiFlag2Line, RiMenu3Line, RiPencilFill, RiTeamFill } from 'react-icons/ri';
+import {
+    RiCloseLine,
+    RiDeleteBin6Line,
+    RiFlag2Line,
+    RiMenu3Line,
+    RiPencilFill,
+    RiTeamFill,
+    RiAdminFill,
+} from 'react-icons/ri';
 import {
     FaAngleLeft,
     FaAngleRight,
@@ -112,6 +120,7 @@ import {
     FaPlus,
     FaXTwitter,
     FaBriefcaseMedical,
+    FaClipboardUser,
 } from 'react-icons/fa6';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 
@@ -162,6 +171,7 @@ export const Images = {
     FaFacebook,
     FaXTwitter,
     FaBriefcaseMedical,
+    FaClipboardUser,
     AiOutlineSearch,
     TfiWorld,
     MdOutlineShoppingCart,
@@ -200,6 +210,7 @@ export const Images = {
     UndoIcon,
     RiPencilFill,
     RiTeamFill,
+    RiAdminFill,
     MdDelete,
     FaBold,
     FaItalic,

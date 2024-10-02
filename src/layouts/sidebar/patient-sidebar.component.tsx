@@ -13,7 +13,7 @@ const PatientSidebar = () => {
         <ProSidebar
             collapsed={collapsed}
             collapsedWidth={'70px'}
-            className="bg-white shadow-xl min-h-[calc(100vh-104px)]"
+            className="bg-white shadow-xl min-h-[calc(100vh-104px)] select-none"
         >
             <SidebarHeader style={{ backgroundColor: 'white' }}>
                 <div className="py-1 px-5 flex justify-between items-center text-uppercase font-bold text-lg space-beetween">

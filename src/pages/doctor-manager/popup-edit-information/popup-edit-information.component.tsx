@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { IProps } from './popup-grant-permission.type';
+import { IProps } from './popup-edit-information.type';
 
-const PopupGrantPermission = ({
+const PopupEditInformation = ({
     isVisible,
     onClickCancel,
     onClickConfirm,
@@ -10,7 +10,7 @@ const PopupGrantPermission = ({
     cancelText,
     confirmText,
 }: IProps) => {
-    const theTitle = title ? title : 'Grant Permission';
+    const theTitle = title ? title : 'Edit Information';
     const theConfirmText = confirmText ? confirmText : 'Confirm';
     const theCancelText = cancelText ? cancelText : 'Cancel';
 
@@ -31,4 +31,4 @@ const PopupGrantPermission = ({
     );
 };
 
-export default PopupGrantPermission;
+export default PopupEditInformation;

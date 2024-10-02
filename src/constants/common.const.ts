@@ -1,6 +1,7 @@
 import { GENDER, ROLES } from '@/enums/Common';
 import { LoginInitialValues, SignUpInitialValues } from '../types/auth.type';
 
+export const EMPTY_GUID = '00000000-0000-0000-0000-000000000000';
 export const DEFAULT_DATE_FORMAT = 'DD/MM/YYYY';
 export const DEFAULT_MINUTES_SECONDS_FORMAT = 'mm:ss';
 export const REFRESH_TOKEN_KEY = '';

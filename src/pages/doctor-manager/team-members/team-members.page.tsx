@@ -1,7 +1,20 @@
 import { useEffect, useState } from 'react';
 import useObservable from '@/hooks/use-observable.hook';
 import { setTitle } from '@/utils/document';
-import { Checkbox, FormHelperText, InputAdornment, MenuItem, Select, TextField } from '@mui/material';
+import {
+    Box,
+    Checkbox,
+    Chip,
+    FormControl,
+    FormHelperText,
+    InputAdornment,
+    InputLabel,
+    MenuItem,
+    OutlinedInput,
+    Select,
+    TextField,
+    useTheme,
+} from '@mui/material';
 import { Images } from '@/assets/images';
 import BaseTeamCard from '../team-card.component';
 import AccountService from '@/services/account.service';
@@ -16,10 +29,18 @@ import PopupGrantPermission from '../popup-grant-permisstion/popup-grant-permiss
 import { ROLE_NAMES } from '@/enums/Common';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from '@/enums/RoutePath';
+import PopupEditInformation from '../popup-edit-information/popup-edit-information.component';
+import { getStyles, MenuProps } from './team-members.const';
+import SpecialistService from '@/services/specialist.service';
+import { Specialists } from '@/types/specialist.type';
+import { EMPTY_GUID } from '@/constants/common.const';
 
 function TeamMembersPage() {
     const MAX_RECORE_PERPAGE = 9;
+    const theme = useTheme();
+    const navigate = useNavigate();
     const { subscribeOnce } = useObservable();
+    const { userData } = useAuth() as AuthContextType;
     const [initialized, setInitialized] = useState(true);
     const [doctors, setDoctors] = useState<any[]>([]);
     const [doctorDisplays, setDoctorDisplays] = useState<any[]>([]);
@@ -30,21 +51,21 @@ function TeamMembersPage() {
     const [totalPage, setTotalPage] = useState<number>(0);
     const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
     const [isVisiblePopupGrant, setIsVisiblePopupGrant] = useState<boolean>(false);
+    const [isVisiblePopupEdit, setIsVisiblePopupEdit] = useState<boolean>(false);
     const [deletedId, setDeletedId] = useState<string>();
     const [grantedDoctor, setGrantedDoctor] = useState<any>();
+    const [editDoctor, setEditDoctor] = useState<any>();
     const [permissionCheckedList, setPermissionCheckedList] = useState<boolean[]>([false, false]);
-    const { userData } = useAuth() as AuthContextType;
-    const navigate = useNavigate();
+    const [specialist, setSpecialist] = useState<any[]>([]);
+    const [selectedSpecialist, setSelectedSpecialist] = useState<any[]>([]);
 
     useEffect(() => {
         setTitle('Team Members | CareBlock');
     }, []);
 
     useEffect(() => {
-        subscribeOnce(AccountService.getDoctorsOrg(Place.Exclusive, userData?.id), (res: Doctors[]) => {
-            setDoctorOptions(res);
-        });
-
+        getSpecialistData();
+        getDoctorOptions();
         getDoctorDatas();
     }, []);
 
@@ -70,6 +91,18 @@ function TeamMembersPage() {
             }
         } else setInitialized(false);
     }, [searchValue]);
+
+    const getSpecialistData = () => {
+        subscribeOnce(SpecialistService.getByUserId(userData?.id), (res: Specialists[]) => {
+            setSpecialist(res);
+        });
+    };
+
+    const getDoctorOptions = () => {
+        subscribeOnce(AccountService.getDoctorsOrg(Place.Exclusive, userData?.id), (res: Doctors[]) => {
+            setDoctorOptions(res);
+        });
+    };
 
     const getDoctorDatas = () => {
         subscribeOnce(AccountService.getDoctorsOrg(Place.Inclusive, userData?.id), (res: Doctors[]) => {
@@ -116,7 +149,7 @@ function TeamMembersPage() {
         setIsVisiblePopupConfirm(true);
     };
 
-    const handleClickItem = (doctor: any) => {
+    const handleClickGrant = (doctor: any) => {
         let temp = [false, false];
         if (doctor.roles.includes(ROLE_NAMES.DOCTOR)) temp[0] = true;
         if (doctor.roles.includes(ROLE_NAMES.MANAGER)) temp[1] = true;
@@ -126,12 +159,25 @@ function TeamMembersPage() {
         setIsVisiblePopupGrant(true);
     };
 
+    const handleClickEdit = (doctor: any) => {
+        const specialistData = doctor.specialist.filter((spec: string) => spec !== EMPTY_GUID);
+        let result = new Set();
+        specialistData.forEach((item: string) => result.add(item));
+        setSelectedSpecialist(Array.from(result));
+        setEditDoctor(doctor);
+        setIsVisiblePopupEdit(true);
+    };
+
     const handleClosePopupDelete = () => {
         setIsVisiblePopupConfirm(false);
     };
 
     const handleClosePopupGrant = () => {
         setIsVisiblePopupGrant(false);
+    };
+
+    const handleClosePopupEdit = () => {
+        setIsVisiblePopupEdit(false);
     };
 
     const handleConfirmDelete = () => {
@@ -171,9 +217,16 @@ function TeamMembersPage() {
         });
     };
 
-    const handleConfirmGrant = () => {
-        setIsVisiblePopupGrant(false);
+    const handleSelectSpecialist = (event: any) => {
+        const { target: value } = event;
+        setSelectedSpecialist(typeof value.value === 'string' ? value.value.split(',') : value.value);
+    };
 
+    const getSpecialistName = (id: string) => {
+        return specialist.filter((item: Specialists) => item.id === id)[0]?.name ?? '';
+    };
+
+    const handleConfirmGrant = () => {
         const permissionRequest = permissionCheckedList.map((item: boolean, index: number) => {
             if (index === 0 && item === true) return ROLE_NAMES.DOCTOR;
             else if (index === 1 && item === true) return ROLE_NAMES.MANAGER;
@@ -206,6 +259,27 @@ function TeamMembersPage() {
                 }
             }
         );
+    };
+
+    const handleConfirmEdit = () => {
+        subscribeOnce(SpecialistService.assignSpecialist(editDoctor.id, selectedSpecialist), (res: boolean) => {
+            if (res === true) {
+                setIsVisiblePopupEdit(false);
+                addToast({
+                    text: SystemMessage.EDIT_SPECIALIST,
+                    position: 'top-right',
+                    status: 'valid',
+                });
+                getDoctorDatas();
+            } else {
+                setIsVisiblePopupEdit(false);
+                addToast({
+                    text: SystemMessage.EDIT_SPECIALIST_FAILED,
+                    position: 'top-right',
+                    status: 'warn',
+                });
+            }
+        });
     };
 
     return (
@@ -256,7 +330,8 @@ function TeamMembersPage() {
                                 key={doctor.id}
                                 dataSource={doctor}
                                 onClickRemove={($event: any) => handleClickRemove(doctor.id, $event)}
-                                onClickItem={() => handleClickItem(doctor)}
+                                onClickGrant={() => handleClickGrant(doctor)}
+                                onClickEdit={() => handleClickEdit(doctor)}
                             />
                         ))
                     ) : (
@@ -288,6 +363,48 @@ function TeamMembersPage() {
                 </div>
             </div>
 
+            {/* Edit information */}
+            <PopupEditInformation
+                isVisible={isVisiblePopupEdit}
+                onClickCancel={handleClosePopupEdit}
+                onClickConfirm={handleConfirmEdit}
+            >
+                {
+                    <div className="flex flex-col items-start w-[400px] select-none">
+                        <FormControl sx={{ m: 1, width: 380 }}>
+                            <InputLabel id="multiple-specialist-label">Specialist</InputLabel>
+                            <Select
+                                multiple
+                                size="medium"
+                                className="w-full"
+                                labelId="multiple-specialist-label"
+                                value={selectedSpecialist}
+                                onChange={handleSelectSpecialist}
+                                input={<OutlinedInput id="select-multiple-specialist" label="Specialist" />}
+                                renderValue={(selected) => (
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                        {selected.map((data) => (
+                                            <Chip key={data} label={getSpecialistName(data)} />
+                                        ))}
+                                    </Box>
+                                )}
+                                MenuProps={MenuProps}
+                            >
+                                {specialist.map((item: Specialists) => (
+                                    <MenuItem
+                                        key={item.id}
+                                        value={item.id}
+                                        style={getStyles(item.name, selectedSpecialist, theme)}
+                                    >
+                                        {item.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                }
+            </PopupEditInformation>
+            {/* Grant permission */}
             <PopupGrantPermission
                 isVisible={isVisiblePopupGrant}
                 onClickCancel={handleClosePopupGrant}
@@ -316,6 +433,7 @@ function TeamMembersPage() {
                     </div>
                 }
             </PopupGrantPermission>
+            {/* Delete */}
             <PopupConfirmDelete
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}

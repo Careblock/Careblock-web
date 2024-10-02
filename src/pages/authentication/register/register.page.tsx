@@ -18,7 +18,7 @@ import {
 import { registerPatientSchema, registerDoctorSchema } from '@/validations/auth.validation';
 import { SignUpInitialValues } from '@/types/auth.type';
 import { dropDownGenders, dropDownRoles } from '@/constants/dropdown.const';
-import { INITIAL_USER_VALUES } from '@/constants/common.const';
+import { EMPTY_GUID, INITIAL_USER_VALUES } from '@/constants/common.const';
 import { SystemMessage } from '@/constants/message.const';
 import OrganizationService from '@/services/organization.service';
 import { addToast } from '@/components/base/toast/toast.service';
@@ -97,7 +97,7 @@ function Register() {
             }
         }
         subscribeOnce(AuthService.register({ ...values, stakeId: stakeId, avatar: selectedFile }), (res: any) => {
-            if (res === '00000000-0000-0000-0000-000000000000') {
+            if (res === EMPTY_GUID) {
                 addToast({ text: SystemMessage.ACCOUNT_EXISTED, position: 'top-right', status: 'warn' });
             } else {
                 addToast({ text: SystemMessage.REGISTER_SUCCESS, position: 'top-right', status: 'valid' });
