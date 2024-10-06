@@ -89,13 +89,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import UndoIcon from '@mui/icons-material/Undo';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { FcGoogle } from 'react-icons/fc';
+import { FcGoogle, FcInvite } from 'react-icons/fc';
 import { LuClock } from 'react-icons/lu';
 import { RxUpdate } from 'react-icons/rx';
 import { TbListDetails } from 'react-icons/tb';
 import { TfiWorld } from 'react-icons/tfi';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import { TiTick, TiVideo } from 'react-icons/ti';
+import { TiTick, TiVideo, TiUserAdd } from 'react-icons/ti';
 import { PiChatsBold, PiVideoFill } from 'react-icons/pi';
 import { BiSolidLogOut, BiSolidMedal } from 'react-icons/bi';
 import { BsSendFill, BsThreeDotsVertical } from 'react-icons/bs';
@@ -180,6 +180,7 @@ export const Images = {
     IoMdStarHalf,
     IoMdStar,
     TiVideo,
+    TiUserAdd,
     MdKeyboardAlt,
     TiTick,
     BiSolidMedal,
@@ -192,6 +193,7 @@ export const Images = {
     IoCartOutline,
     CiShoppingCart,
     FcGoogle,
+    FcInvite,
     FaGem,
     MdDashboard,
     RxUpdate,
