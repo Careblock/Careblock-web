@@ -31,12 +31,12 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
 
     useEffect(() => {
         setTitle('Second step | CareBlock');
-    }, []);
 
-    useEffect(() => {
         subscribeOnce(OrganizationService.getAllOrganization(), (res: any) => {
             setOrganizations(res.map((data: any) => ({ name: data.name, organizationId: data.id })));
         });
+
+        getExaminationPackageByType();
     }, []);
 
     const getExaminationPackageByType = () => {
@@ -91,10 +91,6 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
             getExaminationPackageByType();
         }
     }, [organization]);
-
-    useEffect(() => {
-        getExaminationPackageByType();
-    }, []);
 
     useEffect(() => {
         if (!initialized) {

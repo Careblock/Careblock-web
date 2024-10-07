@@ -25,6 +25,12 @@ function PatientInfo() {
 
     useEffect(() => {
         setTitle('Information | CareBlock');
+
+        subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
+            if (res) {
+                setUserInfo({ ...res, dateOfBirth: format(new Date(res?.dateOfBirth), 'yyyy-MM-dd') });
+            }
+        });
     }, []);
 
     const formik = useFormik({
@@ -34,14 +40,6 @@ function PatientInfo() {
             handleSubmit(values);
         },
     });
-
-    useEffect(() => {
-        subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
-            if (res) {
-                setUserInfo({ ...res, dateOfBirth: format(new Date(res?.dateOfBirth), 'yyyy-MM-dd') });
-            }
-        });
-    }, []);
 
     useEffect(() => {
         if (userInfo) {

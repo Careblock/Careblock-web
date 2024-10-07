@@ -58,9 +58,7 @@ function TeamMembersPage() {
 
     useEffect(() => {
         setTitle('Team Members | CareBlock');
-    }, []);
 
-    useEffect(() => {
         getSpecialistData();
         getDoctorDatas();
     }, []);

@@ -22,6 +22,12 @@ function OrganizationInfoPage() {
 
     useEffect(() => {
         setTitle('Organization | CareBlock');
+
+        subscribeOnce(OrganizationService.getByUserId(userData?.id), (res: Organizations) => {
+            if (res) {
+                setOrganizationInfo({ ...res });
+            }
+        });
     }, []);
 
     const formik = useFormik({
@@ -31,14 +37,6 @@ function OrganizationInfoPage() {
             handleSubmit(values);
         },
     });
-
-    useEffect(() => {
-        subscribeOnce(OrganizationService.getByUserId(userData?.id), (res: Organizations) => {
-            if (res) {
-                setOrganizationInfo({ ...res });
-            }
-        });
-    }, []);
 
     useEffect(() => {
         if (organizationInfo) {

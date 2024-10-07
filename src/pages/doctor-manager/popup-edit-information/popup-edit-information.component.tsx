@@ -1,5 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { IProps } from './popup-edit-information.type';
+import { getNotNullString } from '@/utils/string.helper';
 
 const PopupEditInformation = ({
     isVisible,
@@ -10,9 +11,9 @@ const PopupEditInformation = ({
     cancelText,
     confirmText,
 }: IProps) => {
-    const theTitle = title ? title : 'Edit Information';
-    const theConfirmText = confirmText ? confirmText : 'Confirm';
-    const theCancelText = cancelText ? cancelText : 'Cancel';
+    const theTitle = getNotNullString(title, 'Edit Information');
+    const theConfirmText = getNotNullString(confirmText, 'Confirm');
+    const theCancelText = getNotNullString(cancelText, 'Cancel');
 
     return (
         <Dialog

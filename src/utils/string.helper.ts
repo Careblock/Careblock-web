@@ -1,5 +1,9 @@
 import { isNullOrUndefined } from './common.helpers';
 
+export const getNotNullString = (value: string | undefined, defaultValue: string) => {
+    return value ? value : defaultValue;
+};
+
 const isString = (value: any): boolean => {
     return typeof value === 'string' || value instanceof String;
 };

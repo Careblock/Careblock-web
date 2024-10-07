@@ -9,7 +9,6 @@ import { Departments } from '@/types/department.type';
 import {
     Button,
     Dialog,
-    DialogActions,
     DialogContent,
     DialogTitle,
     InputAdornment,
@@ -56,9 +55,7 @@ function DepartmentManagement() {
 
     useEffect(() => {
         setTitle('Departments | CareBlock');
-    }, []);
 
-    useEffect(() => {
         getDatasource();
     }, []);
 

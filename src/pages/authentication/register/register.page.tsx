@@ -32,6 +32,7 @@ import avatarDefault from '@/assets/images/auth/avatarDefault.png';
 import 'react-toastify/dist/ReactToastify.css';
 import { setTitle } from '@/utils/document';
 import DepartmentService from '@/services/department.service';
+import { getNotNullString } from '@/utils/string.helper';
 
 function Register() {
     const navigate = useNavigate();
@@ -49,6 +50,10 @@ function Register() {
 
     useEffect(() => {
         setTitle('Register | CareBlock');
+
+        subscribeOnce(OrganizationService.getAllOrganization(), (res: any) => {
+            setOrganization(res.map((data: any) => ({ name: data.name, organizationId: data.id })));
+        });
     }, []);
 
     const formik = useFormik({
@@ -71,12 +76,6 @@ function Register() {
             setImageSrc(t);
         }
     };
-
-    useEffect(() => {
-        subscribeOnce(OrganizationService.getAllOrganization(), (res: any) => {
-            setOrganization(res.map((data: any) => ({ name: data.name, organizationId: data.id })));
-        });
-    }, []);
 
     const onChangeOrganization = (event: any) => {
         subscribeOnce(DepartmentService.getByOrganization(event.target.value), (res: any) => {
@@ -124,7 +123,7 @@ function Register() {
                         <div className="mb-15">
                             <div className="flex flex-col items-center">
                                 <img
-                                    src={imageSrc ? imageSrc : avatarDefault}
+                                    src={getNotNullString(imageSrc, avatarDefault)}
                                     alt="Selected Avatar"
                                     className="w-[80px] h-[80px] object-cover rounded-[175px] border"
                                 />

@@ -23,9 +23,7 @@ function InviteMembersPage() {
 
     useEffect(() => {
         setTitle('Invite Members | CareBlock');
-    }, []);
 
-    useEffect(() => {
         getDoctorDatas();
     }, []);
 

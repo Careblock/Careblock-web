@@ -112,7 +112,7 @@ const FirstStep = ({ examinationType, onClickAnExaminationType }: FirstStepProps
                                 {type.name}
                             </div>
                         </div>
-                    ))}{' '}
+                    ))}
                 </div>
             ) : (
                 <div className="mt-6 flex items-center flex-col justify-center w-full">

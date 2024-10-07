@@ -1,5 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { IProps } from './popup-confirm-delete.type';
+import { getNotNullString } from '@/utils/string.helper';
 
 const PopupConfirmDelete = ({
     isVisible,
@@ -10,10 +11,10 @@ const PopupConfirmDelete = ({
     cancelText,
     confirmText,
 }: IProps) => {
-    const theTitle = title ? title : 'Confirm delete';
-    const theContent = content ? content : 'Are you sure you want to delete this record?';
-    const theConfirmText = confirmText ? confirmText : 'Confirm';
-    const theCancelText = cancelText ? cancelText : 'Cancel';
+    const theTitle = getNotNullString(title, 'Confirm delete');
+    const theContent = getNotNullString(content, 'Are you sure you want to delete this record?');
+    const theConfirmText = getNotNullString(confirmText, 'Confirm');
+    const theCancelText = getNotNullString(cancelText, 'Cancel');
 
     return (
         <Dialog

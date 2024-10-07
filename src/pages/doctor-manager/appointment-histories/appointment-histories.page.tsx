@@ -33,9 +33,7 @@ const AppointmentHistories = () => {
 
     useEffect(() => {
         setTitle('Appointment history | CareBlock');
-    }, []);
 
-    useEffect(() => {
         if (userData) {
             getDataSource(userData.id);
 

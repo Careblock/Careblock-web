@@ -6,32 +6,16 @@ import { ExposeData } from '../second-step/second-step.type';
 import useObservable from '@/hooks/use-observable.hook';
 import { useAuth } from '@/contexts/auth.context';
 import Steps from '@/components/base/steps/steps.component';
-import { StepType } from '@/components/base/steps/steps.type';
 import { AuthContextType } from '@/types/auth.type';
 import { PATHS } from '@/enums/RoutePath';
 import { Box, Button, Dialog, DialogTitle, List, ListItem, Modal, Typography } from '@mui/material';
-import { style } from './appointment-page.const';
+import { steps, style } from './appointment-page.const';
 import { Login } from '@/pages/authentication/login/login.page';
 import { ROLE_NAMES } from '@/enums/Common';
 import { ExaminationTypes } from '@/types/examinationType.type';
 import { Organizations } from '@/types/organization.type';
 import AccountService from '@/services/account.service';
 import { Accounts } from '@/types/account.type';
-
-const steps: StepType[] = [
-    {
-        id: 0,
-        text: `1. Choose a medical service`,
-    },
-    {
-        id: 1,
-        text: `2. Choose an examination package`,
-    },
-    {
-        id: 2,
-        text: `3. Confirm your information`,
-    },
-];
 
 const AppointmentPage = () => {
     const finalStepRef = useRef<any>(null);

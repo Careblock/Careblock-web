@@ -6,6 +6,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { StepProps } from './steps.type';
+import { getNotNullString } from '@/utils/string.helper';
 
 export default function Steps({
     steps,
@@ -114,7 +115,7 @@ export default function Steps({
                                 </Button>
                             )}
                             <Button onClick={handleNext} disabled={!isNext}>
-                                {activeStep === steps.length - 1 ? (finalText ? finalText : 'Finished') : 'Next'}
+                                {activeStep === steps.length - 1 ? getNotNullString(finalText, 'Finished') : 'Next'}
                             </Button>
                         </Box>
                     </>

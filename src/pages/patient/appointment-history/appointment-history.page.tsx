@@ -19,9 +19,7 @@ const AppointmentHistory = () => {
 
     useEffect(() => {
         setTitle('Appointment history | CareBlock');
-    }, []);
 
-    useEffect(() => {
         if (userData) {
             subscribeOnce(AppointmentService.getAppointmentHistories(userData.id), (res: any) => {
                 setAppointmentData(res);

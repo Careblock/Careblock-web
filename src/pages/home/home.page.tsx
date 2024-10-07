@@ -18,9 +18,7 @@ const Homepage = () => {
 
     useEffect(() => {
         setTitle('Home | CareBlock');
-    }, []);
 
-    useEffect(() => {
         dispatch(clearAppointment() as any);
 
         subscribeOnce(ExaminationTypeService.getAll(), (res: ExaminationTypes[]) => {
