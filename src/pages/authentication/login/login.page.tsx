@@ -49,16 +49,15 @@ export const Login = ({ handleClose }: any) => {
                     addToast({ text: SystemMessage.LOGIN_SUCCESS, position: 'top-right', status: 'valid' });
                     subscribeOnce(AuthService.authenticate(stakeId[0]), (res: any) => {
                         const { jwtToken, ...rest } = res;
-                        const role = (jwtDecode<JwtPayload>(jwtToken) as any)?.role;
-                        const roles = role.split(',');
+                        const roles = (jwtDecode<JwtPayload>(jwtToken) as any)?.roles?.split(',');
                         startSession({ accessToken: res.jwtToken, user: { ...rest, roles } });
                         dispatch(storeUser(res) as any);
-                        if (roles.includes(ROLE_NAMES.DOCTOR)) {
-                            setTitle('Doctor schedule | CareBlock');
-                            navigate(PATHS.DOCTOR_SCHEDULE);
-                        } else if (roles.includes(ROLE_NAMES.PATIENT)) {
+                        if (roles.includes(ROLE_NAMES.PATIENT)) {
                             setTitle('Home | CareBlock');
                             navigate(PATHS.DEFAULT);
+                        } else if (roles.includes(ROLE_NAMES.DOCTOR)) {
+                            setTitle('Doctor schedule | CareBlock');
+                            navigate(PATHS.DOCTOR_SCHEDULE);
                         } else if (roles.includes(ROLE_NAMES.MANAGER)) {
                             setTitle('Doctor Manager | CareBlock');
                             navigate(PATHS.ORGANIZATION_INFOR);
@@ -86,8 +85,10 @@ export const Login = ({ handleClose }: any) => {
                                 <Button
                                     onClick={getAssets}
                                     disabled={loading}
+                                    size="large"
                                     style={{
-                                        marginTop: '20px',
+                                        marginTop: '50px',
+                                        fontSize: '18px',
                                     }}
                                 >
                                     CONFIRM

@@ -22,7 +22,7 @@ const PatientSidebar = () => {
                             className="text-2xl cursor-pointer text-blue-gray-500"
                             onClick={() => navigate('/patient')}
                         >
-                            CAREBLOCK
+                            MENU
                         </span>
                     )}
                     <span
@@ -51,7 +51,7 @@ const PatientSidebar = () => {
                 </Menu>
                 <Menu iconShape="circle" className="!p-0 hover:bg-gray">
                     <MenuItem icon={<Images.HistoryIcon />}>
-                        <span className="text-black text-xl">Appointment History</span>
+                        <span className="text-black text-xl">Appointments History</span>
                         <Link to={PATHS.PATIENT_APPOINTMENT_HISTORY} />
                     </MenuItem>
                 </Menu>

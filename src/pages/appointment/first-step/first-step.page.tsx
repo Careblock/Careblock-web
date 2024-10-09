@@ -65,6 +65,7 @@ const FirstStep = ({ examinationType, onClickAnExaminationType }: FirstStepProps
                     size="medium"
                     label="Search"
                     placeholder="Enter service's name"
+                    className="w-[280px]"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{

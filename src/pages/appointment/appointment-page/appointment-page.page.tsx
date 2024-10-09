@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import SecondStep from '../second-step/second-step.page';
 import FinalStep from '../final-step/final-step.page';
 import { ExposeData } from '../second-step/second-step.type';
-import useObservable from '@/hooks/use-observable.hook';
 import { useAuth } from '@/contexts/auth.context';
 import Steps from '@/components/base/steps/steps.component';
 import { AuthContextType } from '@/types/auth.type';
@@ -14,12 +13,9 @@ import { Login } from '@/pages/authentication/login/login.page';
 import { ROLE_NAMES } from '@/enums/Common';
 import { ExaminationTypes } from '@/types/examinationType.type';
 import { Organizations } from '@/types/organization.type';
-import AccountService from '@/services/account.service';
-import { Accounts } from '@/types/account.type';
 
 const AppointmentPage = () => {
     const finalStepRef = useRef<any>(null);
-    const { subscribeOnce } = useObservable();
     const [extraData, setExtraData] = useState<any>();
     const { userData } = useAuth() as AuthContextType;
     const [activeStep, setActiveStep] = useState(0);
@@ -34,11 +30,7 @@ const AppointmentPage = () => {
     });
 
     useEffect(() => {
-        subscribeOnce(AccountService.getById(userData?.id), (res: Accounts) => {
-            if (res) {
-                setExtraData(res);
-            }
-        });
+        setExtraData(userData);
     }, []);
 
     useEffect(() => {
@@ -61,7 +53,7 @@ const AppointmentPage = () => {
     const toggleIsShowConfirm = (type: boolean) => setIsShowConfirmPopup(type);
 
     const handleClickFinished = () => {
-        if (userData && userData.role == ROLE_NAMES.PATIENT) {
+        if (userData?.roles.includes(ROLE_NAMES.PATIENT)) {
             finalStepRef.current!.onSubmitForm();
         } else toggleIsShowConfirm(true);
     };

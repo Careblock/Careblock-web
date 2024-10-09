@@ -50,10 +50,6 @@ function Register() {
 
     useEffect(() => {
         setTitle('Register | CareBlock');
-
-        subscribeOnce(OrganizationService.getAllOrganization(), (res: any) => {
-            setOrganization(res.map((data: any) => ({ name: data.name, organizationId: data.id })));
-        });
     }, []);
 
     const formik = useFormik({
@@ -63,6 +59,12 @@ function Register() {
             handleSubmit(values);
         },
     });
+
+    const getOrganizationData = () => {
+        subscribeOnce(OrganizationService.getAllOrganization(), (res: any) => {
+            setOrganization(res.map((data: any) => ({ name: data.name, organizationId: data.id })));
+        });
+    };
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsChecked(event.target.checked);
@@ -78,6 +80,7 @@ function Register() {
     };
 
     const onChangeOrganization = (event: any) => {
+        formik.setFieldValue('departmentId', '');
         subscribeOnce(DepartmentService.getByOrganization(event.target.value), (res: any) => {
             setDepartment(res.map((data: any) => ({ name: data.name, departmentId: data.id })));
         });
@@ -108,17 +111,18 @@ function Register() {
     const handleChangeRole = (e: any) => {
         formik.handleChange(e);
         setRole(e.target.value);
+        getOrganizationData();
         setShowAdditionalInfo(e.target.value !== ROLES.PATIENT);
     };
 
     return (
-        <div className="flex min-h-screen bg-center bg-cover rounded-xl">
+        <div className="flex h-[calc(100vh-52px-52px-40px)] overflow-hidden bg-center bg-cover rounded-xl mt-[10px] mx-[-4px]">
             <div className="w-full flex items-center rounded-[10px] bg-blue-100 shadow-2xl">
-                <div className="flex flex-col justify-center items-center w-1/3 h-full">
+                <div className="flex flex-col justify-center items-center w-2/5 h-full select-none">
                     <img src={avatarRegister} alt="Register logo" className="w-full h-full object-contain rounded" />
                 </div>
-                <div className="pb-8 w-2/3 min-h-screen flex-1 text-center rounded-xl shadow-sm bg-white">
-                    <h2 className="my-4 text-[20px] font-bold text-center">Register</h2>
+                <div className="pb-8 w-2/3 flex-1 text-center rounded-xl shadow-sm bg-white overflow-auto h-[calc(100vh-52px-52px-20px)]">
+                    <h2 className="my-4 text-[26px] font-bold text-center select-none">Register</h2>
                     <form onSubmit={formik.handleSubmit} className="w-4/5 mx-auto">
                         <div className="mb-15">
                             <div className="flex flex-col items-center">
@@ -284,9 +288,9 @@ function Register() {
                                             ))}
                                         </Select>
                                         <FormHelperText>
-                                            <p className="text-[#d32f2f] mt-[2px] mx-[14px]">
+                                            <span className="text-[#d32f2f] mx-[14px]">
                                                 {formik.errors.organizationId}
-                                            </p>
+                                            </span>
                                         </FormHelperText>
                                     </div>
                                     <div className="flex flex-col w-1/2">
@@ -307,9 +311,9 @@ function Register() {
                                             ))}
                                         </Select>
                                         <FormHelperText>
-                                            <p className="text-[#d32f2f] mt-[2px] mx-[14px]">
+                                            <span className="text-[#d32f2f] mx-[14px]">
                                                 {formik.errors.departmentId}
-                                            </p>
+                                            </span>
                                         </FormHelperText>
                                     </div>
                                 </div>
@@ -375,7 +379,7 @@ function Register() {
                                 aria-controls="panel1a-content"
                                 expandIcon={<ExpandMoreIcon />}
                             >
-                                <p className="mb-1">
+                                <p>
                                     Before using our services, please read and agree to the following terms and
                                     conditions.
                                 </p>
@@ -422,11 +426,11 @@ function Register() {
                                         onChange={handleCheckboxChange}
                                     />
                                 }
-                                label={<p>I Agree</p>}
+                                label={<p className="select-none">I Agree</p>}
                                 htmlFor="policy"
                             />
                             <Link to={PATHS.DEFAULT}>
-                                <Button variant="contained">Back to home</Button>
+                                <Button variant="text">Back to home</Button>
                             </Link>
                         </div>
                         {isChecked ? (

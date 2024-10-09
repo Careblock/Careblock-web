@@ -32,7 +32,7 @@ const AppointmentHistories = () => {
     const PAGE_NUMBER = 6;
 
     useEffect(() => {
-        setTitle('Appointment history | CareBlock');
+        setTitle('Appointments history | CareBlock');
 
         if (userData) {
             getDataSource(userData.id);

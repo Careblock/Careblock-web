@@ -10,9 +10,7 @@ import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
-import useObservable from '@/hooks/use-observable.hook';
-import AccountService from '@/services/account.service';
-import { AuthContextType, User } from '@/types/auth.type';
+import { AuthContextType } from '@/types/auth.type';
 import { useAuth } from '@/contexts/auth.context';
 import { PATHS } from '@/enums/RoutePath';
 import { Images } from '@/assets/images';
@@ -20,17 +18,12 @@ import { ScrollToTop } from '@/components/base/scroll-to-top/scroll-top.componen
 
 const HeaderDoctor = () => {
     const navigate = useNavigate();
-    const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [userInfo, setUserInfo] = useState<any>();
 
     useEffect(() => {
-        subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
-            if (res) {
-                setUserInfo(res);
-            }
-        });
-    }, []);
+        setUserInfo({ ...userData });
+    }, [userData]);
 
     const fullName = `${userInfo?.firstname} ${userInfo?.lastname}`;
     const email = userInfo?.email;

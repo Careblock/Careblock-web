@@ -10,9 +10,7 @@ import AppBar from '@mui/material/AppBar';
 import Badge from '@mui/material/Badge';
 import Menu from '@mui/material/Menu';
 import Box from '@mui/material/Box';
-import useObservable from '@/hooks/use-observable.hook';
-import AccountService from '@/services/account.service';
-import { AuthContextType, User } from '@/types/auth.type';
+import { AuthContextType } from '@/types/auth.type';
 import { useAuth } from '@/contexts/auth.context';
 import { Images } from '@/assets/images';
 import { PATHS } from '@/enums/RoutePath';
@@ -20,17 +18,8 @@ import { ScrollToTop } from '@/components/base/scroll-to-top/scroll-top.componen
 
 const HeaderPatient = () => {
     const navigate = useNavigate();
-    const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [userInfo, setUserInfo] = useState<any>();
-
-    useEffect(() => {
-        subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
-            if (res) {
-                setUserInfo(res);
-            }
-        });
-    }, []);
 
     useEffect(() => {
         setUserInfo({ ...userData });
@@ -200,7 +189,7 @@ const HeaderPatient = () => {
                                 aria-label="show 4 new mails"
                                 color="inherit"
                                 className="mr-1"
-                                title="Go to manage view"
+                                title="Go to the management"
                                 onClick={() => handleMoveToPage(PATHS.PATIENT_PAGE)}
                             >
                                 <Images.ManageAccountsIcon sx={{ fontSize: 26 }} />

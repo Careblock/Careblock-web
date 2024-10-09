@@ -18,7 +18,7 @@ const AppointmentHistory = () => {
     const [formattedAppointments, setFormattedAppointments] = useState<any>([]);
 
     useEffect(() => {
-        setTitle('Appointment history | CareBlock');
+        setTitle('Appointments history | CareBlock');
 
         if (userData) {
             subscribeOnce(AppointmentService.getAppointmentHistories(userData.id), (res: any) => {
@@ -81,9 +81,9 @@ const AppointmentHistory = () => {
     };
 
     return (
-        <div className="h-full overflow-hidden bg-gray">
-            <div className="text-center text-[20px] font-bold mb-3">Appointment History</div>
-            <div className="flex justify-center items-center flex-wrap gap-4">
+        <div className="h-[calc(100vh-52px-52px-10px-20px)] overflow-hidden bg-gray">
+            <div className="text-center text-[20px] font-bold mb-3">Appointments History</div>
+            <div className="flex justify-center items-center flex-wrap gap-4 overflow-auto h-[calc(100%-52px)]">
                 {formattedAppointments.map((appointment: any) => (
                     <div className="w-[440px] bg-white" key={appointment.id}>
                         <Card>

@@ -80,7 +80,7 @@ export default function PrimarySearchAppBar() {
                 </p>
             </MenuItem>
             <MenuItem>
-                <a href="https://eternl.io/app/mainnet/welcome" className="py-2 px-4">
+                <a href="https://eternl.io/app/mainnet/welcome" target="_blank" rel="noreferrer" className="py-2 px-4">
                     REGISTER
                 </a>
             </MenuItem>
@@ -109,7 +109,7 @@ export default function PrimarySearchAppBar() {
                                 <Button variant="contained" color="orange" onClick={handleClickOpen}>
                                     Login
                                 </Button>
-                                <Link to="https://eternl.io/app/mainnet/welcome">
+                                <Link to="https://eternl.io/app/mainnet/welcome" target="_blank">
                                     <Button variant="contained" color="purple">
                                         Register
                                     </Button>

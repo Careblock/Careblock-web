@@ -22,7 +22,7 @@ const ManagerSidebar = () => {
                             className="text-2xl cursor-pointer text-blue-gray-500"
                             onClick={() => navigate('/patient')}
                         >
-                            CAREBLOCK
+                            MENU
                         </span>
                     )}
                     <span
