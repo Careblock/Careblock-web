@@ -10,20 +10,27 @@ import AppBar from '@mui/material/AppBar';
 import Badge from '@mui/material/Badge';
 import Menu from '@mui/material/Menu';
 import Box from '@mui/material/Box';
-import { AuthContextType } from '@/types/auth.type';
+import { AuthContextType, User } from '@/types/auth.type';
 import { useAuth } from '@/contexts/auth.context';
 import { Images } from '@/assets/images';
 import { PATHS } from '@/enums/RoutePath';
 import { ScrollToTop } from '@/components/base/scroll-to-top/scroll-top.component';
+import AccountService from '@/services/account.service';
+import useObservable from '@/hooks/use-observable.hook';
 
 const HeaderPatient = () => {
     const navigate = useNavigate();
+    const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [userInfo, setUserInfo] = useState<any>();
 
     useEffect(() => {
-        setUserInfo({ ...userData });
-    }, [userData]);
+        subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
+            if (res) {
+                setUserInfo(res);
+            }
+        });
+    }, []);
 
     const fullName = `${userInfo?.firstname ?? ''} ${userInfo?.lastname ?? ''}`;
     const email = userInfo?.email;
@@ -91,7 +98,7 @@ const HeaderPatient = () => {
                             <Typography className="text-xs">{email}</Typography>
                         </div>
                     </div>
-                    <div className="flex items-center hover:bg-gray" onClick={() => navigate('/patient/detail_info')}>
+                    <div className="flex items-center hover:bg-gray" onClick={() => navigate('/user/info')}>
                         <Images.FaUser size={18} className="ml-5" />
                         <Typography className="text-lg p-2 ml-8">My Account</Typography>
                     </div>
@@ -131,14 +138,6 @@ const HeaderPatient = () => {
                 <IconButton size="large" aria-label="show 4 new mails" color="inherit">
                     <Badge badgeContent={4} color="error">
                         <Images.MdOutlineNotifications size={26} />
-                    </Badge>
-                </IconButton>
-                <p>Messages</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
-                    <Badge badgeContent={17} color="error">
-                        <Images.PiChatsBold size={26} />
                     </Badge>
                 </IconButton>
                 <p>Notifications</p>
@@ -197,11 +196,6 @@ const HeaderPatient = () => {
                             <IconButton size="medium" aria-label="show 4 new mails" color="inherit" className="mr-1">
                                 <Badge badgeContent={4} color="error">
                                     <Images.MdOutlineNotifications size={26} />
-                                </Badge>
-                            </IconButton>
-                            <IconButton size="medium" aria-label="show 17 new notifications" color="inherit">
-                                <Badge badgeContent={17} color="error">
-                                    <Images.PiChatsBold size={26} />
                                 </Badge>
                             </IconButton>
                             <p className="pl-6 flex items-center select-none">{fullName}</p>

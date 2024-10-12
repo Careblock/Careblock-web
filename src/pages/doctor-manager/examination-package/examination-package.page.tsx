@@ -218,7 +218,7 @@ function ExaminationPackage() {
     };
 
     return (
-        <div className="mb-[30px]">
+        <div className="h-full">
             <div className="text-[24px]">Manage Examination Packages</div>
             <div className="text-[16px] mb-4">
                 Set up all examination packages that your organization conduct business from.
@@ -245,7 +245,7 @@ function ExaminationPackage() {
                 </Button>
             </div>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: 546 }}>
+                <TableContainer className="max-h-[calc(100vh-52px-52px-30px-24px-30px-72px-52px-26px)]">
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>

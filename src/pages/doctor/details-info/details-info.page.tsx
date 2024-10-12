@@ -11,14 +11,6 @@ import { GENDER } from '@/enums/Common';
 const DetailsInfo = ({ dataSource, clickedSave }: DetailsInfoType) => {
     const [isShowCreatePopup, setIsShowCreatePopup] = useState(false);
 
-    const handleClickPatientRecords = () => {
-        console.log('Clicked patient records');
-    };
-
-    const handleClickGenerateQR = () => {
-        console.log('Clicked Generate QR');
-    };
-
     const handleClickAccoummodate = () => {
         setIsShowCreatePopup(true);
     };
@@ -41,55 +33,38 @@ const DetailsInfo = ({ dataSource, clickedSave }: DetailsInfoType) => {
                         </div>
                         <div className="top-left__name ml-3 text-[18px]">{getFullName(dataSource)}</div>
                     </div>
-                    <div className="details-top__right flex flex-col space-y-2">
-                        <Button
-                            variant="outlined"
-                            startIcon={<Images.MdKeyboardArrowLeft className="text-[20px]" />}
-                            onClick={handleClickPatientRecords}
-                        >
-                            Patient Records
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            color="success"
-                            startIcon={<Images.QrCode2Icon className="text-[20px]" />}
-                            onClick={handleClickGenerateQR}
-                        >
-                            Generate QR
-                        </Button>
-                    </div>
-                </div>
-                <div className="details__center w-[400px] columns-3 space-y-2 my-2 select-none">
-                    {dataSource.gender && (
-                        <div className="gender flex items-center">
-                            {dataSource.gender === GENDER.FEMALE ? (
-                                <Images.FemaleIcon className="text-[18px] text-[#4e4e4e]" />
-                            ) : (
-                                <Images.MaleIcon className="text-[18px] text-[#4e4e4e]" />
-                            )}
-                            <div className="text text-[#4e4e4e] ml-1">{getGenderName(dataSource.gender)}</div>
-                        </div>
-                    )}
-                    {dataSource.dateOfBirth && (
-                        <div className="date-of-birth flex items-center">
-                            <Images.CakeIcon className="text-[18px] text-[#4e4e4e]" />
-                            <div className="text text-[#4e4e4e] ml-1">
-                                {formatStandardDate(new Date(dataSource.dateOfBirth))}
+                    <div className="details-top__right columns-3 space-y-2 w-[400px] select-none">
+                        {dataSource.gender && (
+                            <div className="gender flex items-center">
+                                {dataSource.gender === GENDER.FEMALE ? (
+                                    <Images.FemaleIcon className="text-[18px] text-[#4e4e4e]" />
+                                ) : (
+                                    <Images.MaleIcon className="text-[18px] text-[#4e4e4e]" />
+                                )}
+                                <div className="text text-[#4e4e4e] ml-1">{getGenderName(dataSource.gender)}</div>
                             </div>
-                        </div>
-                    )}
-                    {dataSource.phone && (
-                        <div className="phone flex items-center">
-                            <Images.PhoneAndroidIcon className="text-[18px] text-[#4e4e4e]" />
-                            <div className="text text-[#4e4e4e] ml-1">{dataSource.phone}</div>
-                        </div>
-                    )}
-                    {dataSource.email && (
-                        <div className="email flex items-center">
-                            <Images.MailOutlineIcon className="text-[18px] text-[#4e4e4e]" />
-                            <div className="text text-[#4e4e4e] ml-1">{dataSource.email}</div>
-                        </div>
-                    )}
+                        )}
+                        {dataSource.dateOfBirth && (
+                            <div className="date-of-birth flex items-center">
+                                <Images.CakeIcon className="text-[18px] text-[#4e4e4e]" />
+                                <div className="text text-[#4e4e4e] ml-1">
+                                    {formatStandardDate(new Date(dataSource.dateOfBirth))}
+                                </div>
+                            </div>
+                        )}
+                        {dataSource.phone && (
+                            <div className="phone flex items-center">
+                                <Images.PhoneAndroidIcon className="text-[18px] text-[#4e4e4e]" />
+                                <div className="text text-[#4e4e4e] ml-1">{dataSource.phone}</div>
+                            </div>
+                        )}
+                        {dataSource.email && (
+                            <div className="email flex items-center">
+                                <Images.MailOutlineIcon className="text-[18px] text-[#4e4e4e]" />
+                                <div className="text text-[#4e4e4e] ml-1">{dataSource.email}</div>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <div className="details__content shadow-3 w-full px-4 mt-4 py-8">
                     <div className="details-content__nodata flex items-center flex-col justify-center">

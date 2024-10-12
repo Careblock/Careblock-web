@@ -18,7 +18,7 @@ import { Images } from '@/assets/images';
 import BaseTeamCard from '../team-card.component';
 import AccountService from '@/services/account.service';
 import { Doctors } from '@/types/doctor.type';
-import { AuthContextType } from '@/types/auth.type';
+import { AuthContextType, User } from '@/types/auth.type';
 import { useAuth } from '@/contexts/auth.context';
 import { Place } from '@/enums/Place';
 import { addToast } from '@/components/base/toast/toast.service';
@@ -54,6 +54,7 @@ function TeamMembersPage() {
     const [editDoctor, setEditDoctor] = useState<any>();
     const [permissionCheckedList, setPermissionCheckedList] = useState<boolean[]>([false, false]);
     const [specialist, setSpecialist] = useState<any[]>([]);
+    const { setUser } = useAuth() as AuthContextType;
     const [selectedSpecialist, setSelectedSpecialist] = useState<any[]>([]);
 
     useEffect(() => {
@@ -210,39 +211,40 @@ function TeamMembersPage() {
         return specialist.filter((item: Specialists) => item.id === id)[0]?.name ?? '';
     };
 
+    const handleGrantPermission = (permissionRequest: string[]) => {
+        subscribeOnce(AccountService.grantPermission(grantedDoctor.id, permissionRequest), (res: boolean) => {
+            if (res === true) {
+                setIsVisiblePopupGrant(false);
+                addToast({
+                    text: SystemMessage.GRANT_SUCCESS,
+                    position: 'top-right',
+                    status: 'valid',
+                });
+                getDoctorDatas();
+
+                if (grantedDoctor.id === userData!.id) {
+                    navigate({
+                        pathname: PATHS.LOGOUT,
+                    });
+                }
+            } else {
+                setIsVisiblePopupGrant(false);
+                addToast({
+                    text: SystemMessage.GRANT_FAILED,
+                    position: 'top-right',
+                    status: 'warn',
+                });
+            }
+        });
+    };
+
     const handleConfirmGrant = () => {
         const permissionRequest = permissionCheckedList.map((item: boolean, index: number) => {
             if (index === 0 && item === true) return ROLE_NAMES.DOCTOR;
             else if (index === 1 && item === true) return ROLE_NAMES.MANAGER;
         });
 
-        subscribeOnce(
-            AccountService.grantPermission(grantedDoctor.id, permissionRequest as string[]),
-            (res: boolean) => {
-                if (res === true) {
-                    setIsVisiblePopupGrant(false);
-                    addToast({
-                        text: SystemMessage.GRANT_SUCCESS,
-                        position: 'top-right',
-                        status: 'valid',
-                    });
-                    getDoctorDatas();
-
-                    if (grantedDoctor.id === userData!.id && permissionCheckedList[1] === false) {
-                        navigate({
-                            pathname: PATHS.LOGOUT,
-                        });
-                    }
-                } else {
-                    setIsVisiblePopupGrant(false);
-                    addToast({
-                        text: SystemMessage.GRANT_FAILED,
-                        position: 'top-right',
-                        status: 'warn',
-                    });
-                }
-            }
-        );
+        handleGrantPermission(permissionRequest as string[]);
     };
 
     const handleConfirmEdit = () => {

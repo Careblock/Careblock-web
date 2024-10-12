@@ -10,23 +10,35 @@ import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
-import { AuthContextType } from '@/types/auth.type';
+import { AuthContextType, User } from '@/types/auth.type';
 import { useAuth } from '@/contexts/auth.context';
 import { PATHS } from '@/enums/RoutePath';
 import { Images } from '@/assets/images';
 import { ScrollToTop } from '@/components/base/scroll-to-top/scroll-top.component';
+import AccountService from '@/services/account.service';
+import useObservable from '@/hooks/use-observable.hook';
+import { ROLE_NAMES } from '@/enums/Common';
 
 const HeaderDoctor = () => {
     const navigate = useNavigate();
+    const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [userInfo, setUserInfo] = useState<any>();
 
     useEffect(() => {
-        setUserInfo({ ...userData });
-    }, [userData]);
+        getUserInfor();
+    }, []);
 
     const fullName = `${userInfo?.firstname} ${userInfo?.lastname}`;
     const email = userInfo?.email;
+
+    const getUserInfor = () => {
+        subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
+            if (res) {
+                setUserInfo(res);
+            }
+        });
+    };
 
     const handleMoveToPage = (pathname: string) => {
         navigate({
@@ -97,7 +109,7 @@ const HeaderDoctor = () => {
                             <Typography className="text-xl !font-bold">{email}</Typography>
                         </div>
                     </div>
-                    <div className="flex items-center  hover:bg-gray" onClick={() => navigate('/patient/detail_info')}>
+                    <div className="flex items-center  hover:bg-gray" onClick={() => navigate('/user/info')}>
                         <Images.FaUser size={18} className="ml-5" />
                         <Typography className="text-lg p-3 ml-8">My Account</Typography>
                     </div>
@@ -137,14 +149,6 @@ const HeaderDoctor = () => {
                 <IconButton size="large" aria-label="show 4 new mails" color="inherit">
                     <Badge badgeContent={4} color="error">
                         <Images.MdOutlineNotifications size={26} />
-                    </Badge>
-                </IconButton>
-                <p>Messages</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
-                    <Badge badgeContent={17} color="error">
-                        <Images.PiChatsBold size={26} />
                     </Badge>
                 </IconButton>
                 <p>Notifications</p>
@@ -196,30 +200,29 @@ const HeaderDoctor = () => {
                         </div>
                         <Box sx={{ flexGrow: 1 }} />
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }} className="gap-x-2">
-                            <IconButton
-                                size="medium"
-                                color="inherit"
-                                title="Doctor"
-                                onClick={() => handleMoveToPage(PATHS.DOCTOR_SCHEDULE)}
-                            >
-                                <Images.CalendarMonthIcon className="text-[26px]" />
-                            </IconButton>
-                            <IconButton
-                                size="medium"
-                                color="inherit"
-                                title="Manager"
-                                onClick={() => handleMoveToPage(PATHS.ORGANIZATION_INFOR)}
-                            >
-                                <Images.IoSettings className="text-[26px]" />
-                            </IconButton>
+                            {userData?.roles?.includes(ROLE_NAMES.DOCTOR) && (
+                                <IconButton
+                                    size="medium"
+                                    color="inherit"
+                                    title="Doctor"
+                                    onClick={() => handleMoveToPage(PATHS.DOCTOR_SCHEDULE)}
+                                >
+                                    <Images.CalendarMonthIcon className="text-[26px]" />
+                                </IconButton>
+                            )}
+                            {userData?.roles?.includes(ROLE_NAMES.MANAGER) && (
+                                <IconButton
+                                    size="medium"
+                                    color="inherit"
+                                    title="Manager"
+                                    onClick={() => handleMoveToPage(PATHS.ORGANIZATION_INFOR)}
+                                >
+                                    <Images.IoSettings className="text-[26px]" />
+                                </IconButton>
+                            )}
                             <IconButton size="medium" aria-label="show 4 new mails" color="inherit">
                                 <Badge badgeContent={4} color="error">
                                     <Images.MdOutlineNotifications size={26} />
-                                </Badge>
-                            </IconButton>
-                            <IconButton size="medium" aria-label="show 17 new notifications" color="inherit">
-                                <Badge badgeContent={17} color="error">
-                                    <Images.PiChatsBold size={26} />
                                 </Badge>
                             </IconButton>
                             <IconButton

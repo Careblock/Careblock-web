@@ -171,7 +171,7 @@ function DepartmentManagement() {
     };
 
     return (
-        <div className="mb-[30px]">
+        <div className="h-full">
             <div className="text-[24px]">Manage Departments</div>
             <div className="text-[16px] mb-4">Set up all departments that your organization conduct business from.</div>
             <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
@@ -196,7 +196,7 @@ function DepartmentManagement() {
                 </Button>
             </div>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: 546 }}>
+                <TableContainer className="max-h-[calc(100vh-52px-52px-30px-24px-30px-72px-52px-26px)]">
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>

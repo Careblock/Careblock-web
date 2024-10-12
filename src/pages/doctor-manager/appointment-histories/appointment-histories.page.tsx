@@ -218,11 +218,11 @@ const AppointmentHistories = () => {
                         </LocalizationProvider>
                     </div>
                     <div
-                        className="flex items-center justify-center ml-[20px] size-[36px] border border-[black] rounded-md p-[6px] cursor-pointer hover:bg-[#f1f1f1]"
+                        className="flex items-center mt-auto justify-center ml-[20px] size-[54px] border border-[#a8a8a8] rounded-md p-[6px] cursor-pointer hover:bg-[#d5d5d5]"
                         title="Reset filter data"
                         onClick={handleClickResetFilter}
                     >
-                        <Images.GrPowerReset className="!w-full !h-full" />
+                        <Images.GrPowerReset className="!w-full !h-full text-[#a8a8a8]" />
                     </div>
                 </div>
                 <div className="flex items-center gap-x-[8px] select-none">

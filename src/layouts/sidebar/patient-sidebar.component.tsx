@@ -44,12 +44,6 @@ const PatientSidebar = () => {
                     </MenuItem>
                 </Menu>
                 <Menu iconShape="circle" className="!p-0 hover:bg-gray">
-                    <MenuItem icon={<Images.BookOnlineIcon />}>
-                        <span className="text-black text-xl">Make a reservation</span>
-                        <Link to={PATHS.DEFAULT} />
-                    </MenuItem>
-                </Menu>
-                <Menu iconShape="circle" className="!p-0 hover:bg-gray">
                     <MenuItem icon={<Images.HistoryIcon />}>
                         <span className="text-black text-xl">Appointments History</span>
                         <Link to={PATHS.PATIENT_APPOINTMENT_HISTORY} />

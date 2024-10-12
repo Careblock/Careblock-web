@@ -5,7 +5,7 @@ import FinalStep from '../final-step/final-step.page';
 import { ExposeData } from '../second-step/second-step.type';
 import { useAuth } from '@/contexts/auth.context';
 import Steps from '@/components/base/steps/steps.component';
-import { AuthContextType } from '@/types/auth.type';
+import { AuthContextType, User } from '@/types/auth.type';
 import { PATHS } from '@/enums/RoutePath';
 import { Box, Button, Dialog, DialogTitle, List, ListItem, Modal, Typography } from '@mui/material';
 import { steps, style } from './appointment-page.const';
@@ -13,6 +13,8 @@ import { Login } from '@/pages/authentication/login/login.page';
 import { ROLE_NAMES } from '@/enums/Common';
 import { ExaminationTypes } from '@/types/examinationType.type';
 import { Organizations } from '@/types/organization.type';
+import useObservable from '@/hooks/use-observable.hook';
+import AccountService from '@/services/account.service';
 
 const AppointmentPage = () => {
     const finalStepRef = useRef<any>(null);
@@ -23,6 +25,7 @@ const AppointmentPage = () => {
     const [examinationType, setExaminationType] = useState<ExaminationTypes | undefined>();
     const [isShowConfirmPopup, setIsShowConfirmPopup] = useState(false);
     const [isShowLoginPopup, setIsShowLoginPopup] = useState(false);
+    const { subscribeOnce } = useObservable();
     const [scheduleData, setScheduleData] = useState<ExposeData>({
         examinationPackage: undefined,
         date: null,
@@ -30,7 +33,11 @@ const AppointmentPage = () => {
     });
 
     useEffect(() => {
-        setExtraData(userData);
+        subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
+            if (res) {
+                setExtraData(res);
+            }
+        });
     }, []);
 
     useEffect(() => {

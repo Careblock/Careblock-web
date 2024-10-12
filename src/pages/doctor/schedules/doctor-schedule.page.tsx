@@ -145,12 +145,12 @@ const DoctorSchedulePage = () => {
     };
 
     return (
-        <div className="doctor-schedule mb-[30px]">
+        <div className="doctor-schedule h-[calc(100vh-52px-52px-30px-10px)] overflow-hidden">
             <div className="text-[24px]">Queues</div>
             <div className="text-[16px] mb-4">Manage which queues you will assign to your patients</div>
             <div className="uppercase bg-[#eee] mb-2 rounded px-2 py-4">Front Desk</div>
-            <div className="flex w-full justify-between">
-                <div className="w-[400px] h-fit border border-solid rounded-lg border-[#ddd] mr-5">
+            <div className="flex w-full justify-between h-[calc(100%-24px-30px-50px-30px)]">
+                <div className="w-[400px] h-fit border border-solid rounded-lg border-[#ddd] mr-5 max-h-[610px] overflow-auto">
                     <TabContext value={value}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <TabList onChange={handleChange} aria-label="lab API tabs example">
@@ -185,7 +185,7 @@ const DoctorSchedulePage = () => {
                     ) : (
                         <div className="empty-schedule overflow-hidden">
                             <img
-                                className="w-full object-cover grayscale max-h-[calc(100vh-200px)]"
+                                className="w-full object-cover grayscale max-h-[calc(100vh-52px-52px-30px-24px-30px-56px-20px)]"
                                 src={Images.PatientWaiting}
                                 alt=""
                             />

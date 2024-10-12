@@ -1,6 +1,6 @@
 import AppointmentHistory from '@/pages/patient/appointment-history/appointment-history.page';
 import AppointmentPage from '@/pages/appointment/appointment-page/appointment-page.page';
-import PatientInfo from '@/pages/patient/patient-info/patient-information.page';
+import UserInfo from '@/pages/user-info/user-information.page';
 import DoctorSchedulePage from '@/pages/doctor/schedules/doctor-schedule.page';
 import Register from '@/pages/authentication/register/register.page';
 import HomePage from '../pages/home/home.page';
@@ -27,6 +27,7 @@ export const routesForPublic = [
     { path: PATHS.HOME, element: <HomePage /> },
     { path: PATHS.APPOINTMENT, element: <AppointmentPage /> },
     { path: PATHS.LOGOUT, element: <Logout /> },
+    { path: PATHS.USER_INFO, element: <UserInfo /> },
 ];
 
 export const routesForDoctor = [
@@ -44,7 +45,6 @@ export const routesForPatient = [
         children: [
             { path: PATHS.PATIENT_PAGE, element: <PatientPage /> },
             { path: PATHS.PATIENT_APPOINTMENT_HISTORY, element: <AppointmentHistory /> },
-            { path: PATHS.PATIENT_INFO, element: <PatientInfo /> },
         ],
     },
 ];

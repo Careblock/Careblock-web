@@ -59,6 +59,7 @@ import {
     IoMdStar,
     IoMdStarHalf,
     IoMdStarOutline,
+    IoMdPricetags,
 } from 'react-icons/io';
 import Logo from '@/assets/images/common/logo.jpg';
 import PageNotFound from '@/assets/images/common/notfound.png';
@@ -121,6 +122,7 @@ import {
     FaXTwitter,
     FaBriefcaseMedical,
     FaClipboardUser,
+    FaLocationDot,
 } from 'react-icons/fa6';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 
@@ -172,6 +174,7 @@ export const Images = {
     FaXTwitter,
     FaBriefcaseMedical,
     FaClipboardUser,
+    FaLocationDot,
     AiOutlineSearch,
     TfiWorld,
     MdOutlineShoppingCart,
@@ -187,6 +190,7 @@ export const Images = {
     IoPeople,
     PiVideoFill,
     IoMdStarOutline,
+    IoMdPricetags,
     FaAngleLeft,
     CiHeart,
     IoIosNotificationsOutline,

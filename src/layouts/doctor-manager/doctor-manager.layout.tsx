@@ -1,12 +1,12 @@
 import { Outlet } from 'react-router-dom';
-import HeaderDoctorManager from '../header/header-doctor-manager.layout';
 import Footer from '../footer/footer.layout';
 import ManagerSidebar from '../sidebar/manager-sidebar.component';
+import HeaderDoctor from '../header/header-doctor.layout';
 
 function DoctorManagerLayout() {
     return (
         <main className="min-h-screen flex flex-col h-fit">
-            <HeaderDoctorManager />
+            <HeaderDoctor />
             <div className="flex flex-1 w-full overflow-hidden">
                 <div>
                     <ManagerSidebar />
