@@ -50,5 +50,6 @@ module.exports = {
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
         'react/prop-types': 'off',
         'no-case-declarations': 'off',
+        '@typescript-eslint/prefer-optional-chain': 'off',
     },
 };

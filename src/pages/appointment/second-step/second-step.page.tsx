@@ -31,9 +31,7 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
 
     useEffect(() => {
         setTitle('Second step | CareBlock');
-    }, []);
 
-    useEffect(() => {
         subscribeOnce(OrganizationService.getAllOrganization(), (res: any) => {
             setOrganizations(res.map((data: any) => ({ name: data.name, organizationId: data.id })));
         });
@@ -91,10 +89,6 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
             getExaminationPackageByType();
         }
     }, [organization]);
-
-    useEffect(() => {
-        getExaminationPackageByType();
-    }, []);
 
     useEffect(() => {
         if (!initialized) {
@@ -156,6 +150,7 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                     variant="outlined"
                     label="Search"
                     helperText="Enter examination package's name"
+                    className="w-[280px]"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -166,7 +161,7 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                         ),
                     }}
                 />
-                <div className="flex flex-col ml-[20px] w-[260px]">
+                <div className="flex flex-col ml-[20px] w-[280px]">
                     <Select
                         className="w-full"
                         size="medium"
@@ -256,15 +251,19 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                                     </div>
                                 </div>
                                 <div className="wrapper-right__location mt-2 pt-2 border-t border-solid border-[#ddd]">
-                                    <div className="right-location__heading text-[16px] uppercase mb-2">
-                                        Medical examination address
+                                    <div className="right-location__heading flex items-center text-[16px] uppercase mb-2">
+                                        <Images.FaLocationDot className="text-[20px]" />
+                                        <p className="text-[16px] ml-[6px] mt-[1px] uppercase">
+                                            Medical examination address
+                                        </p>
                                     </div>
                                     <div className="right-location__text text-[16px]">
                                         {examPackage?.organizationLocation}
                                     </div>
                                 </div>
-                                <div className="wrapper-right__price mt-2 pt-2 border-t border-solid border-[#ddd] flex items-baseline">
-                                    <div className="right-price-text mr-[6px] uppercase text-[16px]">{`Price: $${examPackage.price}`}</div>
+                                <div className="wrapper-right__price mt-2 pt-2 border-t border-solid border-[#ddd] flex items-center">
+                                    <Images.IoMdPricetags className="text-[20px]" />
+                                    <div className="ml-[6px] mt-[1px] right-price-text mr-[6px] uppercase text-[16px]">{`Price: $${examPackage.price}`}</div>
                                 </div>
                             </div>
                         </div>

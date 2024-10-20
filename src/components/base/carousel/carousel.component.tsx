@@ -3,6 +3,7 @@ import { CarouselProps } from './carousel.type';
 import CarouselItem from './carousel-item';
 import { Images } from '@/assets/images';
 import { Button } from '@mui/material';
+import { getNotNullString } from '@/utils/string.helper';
 
 const DISPLAY_NUMBER = 5;
 
@@ -43,7 +44,7 @@ const Carousel = ({ title, buttonText, dataSource, onClickSeeMore, onClickItem }
             <div className="base-carousel__heading flex items-center justify-between mb-[10px]">
                 <div className="carousel-heading__left text-[18px] font-bold">{title}</div>
                 <Button variant="contained" onClick={() => onClickSeeMore()}>
-                    {buttonText ? buttonText : 'See More'}
+                    {getNotNullString(buttonText, 'See More')}
                 </Button>
             </div>
             <div className="base-carousel__slider flex items-center justify-around">
@@ -65,7 +66,7 @@ const Carousel = ({ title, buttonText, dataSource, onClickSeeMore, onClickItem }
                         className="carousel-indicator__next w-[44px] h-[44px] rounded-full border border-solid border-[#ccc] cursor-pointer flex items-center justify-center absolute top-0 -right-5 bg-white"
                         onClick={() => handleClickIndicate()}
                     >
-                        <Images.ArrowForwardIosIcon />{' '}
+                        <Images.ArrowForwardIosIcon />
                     </div>
                 )}
             </div>

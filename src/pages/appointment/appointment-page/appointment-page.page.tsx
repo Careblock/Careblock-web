@@ -3,39 +3,21 @@ import { useEffect, useRef, useState } from 'react';
 import SecondStep from '../second-step/second-step.page';
 import FinalStep from '../final-step/final-step.page';
 import { ExposeData } from '../second-step/second-step.type';
-import useObservable from '@/hooks/use-observable.hook';
 import { useAuth } from '@/contexts/auth.context';
 import Steps from '@/components/base/steps/steps.component';
-import { StepType } from '@/components/base/steps/steps.type';
-import { AuthContextType } from '@/types/auth.type';
+import { AuthContextType, User } from '@/types/auth.type';
 import { PATHS } from '@/enums/RoutePath';
 import { Box, Button, Dialog, DialogTitle, List, ListItem, Modal, Typography } from '@mui/material';
-import { style } from './appointment-page.const';
+import { steps, style } from './appointment-page.const';
 import { Login } from '@/pages/authentication/login/login.page';
 import { ROLE_NAMES } from '@/enums/Common';
 import { ExaminationTypes } from '@/types/examinationType.type';
 import { Organizations } from '@/types/organization.type';
+import useObservable from '@/hooks/use-observable.hook';
 import AccountService from '@/services/account.service';
-import { Accounts } from '@/types/account.type';
-
-const steps: StepType[] = [
-    {
-        id: 0,
-        text: `1. Choose a medical service`,
-    },
-    {
-        id: 1,
-        text: `2. Choose an examination package`,
-    },
-    {
-        id: 2,
-        text: `3. Confirm your information`,
-    },
-];
 
 const AppointmentPage = () => {
     const finalStepRef = useRef<any>(null);
-    const { subscribeOnce } = useObservable();
     const [extraData, setExtraData] = useState<any>();
     const { userData } = useAuth() as AuthContextType;
     const [activeStep, setActiveStep] = useState(0);
@@ -43,6 +25,7 @@ const AppointmentPage = () => {
     const [examinationType, setExaminationType] = useState<ExaminationTypes | undefined>();
     const [isShowConfirmPopup, setIsShowConfirmPopup] = useState(false);
     const [isShowLoginPopup, setIsShowLoginPopup] = useState(false);
+    const { subscribeOnce } = useObservable();
     const [scheduleData, setScheduleData] = useState<ExposeData>({
         examinationPackage: undefined,
         date: null,
@@ -50,7 +33,7 @@ const AppointmentPage = () => {
     });
 
     useEffect(() => {
-        subscribeOnce(AccountService.getById(userData?.id), (res: Accounts) => {
+        subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
             if (res) {
                 setExtraData(res);
             }
@@ -77,7 +60,7 @@ const AppointmentPage = () => {
     const toggleIsShowConfirm = (type: boolean) => setIsShowConfirmPopup(type);
 
     const handleClickFinished = () => {
-        if (userData && userData.role == ROLE_NAMES.PATIENT) {
+        if (userData?.roles.includes(ROLE_NAMES.PATIENT)) {
             finalStepRef.current!.onSubmitForm();
         } else toggleIsShowConfirm(true);
     };

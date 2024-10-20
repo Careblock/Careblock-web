@@ -123,7 +123,7 @@ export default function CreateConsultation({
             {/* Content */}
             <DialogContent dividers>
                 <DynamicResult
-                    type={FormType.Detail}
+                    type={FormType.Create}
                     datasource={dataSource}
                     onClickConvertToImage={onClickConvertToImage}
                 />

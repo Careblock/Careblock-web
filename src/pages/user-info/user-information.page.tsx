@@ -16,7 +16,7 @@ import { setTitle } from '@/utils/document';
 import { AccountRequest } from '@/types/accountRequest.type';
 import DefaultAvatar from '@/assets/images/auth/avatarDefault.png';
 
-function PatientInfo() {
+function UserInfo() {
     const { subscribeOnce } = useObservable();
     const { userData, setUser } = useAuth() as AuthContextType;
     const [userInfo, setUserInfo] = useState<any>();
@@ -25,6 +25,12 @@ function PatientInfo() {
 
     useEffect(() => {
         setTitle('Information | CareBlock');
+
+        subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
+            if (res) {
+                setUserInfo({ ...res, dateOfBirth: format(new Date(res?.dateOfBirth), 'yyyy-MM-dd') });
+            }
+        });
     }, []);
 
     const formik = useFormik({
@@ -34,14 +40,6 @@ function PatientInfo() {
             handleSubmit(values);
         },
     });
-
-    useEffect(() => {
-        subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
-            if (res) {
-                setUserInfo({ ...res, dateOfBirth: format(new Date(res?.dateOfBirth), 'yyyy-MM-dd') });
-            }
-        });
-    }, []);
 
     useEffect(() => {
         if (userInfo) {
@@ -89,11 +87,11 @@ function PatientInfo() {
     return (
         <div className="w-[740px] mx-auto text-center rounded-gray-300">
             <form onSubmit={formik.handleSubmit} className="w-full py-[12px] px-[20px] bg-white">
-                <h2 className="text-[20px] font-bold text-center mb-4">PERSONAL PROFILE</h2>
+                <h2 className="text-[26px] font-bold text-center mb-4">PERSONAL PROFILE</h2>
                 <div>
                     <div className="flex flex-col items-center mb-2">
                         <img
-                            className="w-[80px] h-[80px] object-cover rounded-[175px] border shadow-xl"
+                            className="w-[120px] h-[120px] object-cover rounded-[175px] border shadow-xl"
                             alt="avatar"
                             src={imageSrc ? imageSrc : userInfo?.avatar ? userInfo.avatar : DefaultAvatar}
                         />
@@ -243,4 +241,4 @@ function PatientInfo() {
     );
 }
 
-export default PatientInfo;
+export default UserInfo;

@@ -22,6 +22,12 @@ function OrganizationInfoPage() {
 
     useEffect(() => {
         setTitle('Organization | CareBlock');
+
+        subscribeOnce(OrganizationService.getByUserId(userData?.id), (res: Organizations) => {
+            if (res) {
+                setOrganizationInfo({ ...res });
+            }
+        });
     }, []);
 
     const formik = useFormik({
@@ -31,14 +37,6 @@ function OrganizationInfoPage() {
             handleSubmit(values);
         },
     });
-
-    useEffect(() => {
-        subscribeOnce(OrganizationService.getByUserId(userData?.id), (res: Organizations) => {
-            if (res) {
-                setOrganizationInfo({ ...res });
-            }
-        });
-    }, []);
 
     useEffect(() => {
         if (organizationInfo) {
@@ -82,11 +80,11 @@ function OrganizationInfoPage() {
     return (
         <div className="w-[740px] mx-auto text-center rounded-gray-300">
             <form onSubmit={formik.handleSubmit} className="w-full py-[12px] px-[20px] bg-white">
-                <h2 className="text-[20px] font-bold text-center mb-4">Organization Information</h2>
+                <h2 className="text-[26px] font-bold text-center mb-4">Organization Information</h2>
                 <div>
                     <div className="flex flex-col items-center mb-2">
                         <img
-                            className="p-[4px] w-[80px] h-[80px] object-cover rounded-[175px] border shadow-xl"
+                            className="p-[4px] w-[120px] h-[120px] object-cover rounded-[175px] border shadow-xl"
                             alt="thumbnail"
                             src={
                                 imageSrc

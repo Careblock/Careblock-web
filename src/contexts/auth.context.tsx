@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const { removeCookie } = CookieManager();
     const { subscribeOnce } = useObservable();
+
     const startSession = useCallback(({ accessToken, user }: LoginResponse) => {
         replaceCookieHelper(localStorageKeys.USER_TOKEN, accessToken);
         setUserData(user);

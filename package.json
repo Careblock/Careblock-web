@@ -16,6 +16,7 @@
         "@fontsource/roboto": "^5.0.13",
         "@material-tailwind/react": "^2.1.9",
         "@meshsdk/react": "^1.1.12",
+        "@microsoft/signalr": "^8.0.7",
         "@mui/icons-material": "^5.15.19",
         "@mui/lab": "^5.0.0-alpha.170",
         "@mui/material": "^5.15.19",

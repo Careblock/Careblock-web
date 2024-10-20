@@ -22,7 +22,7 @@ const ManagerSidebar = () => {
                             className="text-2xl cursor-pointer text-blue-gray-500"
                             onClick={() => navigate('/patient')}
                         >
-                            CAREBLOCK
+                            MENU
                         </span>
                     )}
                     <span
@@ -59,6 +59,12 @@ const ManagerSidebar = () => {
                     <MenuItem icon={<Images.RiTeamFill />}>
                         <span className="text-black text-xl">Team members</span>
                         <Link to={PATHS.TEAM_MEMBERS} />
+                    </MenuItem>
+                </Menu>
+                <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                    <MenuItem icon={<Images.TiUserAdd />}>
+                        <span className="text-black text-xl">Invitation</span>
+                        <Link to={PATHS.INVITE_MEMBERS} />
                     </MenuItem>
                 </Menu>
                 <Menu iconShape="circle" className="!p-0 hover:bg-gray">

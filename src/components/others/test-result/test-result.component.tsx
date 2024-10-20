@@ -4,7 +4,7 @@ import { resultData } from '@/mocks/result';
 import { getGenderName, getTestResult, numberToRoman } from '@/utils/common.helpers';
 import { Template_Result_1 } from '@/types/template.type';
 import { TestResultEnum } from '@/enums/TestResultEnum';
-import ReactPDF, { Document, Page, Text, View, PDFViewer } from '@react-pdf/renderer';
+import { Document, Page, Text, View, PDFViewer, OnRenderProps } from '@react-pdf/renderer';
 import { styles } from './test-result.const';
 import { Props } from './test-result.type';
 
@@ -19,7 +19,7 @@ const TestResult = ({ onUploadFile }: Props) => {
     return (
         <PDFViewer className="w-full h-full">
             <Document
-                onRender={(props: ReactPDF.OnRenderProps) => {
+                onRender={(props: OnRenderProps) => {
                     onUploadFile(props, dataSource);
                 }}
             >

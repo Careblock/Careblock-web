@@ -20,15 +20,17 @@ export enum PATHS {
     APPOINTMENT_STEP1 = '/appointment/1',
     APPOINTMENT_STEP2 = '/appointment/2',
     APPOINTMENT_STEP3 = '/appointment/3',
-    PATIENT_INFO = '/patient/detail_info',
     PATIENT_APPOINTMENT_HISTORY = '/patient/appointment-history',
     // Doctor manager
     MANAGER_PAGE = '/manager',
     ORGANIZATION_INFOR = '/organization',
     DEPARTMENT_MANAGEMENT = '/departments',
     TEAM_MEMBERS = '/team',
+    INVITE_MEMBERS = '/invite-member',
     EXAMINATION_PACKAGE = '/examination-package',
     APPOINTMENT_HISTORIES = '/appoiment-histories',
     // Error
     NOTFOUND = '*',
+    // User information
+    USER_INFO = '/user/info',
 }

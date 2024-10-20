@@ -1,6 +1,6 @@
 import AppointmentHistory from '@/pages/patient/appointment-history/appointment-history.page';
 import AppointmentPage from '@/pages/appointment/appointment-page/appointment-page.page';
-import PatientInfo from '@/pages/patient/patient-info/patient-information.page';
+import UserInfo from '@/pages/user-info/user-information.page';
 import DoctorSchedulePage from '@/pages/doctor/schedules/doctor-schedule.page';
 import Register from '@/pages/authentication/register/register.page';
 import HomePage from '../pages/home/home.page';
@@ -15,6 +15,7 @@ import OrganizationInfoPage from '@/pages/doctor-manager/organization-info/organ
 import DepartmentManagement from '@/pages/doctor-manager/department-management/department-management.page';
 import AppointmentHistories from '@/pages/doctor-manager/appointment-histories/appointment-histories.page';
 import ExaminationPackage from '@/pages/doctor-manager/examination-package/examination-package.page';
+import InviteMembersPage from '@/pages/doctor-manager/invite-members/invite-members.page';
 
 export const routesForNotAuthenticatedOnly = [
     { path: PATHS.REGISTER, element: <Register /> },
@@ -26,6 +27,7 @@ export const routesForPublic = [
     { path: PATHS.HOME, element: <HomePage /> },
     { path: PATHS.APPOINTMENT, element: <AppointmentPage /> },
     { path: PATHS.LOGOUT, element: <Logout /> },
+    { path: PATHS.USER_INFO, element: <UserInfo /> },
 ];
 
 export const routesForDoctor = [
@@ -43,7 +45,6 @@ export const routesForPatient = [
         children: [
             { path: PATHS.PATIENT_PAGE, element: <PatientPage /> },
             { path: PATHS.PATIENT_APPOINTMENT_HISTORY, element: <AppointmentHistory /> },
-            { path: PATHS.PATIENT_INFO, element: <PatientInfo /> },
         ],
     },
 ];
@@ -56,6 +57,7 @@ export const routesForDoctorManager = [
             { path: PATHS.ORGANIZATION_INFOR, element: <OrganizationInfoPage /> },
             { path: PATHS.DEPARTMENT_MANAGEMENT, element: <DepartmentManagement /> },
             { path: PATHS.TEAM_MEMBERS, element: <TeamMembersPage /> },
+            { path: PATHS.INVITE_MEMBERS, element: <InviteMembersPage /> },
             { path: PATHS.EXAMINATION_PACKAGE, element: <ExaminationPackage /> },
             { path: PATHS.APPOINTMENT_HISTORIES, element: <AppointmentHistories /> },
         ],

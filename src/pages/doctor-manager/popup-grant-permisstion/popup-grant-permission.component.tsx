@@ -1,5 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { IProps } from './popup-grant-permission.type';
+import { getNotNullString } from '@/utils/string.helper';
 
 const PopupGrantPermission = ({
     isVisible,
@@ -10,9 +11,9 @@ const PopupGrantPermission = ({
     cancelText,
     confirmText,
 }: IProps) => {
-    const theTitle = title ? title : 'Grant Permission';
-    const theConfirmText = confirmText ? confirmText : 'Confirm';
-    const theCancelText = cancelText ? cancelText : 'Cancel';
+    const theTitle = getNotNullString(title, 'Grant Permission');
+    const theConfirmText = getNotNullString(confirmText, 'Confirm');
+    const theCancelText = getNotNullString(cancelText, 'Cancel');
 
     return (
         <Dialog

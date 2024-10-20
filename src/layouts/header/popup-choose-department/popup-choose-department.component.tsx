@@ -1,18 +1,17 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import { IProps } from './popup-confirm-delete.type';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { getNotNullString } from '@/utils/string.helper';
+import { IProps } from './popup-choose-department.type';
 
-const PopupConfirmDelete = ({
+const PopupChooseDepartment = ({
     isVisible,
     onClickCancel,
     onClickConfirm,
     title,
-    content,
+    children,
     cancelText,
     confirmText,
 }: IProps) => {
-    const theTitle = getNotNullString(title, 'Confirm delete');
-    const theContent = getNotNullString(content, 'Are you sure you want to delete this record?');
+    const theTitle = getNotNullString(title, 'Grant Permission');
     const theConfirmText = getNotNullString(confirmText, 'Confirm');
     const theCancelText = getNotNullString(cancelText, 'Cancel');
 
@@ -24,9 +23,7 @@ const PopupConfirmDelete = ({
             aria-describedby="alert-dialog-description"
         >
             <DialogTitle id="alert-dialog-title">{theTitle}</DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-description">{theContent}</DialogContentText>
-            </DialogContent>
+            <DialogContent>{children}</DialogContent>
             <DialogActions>
                 <Button onClick={() => onClickCancel()}>{theCancelText}</Button>
                 <Button onClick={() => onClickConfirm()}>{theConfirmText}</Button>
@@ -35,4 +32,4 @@ const PopupConfirmDelete = ({
     );
 };
 
-export default PopupConfirmDelete;
+export default PopupChooseDepartment;

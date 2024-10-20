@@ -1,4 +1,4 @@
-import { GENDER, ROLES } from '@/enums/Common';
+import { GENDER } from '@/enums/Common';
 
 export interface Doctors {
     id: string;

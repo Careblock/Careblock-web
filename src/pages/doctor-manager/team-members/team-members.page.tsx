@@ -6,7 +6,6 @@ import {
     Checkbox,
     Chip,
     FormControl,
-    FormHelperText,
     InputAdornment,
     InputLabel,
     MenuItem,
@@ -44,8 +43,6 @@ function TeamMembersPage() {
     const [initialized, setInitialized] = useState(true);
     const [doctors, setDoctors] = useState<any[]>([]);
     const [doctorDisplays, setDoctorDisplays] = useState<any[]>([]);
-    const [doctorOptions, setDoctorOptions] = useState<any[]>([]);
-    const [selectedDoctor, setSelectedDoctor] = useState<any>('');
     const [searchValue, setSearchValue] = useState<string>('');
     const [pageIndex, setPageIndex] = useState<number>(1);
     const [totalPage, setTotalPage] = useState<number>(0);
@@ -61,11 +58,8 @@ function TeamMembersPage() {
 
     useEffect(() => {
         setTitle('Team Members | CareBlock');
-    }, []);
 
-    useEffect(() => {
         getSpecialistData();
-        getDoctorOptions();
         getDoctorDatas();
     }, []);
 
@@ -98,22 +92,12 @@ function TeamMembersPage() {
         });
     };
 
-    const getDoctorOptions = () => {
-        subscribeOnce(AccountService.getDoctorsOrg(Place.Exclusive, userData?.id), (res: Doctors[]) => {
-            setDoctorOptions(res);
-        });
-    };
-
     const getDoctorDatas = () => {
         subscribeOnce(AccountService.getDoctorsOrg(Place.Inclusive, userData?.id), (res: Doctors[]) => {
             setDoctors(res);
             setDoctorDisplays(res.slice(0, 9));
             setTotalPage(Math.ceil(res.length / MAX_RECORE_PERPAGE));
         });
-    };
-
-    const handleSelectDoctor = (data: any) => {
-        setSelectedDoctor(data);
     };
 
     const handleSearchValueChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,6 +174,12 @@ function TeamMembersPage() {
                     status: 'valid',
                 });
                 getDoctorDatas();
+
+                if (deletedId === userData!.id) {
+                    navigate({
+                        pathname: PATHS.LOGOUT,
+                    });
+                }
             } else {
                 setIsVisiblePopupConfirm(false);
                 addToast({
@@ -226,39 +216,40 @@ function TeamMembersPage() {
         return specialist.filter((item: Specialists) => item.id === id)[0]?.name ?? '';
     };
 
+    const handleGrantPermission = (permissionRequest: string[]) => {
+        subscribeOnce(AccountService.grantPermission(grantedDoctor.id, permissionRequest), (res: boolean) => {
+            if (res === true) {
+                setIsVisiblePopupGrant(false);
+                addToast({
+                    text: SystemMessage.GRANT_SUCCESS,
+                    position: 'top-right',
+                    status: 'valid',
+                });
+                getDoctorDatas();
+
+                if (grantedDoctor.id === userData!.id) {
+                    navigate({
+                        pathname: PATHS.LOGOUT,
+                    });
+                }
+            } else {
+                setIsVisiblePopupGrant(false);
+                addToast({
+                    text: SystemMessage.GRANT_FAILED,
+                    position: 'top-right',
+                    status: 'warn',
+                });
+            }
+        });
+    };
+
     const handleConfirmGrant = () => {
         const permissionRequest = permissionCheckedList.map((item: boolean, index: number) => {
             if (index === 0 && item === true) return ROLE_NAMES.DOCTOR;
             else if (index === 1 && item === true) return ROLE_NAMES.MANAGER;
         });
 
-        subscribeOnce(
-            AccountService.grantPermission(grantedDoctor.id, permissionRequest as string[]),
-            (res: boolean) => {
-                if (res === true) {
-                    setIsVisiblePopupGrant(false);
-                    addToast({
-                        text: SystemMessage.GRANT_SUCCESS,
-                        position: 'top-right',
-                        status: 'valid',
-                    });
-                    getDoctorDatas();
-
-                    if (grantedDoctor.id === userData!.id && permissionCheckedList[1] === false) {
-                        navigate({
-                            pathname: PATHS.LOGOUT,
-                        });
-                    }
-                } else {
-                    setIsVisiblePopupGrant(false);
-                    addToast({
-                        text: SystemMessage.GRANT_FAILED,
-                        position: 'top-right',
-                        status: 'warn',
-                    });
-                }
-            }
-        );
+        handleGrantPermission(permissionRequest as string[]);
     };
 
     const handleConfirmEdit = () => {
@@ -289,23 +280,6 @@ function TeamMembersPage() {
             <div className="text-[16px] mb-4">Add your team members and manage their details & user permissions.</div>
             <div className="w-full h-full overflow-hidden rounded-md shadow-lg bg-white">
                 <div className="border border-[#d7d7d7] w-full pt-[20px] pb-[16px] px-[16px] flex items-center justify-between rounded-t-xl">
-                    <div className="flex flex-col w-[260px]">
-                        <Select
-                            className="w-full"
-                            size="medium"
-                            value={selectedDoctor}
-                            onChange={($event: any) => handleSelectDoctor($event.target.value)}
-                        >
-                            {doctorOptions.map((item: any) => (
-                                <MenuItem key={item.id} value={item.id}>
-                                    {`${item.firstname} ${item.lastname}`}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                        <FormHelperText>
-                            <span className="block mt-[2px]">Choose a doctor</span>
-                        </FormHelperText>
-                    </div>
                     <TextField
                         variant="outlined"
                         label="Search"
@@ -328,6 +302,7 @@ function TeamMembersPage() {
                         doctorDisplays.map((doctor: Doctors) => (
                             <BaseTeamCard
                                 key={doctor.id}
+                                isInOrganization={true}
                                 dataSource={doctor}
                                 onClickRemove={($event: any) => handleClickRemove(doctor.id, $event)}
                                 onClickGrant={() => handleClickGrant(doctor)}
