@@ -1,9 +1,10 @@
 export interface Notifications {
-    id: string;
+    id?: string;
     accountId: string;
+    originId?: string;
     notificationTypeId: number;
     message: string;
-    link: string;
-    isRead: boolean;
-    createdDate: string;
+    link?: string;
+    isRead?: boolean;
+    createdDate?: string;
 }

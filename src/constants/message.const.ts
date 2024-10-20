@@ -13,8 +13,8 @@ export enum SystemMessage {
     EDIT_ORGANIZATION = 'Edit organization successfully!',
     ADD_DEPARTMENT = 'Add new department successfully!',
     EDIT_DEPARTMENT = 'Edit department successfully!',
-    DELETE_DEPARTMENT = 'Delete department successfully!',
-    DELETE_DEPARTMENT_FAILED = 'Delete department failed!',
+    DELETE_DEPARTMENT = 'Remove doctor successfully!',
+    DELETE_DEPARTMENT_FAILED = 'Remove doctor failed!',
     REMOVE_FROM_ORGANIZATION_SUCCESS = 'Successfully remove the doctor',
     UPLOAD_RESULT = 'Upload examination result successfully!',
     AT_LEAST_ONE_ROLE = 'At least one role must be selected for the user',
@@ -26,4 +26,7 @@ export enum SystemMessage {
     LACK_OF_TYPE = 'Examination type is required',
     EDIT_SPECIALIST = 'Update specialist successfully!',
     EDIT_SPECIALIST_FAILED = 'Update specialist failed!',
+    INVITE_MEMBER = 'Invitation sent successfully!',
+    JOIN_ORG = 'Participate in organization successfully!',
+    JOIN_ORG_FAILED = 'Participate in organization failed!',
 }

@@ -8,6 +8,7 @@ import { User } from '@/types/auth.type';
 import { DataDefaults } from '@/types/dataDefault.type';
 import { Doctors } from '@/types/doctor.type';
 import { Place } from '@/enums/Place';
+import { ChooseDepartment } from '@/types/chooseDepartment.type';
 
 class _AccountService {
     public getById(id: string) {
@@ -38,6 +39,14 @@ class _AccountService {
         return HttpService.post<boolean>(`/account/grant-permission/${userId}`, {
             body: {
                 permissions,
+            },
+        });
+    }
+
+    public chooseDepartment(userId: string, request: ChooseDepartment) {
+        return HttpService.post<boolean>(`/account/choose-department/${userId}`, {
+            body: {
+                ...request,
             },
         });
     }

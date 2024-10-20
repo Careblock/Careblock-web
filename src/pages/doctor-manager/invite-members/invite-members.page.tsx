@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { addToast } from '@/components/base/toast/toast.service';
 import useObservable from '@/hooks/use-observable.hook';
 import { setTitle } from '@/utils/document';
 import { InputAdornment, TextField } from '@mui/material';
@@ -9,6 +10,14 @@ import { Doctors } from '@/types/doctor.type';
 import { AuthContextType } from '@/types/auth.type';
 import { useAuth } from '@/contexts/auth.context';
 import { Place } from '@/enums/Place';
+import NotificationService from '@/services/notification.service';
+import { Notifications } from '@/types/notification.type';
+import { NotificationType } from '@/enums/NotificationType';
+import { SystemMessage } from '@/constants/message.const';
+import { getNotNullString } from '@/utils/string.helper';
+import { useSelector } from 'react-redux';
+import { NotificationState } from '@/stores/notification';
+import * as signalR from '@microsoft/signalr';
 
 function InviteMembersPage() {
     const MAX_RECORE_PERPAGE = 9;
@@ -20,6 +29,7 @@ function InviteMembersPage() {
     const [searchValue, setSearchValue] = useState<string>('');
     const [pageIndex, setPageIndex] = useState<number>(1);
     const [totalPage, setTotalPage] = useState<number>(0);
+    const connection = useSelector((state: { notification: NotificationState }) => state.notification.connection);
 
     useEffect(() => {
         setTitle('Invite Members | CareBlock');
@@ -85,8 +95,43 @@ function InviteMembersPage() {
         }
     };
 
-    const handleClickInvite = (doctor: any) => {
-        console.log(doctor);
+    const pushNotification = (doctor: any) => {
+        let isError = false;
+
+        if (connection.state === signalR.HubConnectionState.Connected) {
+            connection
+                .invoke('SendNotification', {
+                    accountId: doctor.id,
+                    notificationTypeId: NotificationType.Invite,
+                    departmentId: doctor.departmentId,
+                    message: `${getNotNullString(userData?.firstname, 'Someone')} invited you to join `,
+                    originId: userData?.id,
+                    isRead: false,
+                } as Notifications)
+                .catch((error: any) => {
+                    isError = true;
+                    console.error('Lỗi khi gọi SignalR: ', error);
+                });
+        } else {
+            connection
+                .start()
+                .then(() => {
+                    console.log('Kết nối SignalR thành công');
+                    connection.invoke('SendNotification', {
+                        accountId: doctor.id,
+                        notificationTypeId: NotificationType.Invite,
+                        departmentId: doctor.departmentId,
+                        message: `${getNotNullString(userData?.firstname, 'Someone')} invited you to join `,
+                        originId: userData?.id,
+                        isRead: false,
+                    } as Notifications);
+                })
+                .catch((error: any) => {
+                    isError = true;
+                    console.error('Lỗi khi kết nối SignalR: ', error);
+                });
+        }
+        if (!isError) addToast({ text: SystemMessage.INVITE_MEMBER, position: 'top-right' });
     };
 
     return (
@@ -125,7 +170,7 @@ function InviteMembersPage() {
                                 onClickRemove={() => {}}
                                 onClickGrant={() => {}}
                                 onClickEdit={() => {}}
-                                onClickInvite={() => handleClickInvite(doctor)}
+                                onClickInvite={() => pushNotification(doctor)}
                             />
                         ))
                     ) : (

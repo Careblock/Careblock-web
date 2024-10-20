@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { Fab, Typography } from '@mui/material';
+import { Fab, Popover, Select, Typography } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
@@ -18,16 +18,52 @@ import { ScrollToTop } from '@/components/base/scroll-to-top/scroll-top.componen
 import AccountService from '@/services/account.service';
 import useObservable from '@/hooks/use-observable.hook';
 import { ROLE_NAMES } from '@/enums/Common';
+import NotificationItem from '@/components/base/notification/notification.component';
+import { Notifications } from '@/types/notification.type';
+import NotificationService from '@/services/notification.service';
+import PopupChooseDepartment from './popup-choose-department/popup-choose-department.component';
+import { SystemMessage } from '@/constants/message.const';
+import { addToast } from '@/components/base/toast/toast.service';
+import DepartmentService from '@/services/department.service';
+import { Departments } from '@/types/department.type';
+import * as signalR from '@microsoft/signalr';
+import { Environment } from '@/environment';
+import { useDispatch } from 'react-redux';
+import { connect } from '@/stores/notification/notification.action';
 
-const HeaderDoctor = () => {
+const HeaderLayout = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [userInfo, setUserInfo] = useState<any>();
+    const [notificationNumber, SetNotificationNumber] = useState(0);
+    const [anchorElNoti, setAnchorElNoti] = useState<HTMLButtonElement | null>(null);
+    const [notification, setNotification] = useState<Notifications>();
+    const [notifications, setNotifications] = useState<Notifications[]>([]);
+    const [isVisiblePopupDepartment, setIsVisiblePopupDepartment] = useState<boolean>(false);
+    const [departmentId, setDepartmentId] = useState<string>('');
+    const [departments, setDepartments] = useState<Departments[]>([]);
 
     useEffect(() => {
+        const connection: signalR.HubConnection = new signalR.HubConnectionBuilder()
+            .withUrl(`${Environment.BASE_API}/notificationHub?userID=${userData?.id}`)
+            .configureLogging(signalR.LogLevel.Error)
+            .build();
+
+        dispatch(connect(connection) as any);
+
         getUserInfor();
+        getNotificationDatas();
+        connectHub(connection);
     }, []);
+
+    const connectHub = (connection: any) => {
+        connection.on('ReceiveNotification', () => {
+            getNotificationDatas();
+        });
+        connection.start();
+    };
 
     const fullName = `${userInfo?.firstname} ${userInfo?.lastname}`;
     const email = userInfo?.email;
@@ -36,6 +72,15 @@ const HeaderDoctor = () => {
         subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
             if (res) {
                 setUserInfo(res);
+            }
+        });
+    };
+
+    const getNotificationDatas = () => {
+        subscribeOnce(NotificationService.getByUserId(userData?.id), (res: Notifications[]) => {
+            if (res) {
+                setNotifications(res);
+                SetNotificationNumber(res.filter((noti: Notifications) => !noti.isRead).length);
             }
         });
     };
@@ -73,6 +118,85 @@ const HeaderDoctor = () => {
 
     const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setMobileMoreAnchorEl(event.currentTarget);
+    };
+
+    const open = Boolean(anchorElNoti);
+    const id = open ? 'noti-popover' : undefined;
+
+    const handleClickNoti = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorElNoti(event.currentTarget);
+    };
+
+    const handleCloseNoti = () => {
+        setAnchorElNoti(null);
+    };
+
+    const getDepartmentData = (orgId: string) => {
+        subscribeOnce(DepartmentService.getByOrganization(orgId), (res: any) => {
+            if (res) setDepartments(res.map((data: any) => ({ name: data.name, departmentId: data.id })));
+        });
+    };
+
+    const handleClickAccept = (noti: Notifications) => {
+        setIsVisiblePopupDepartment(true);
+        setNotification(noti);
+        setTimeout(() => {
+            getDepartmentData(noti.originId!);
+        }, 500);
+    };
+
+    const handleClickDecline = (noti: Notifications) => {
+        subscribeOnce(NotificationService.decline(noti.id!), (res: boolean) => {
+            if (res) {
+                getNotificationDatas();
+            }
+        });
+    };
+
+    const handleClickRead = (noti: Notifications) => {
+        if (!noti.isRead) {
+            subscribeOnce(NotificationService.updateIsRead(noti.id!), (res: Notifications) => {
+                if (res) {
+                    getNotificationDatas();
+                }
+            });
+        }
+    };
+
+    const handleClosePopupDepartment = () => {
+        setIsVisiblePopupDepartment(false);
+        setDepartmentId('');
+    };
+
+    const handleConfirmDepartment = () => {
+        subscribeOnce(
+            AccountService.chooseDepartment(userData?.id, {
+                notificationId: notification?.id!,
+                departmentId: departmentId,
+            }),
+            (res: boolean) => {
+                if (res === true) {
+                    setIsVisiblePopupDepartment(false);
+                    getNotificationDatas();
+                    addToast({
+                        text: SystemMessage.JOIN_ORG,
+                        position: 'top-right',
+                        status: 'valid',
+                    });
+                } else {
+                    setIsVisiblePopupDepartment(false);
+                    addToast({
+                        text: SystemMessage.JOIN_ORG_FAILED,
+                        position: 'top-right',
+                        status: 'warn',
+                    });
+                }
+            }
+        );
+    };
+
+    const handleChooseDepartment = (event: any) => {
+        setDepartmentId(event.target.value ?? '');
     };
 
     const menuId = 'primary-search-account-menu';
@@ -147,7 +271,7 @@ const HeaderDoctor = () => {
         >
             <MenuItem>
                 <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="error">
+                    <Badge badgeContent={notificationNumber} color="error">
                         <Images.MdOutlineNotifications size={26} />
                     </Badge>
                 </IconButton>
@@ -200,6 +324,18 @@ const HeaderDoctor = () => {
                         </div>
                         <Box sx={{ flexGrow: 1 }} />
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }} className="gap-x-2">
+                            {userData?.roles?.includes(ROLE_NAMES.PATIENT) && (
+                                <IconButton
+                                    size="medium"
+                                    aria-label="show 4 new mails"
+                                    color="inherit"
+                                    className="mr-1"
+                                    title="Go to the management"
+                                    onClick={() => handleMoveToPage(PATHS.PATIENT_PAGE)}
+                                >
+                                    <Images.ManageAccountsIcon sx={{ fontSize: 26 }} />
+                                </IconButton>
+                            )}
                             {userData?.roles?.includes(ROLE_NAMES.DOCTOR) && (
                                 <IconButton
                                     size="medium"
@@ -220,8 +356,14 @@ const HeaderDoctor = () => {
                                     <Images.IoSettings className="text-[26px]" />
                                 </IconButton>
                             )}
-                            <IconButton size="medium" aria-label="show 4 new mails" color="inherit">
-                                <Badge badgeContent={4} color="error">
+                            <IconButton
+                                size="medium"
+                                aria-label="show 4 new mails"
+                                color="inherit"
+                                aria-describedby={id}
+                                onClick={handleClickNoti}
+                            >
+                                <Badge badgeContent={notificationNumber} color="error">
                                     <Images.MdOutlineNotifications size={26} />
                                 </Badge>
                             </IconButton>
@@ -265,8 +407,74 @@ const HeaderDoctor = () => {
                     <KeyboardArrowUpIcon />
                 </Fab>
             </ScrollToTop>
+            {/* Notification popup */}
+            <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorElNoti}
+                onClose={handleCloseNoti}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+            >
+                <div className="py-[14px] pl-[16px] w-[340px]">
+                    <div className="font-bold mb-[10px] text-[18px] select-none mr-[16px]">Notifications</div>
+                    <div className="space-y-[6px] max-h-[600px] overflow-auto">
+                        {notifications?.length > 0 ? (
+                            notifications.map((noti: Notifications, index: number) => (
+                                <div className="mr-[16px]" key={index}>
+                                    <NotificationItem
+                                        type={noti.notificationTypeId}
+                                        message={noti.message}
+                                        isRead={noti.isRead}
+                                        link={noti.link}
+                                        onClickAccept={() => handleClickAccept(noti)}
+                                        onClickDecline={() => handleClickDecline(noti)}
+                                        onClickRead={() => handleClickRead(noti)}
+                                    />
+                                </div>
+                            ))
+                        ) : (
+                            <div className="mb-6 flex items-center flex-col justify-center w-full">
+                                <div className="image w-full overflow-hidden">
+                                    <img className="w-full object-cover" src={Images.BgNodata} alt="no data" />
+                                </div>
+                                <div className="text-[18px]">No data to display</div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </Popover>
+            {/* Popup choose department */}
+            <PopupChooseDepartment
+                isVisible={isVisiblePopupDepartment}
+                onClickCancel={handleClosePopupDepartment}
+                onClickConfirm={handleConfirmDepartment}
+            >
+                {
+                    <div className="flex flex-col items-start w-[400px] select-none">
+                        <div className="w-full">
+                            <h4 className="text-left mb-1">Department</h4>
+                            <Select
+                                className="w-full"
+                                name="departmentId"
+                                size="small"
+                                value={departmentId}
+                                onChange={handleChooseDepartment}
+                            >
+                                {departments.map((item: any) => (
+                                    <MenuItem key={item.departmentId} value={item.departmentId}>
+                                        {item.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </div>
+                    </div>
+                }
+            </PopupChooseDepartment>
         </>
     );
 };
 
-export default HeaderDoctor;
+export default HeaderLayout;

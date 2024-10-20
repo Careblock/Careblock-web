@@ -18,7 +18,7 @@ import { Images } from '@/assets/images';
 import BaseTeamCard from '../team-card.component';
 import AccountService from '@/services/account.service';
 import { Doctors } from '@/types/doctor.type';
-import { AuthContextType, User } from '@/types/auth.type';
+import { AuthContextType } from '@/types/auth.type';
 import { useAuth } from '@/contexts/auth.context';
 import { Place } from '@/enums/Place';
 import { addToast } from '@/components/base/toast/toast.service';
@@ -54,7 +54,6 @@ function TeamMembersPage() {
     const [editDoctor, setEditDoctor] = useState<any>();
     const [permissionCheckedList, setPermissionCheckedList] = useState<boolean[]>([false, false]);
     const [specialist, setSpecialist] = useState<any[]>([]);
-    const { setUser } = useAuth() as AuthContextType;
     const [selectedSpecialist, setSelectedSpecialist] = useState<any[]>([]);
 
     useEffect(() => {
@@ -175,6 +174,12 @@ function TeamMembersPage() {
                     status: 'valid',
                 });
                 getDoctorDatas();
+
+                if (deletedId === userData!.id) {
+                    navigate({
+                        pathname: PATHS.LOGOUT,
+                    });
+                }
             } else {
                 setIsVisiblePopupConfirm(false);
                 addToast({
