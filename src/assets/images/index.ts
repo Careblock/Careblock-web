@@ -99,7 +99,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { TiTick, TiVideo, TiUserAdd } from 'react-icons/ti';
 import { PiChatsBold, PiVideoFill } from 'react-icons/pi';
 import { BiSolidLogOut, BiSolidMedal } from 'react-icons/bi';
-import { BsSendFill, BsThreeDotsVertical } from 'react-icons/bs';
+import { BsSendFill, BsThreeDotsVertical, BsPersonVcardFill } from 'react-icons/bs';
 import { CiCirclePlus, CiHeart, CiShoppingCart } from 'react-icons/ci';
 import { GrClose, GrDocumentPerformance, GrOrganization, GrPowerReset } from 'react-icons/gr';
 import { IoCartOutline, IoFilterOutline, IoLogOutOutline, IoPeople, IoReorderThree, IoSettings } from 'react-icons/io5';
@@ -179,6 +179,7 @@ export const Images = {
     TfiWorld,
     MdOutlineShoppingCart,
     BsThreeDotsVertical,
+    BsPersonVcardFill,
     FaAngleRight,
     IoMdStarHalf,
     IoMdStar,

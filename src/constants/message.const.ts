@@ -23,6 +23,8 @@ export enum SystemMessage {
     ADD_EXAMINATION_PACKAGE = 'Add new examination package successfully!',
     EDIT_EXAMINATION_PACKAGE = 'Edit examination package successfully!',
     DELETE_EXAMINATION_PACKAGE = 'Delete examination package successfully!',
+    ADD_SPECIALIST = 'Add new specialist successfully!',
+    DELETE_SPECIALIST = 'Delete specialist successfully!',
     LACK_OF_TYPE = 'Examination type is required',
     EDIT_SPECIALIST = 'Update specialist successfully!',
     EDIT_SPECIALIST_FAILED = 'Update specialist failed!',

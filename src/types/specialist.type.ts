@@ -1,8 +1,8 @@
 export interface Specialists {
-    id: string;
+    id?: string;
     organizationId: string;
     name: string;
     thumbnail?: string;
     description?: string;
-    isHidden: boolean;
+    isHidden?: boolean;
 }
