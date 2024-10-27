@@ -27,79 +27,78 @@ import { useFormik } from 'formik';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
 import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
-import { columns } from './examination-package.const';
-import { INITIAL_EXAMINATION_PACKAGES_VALUES } from '@/constants/examinationPackage.const';
-import { editExaminationPackagesSchema, examinationPackagesSchema } from '@/validations/examinationPackage.validation';
-import { ExaminationPackages } from '@/types/examinationPackage.type';
-import ExaminationPackageService from '@/services/examinationPackage.service';
+import { INITIAL_EXAMINATION_TYPES_VALUES } from '@/constants/examinationPackage.const';
+import { examinationTypesSchema } from '@/validations/examinationPackage.validation';
 import DefaultThumbnail from '@/assets/images/common/package.jpg';
 import ExaminationTypeService from '@/services/examinationType.service';
 import { ExaminationTypes } from '@/types/examinationType.type';
+import { columns } from './examination-type.const';
+import ExaminationPackageService from '@/services/examinationPackage.service';
+import { ExaminationPackages } from '@/types/examinationPackage.type';
 
-function ExaminationPackage() {
+function ExaminationType() {
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [examinationTypes, setExaminationTypes] = useState<any[]>([]);
+    const [examinationTypesDisplays, setExaminationTypesDisplays] = useState<any[]>([]);
     const [examinationPackages, setExaminationPackages] = useState<any[]>([]);
-    const [examinationPackagesDisplays, setExaminationPackagesDisplays] = useState<any[]>([]);
-    const [organizationId, setOrganizationId] = useState<string>('');
     const [isVisiblePopupAdd, setIsVisiblePopupAdd] = useState<boolean>(false);
     const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
     const [mode, setMode] = useState<FormMode>(FormMode.Add);
-    const [examinationPackage, setExaminationPackage] = useState<any>();
+    const [examinationType, setExaminationType] = useState<any>();
     const [imageSrc, setImageSrc] = useState<string>('');
     const [selectedFile, setSelectedFile] = useState<any>();
-    const [examinationTypes, setExaminationTypes] = useState<any[]>([]);
 
     const formik = useFormik({
-        initialValues: INITIAL_EXAMINATION_PACKAGES_VALUES.INFORMATION,
-        validationSchema: mode === FormMode.Add ? examinationPackagesSchema : editExaminationPackagesSchema,
+        initialValues: INITIAL_EXAMINATION_TYPES_VALUES.INFORMATION,
+        validationSchema: examinationTypesSchema,
         onSubmit: (values) => {
             handleSubmit(values);
         },
     });
 
     useEffect(() => {
-        setTitle('Examination Packages | CareBlock');
+        setTitle('Examination Types | CareBlock');
         getDatasource();
-        getExaminationType();
     }, []);
 
     useEffect(() => {
         if (!isVisiblePopupAdd) {
             formik.resetForm();
             setMode(FormMode.Add);
+        } else {
+            getExaminationPackages();
         }
     }, [isVisiblePopupAdd]);
 
     useEffect(() => {
         if (!initialized) {
-            let result = examinationPackages.filter((examinationPackage: ExaminationPackages) => {
-                if (examinationPackage.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())) {
-                    return examinationPackage;
+            let result = examinationTypes.filter((examinationType: ExaminationTypes) => {
+                if (examinationType.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())) {
+                    return examinationType;
                 }
             });
-            setExaminationPackagesDisplays(result);
+            setExaminationTypesDisplays(result);
         } else setInitialized(false);
     }, [searchValue]);
 
-    const getDatasource = () => {
+    const getExaminationPackages = () => {
         subscribeOnce(ExaminationPackageService.getByOrganization(userData!.id), (res: ExaminationPackages[]) => {
             if (res) {
                 setExaminationPackages(res);
-                if (res[0]?.organizationId) setOrganizationId(res[0].organizationId);
-                setExaminationPackagesDisplays(res);
             }
         });
     };
 
-    const getExaminationType = () => {
-        subscribeOnce(ExaminationTypeService.getAll(), (res: ExaminationTypes[]) => {
+    const getDatasource = () => {
+        subscribeOnce(ExaminationTypeService.getByUserId(userData!.id), (res: ExaminationTypes[]) => {
             if (res) {
                 setExaminationTypes(res);
+                setExaminationTypesDisplays(res);
             }
         });
     };
@@ -117,25 +116,23 @@ function ExaminationPackage() {
         setPage(0);
     };
 
-    const handleClickEdit = (examinationPackage: ExaminationPackages) => {
+    const handleClickEdit = (examinationType: ExaminationTypes) => {
         setMode(FormMode.Update);
-        setExaminationPackage(examinationPackage);
-        formik.setFieldValue('id', examinationPackage.id);
-        formik.setFieldValue('name', examinationPackage.name);
-        formik.setFieldValue('thumbnail', examinationPackage.thumbnail);
-        formik.setFieldValue('organizationId', examinationPackage.organizationId);
-        if (examinationPackage.examinationTypeId)
-            formik.setFieldValue('examinationTypeId', examinationPackage.examinationTypeId);
+        setExaminationType(examinationType);
+        formik.setFieldValue('id', examinationType.id);
+        formik.setFieldValue('name', examinationType.name);
+        formik.setFieldValue('thumbnail', examinationType.thumbnail);
+        formik.setFieldValue('examinationPackageId', examinationType.examinationPackageId);
         setIsVisiblePopupAdd(true);
     };
 
-    const handleClickRemove = (examinationPackage: ExaminationPackages) => {
-        formik.setFieldValue('id', examinationPackage.id);
+    const handleClickRemove = (examinationType: ExaminationTypes) => {
+        formik.setFieldValue('id', examinationType.id);
         setIsVisiblePopupConfirm(true);
     };
 
     const onClickAdd = () => {
-        setExaminationPackage(null);
+        setExaminationType(null);
         setIsVisiblePopupAdd(true);
     };
 
@@ -147,16 +144,16 @@ function ExaminationPackage() {
         setIsVisiblePopupConfirm(false);
     };
 
-    const handleChangeExaminationType = ($event: any) => {
-        formik.setFieldValue('examinationTypeId', $event.target.value);
+    const handleChangeExaminationPackage = ($event: any) => {
+        formik.setFieldValue('examinationPackageId', $event.target.value);
     };
 
     const handleConfirmDelete = () => {
-        subscribeOnce(ExaminationPackageService.delete(formik.values.id!), (res: any) => {
+        subscribeOnce(ExaminationTypeService.delete(formik.values.id!), (res: any) => {
             if (!res.isError) {
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_EXAMINATION_PACKAGE, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_EXAMINATION_TYPE, position: 'top-right' });
             }
         });
     };
@@ -166,38 +163,39 @@ function ExaminationPackage() {
         formik.resetForm();
     };
 
-    const handleSubmit = (values: ExaminationPackages) => {
+    const handleSubmit = (values: ExaminationTypes) => {
         if (mode === FormMode.Add) {
+            if (!formik.values.examinationPackageId) {
+                addToast({ text: SystemMessage.LACK_OF_PACKAGE, position: 'top-right', status: 'inValid' });
+                return;
+            }
+
             subscribeOnce(
-                ExaminationPackageService.insert({
+                ExaminationTypeService.insert({
                     ...values,
-                    organizationId: organizationId,
-                    isDeleted: false,
-                    thumbnail: selectedFile ?? examinationPackage?.thumbnail,
+                    thumbnail: selectedFile ?? examinationType?.thumbnail,
                 }),
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
                         setIsVisiblePopupAdd(false);
                         resetForm();
-                        addToast({ text: SystemMessage.ADD_EXAMINATION_PACKAGE, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_EXAMINATION_TYPE, position: 'top-right' });
                     }
                 }
             );
         } else {
             subscribeOnce(
-                ExaminationPackageService.update(values.id!, {
+                ExaminationTypeService.update(values.id!, {
                     ...values,
-                    organizationId: organizationId,
-                    isDeleted: false,
-                    thumbnail: selectedFile ?? examinationPackage?.thumbnail,
+                    thumbnail: selectedFile ?? examinationType?.thumbnail,
                 }),
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
                         setIsVisiblePopupAdd(false);
                         resetForm();
-                        addToast({ text: SystemMessage.EDIT_EXAMINATION_PACKAGE, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_EXAMINATION_TYPE, position: 'top-right' });
                     }
                 }
             );
@@ -215,9 +213,9 @@ function ExaminationPackage() {
 
     return (
         <div className="h-full">
-            <div className="text-[24px]">Manage Examination Packages</div>
+            <div className="text-[24px]">Manage Examination Types</div>
             <div className="text-[16px] mb-4">
-                Set up all examination packages that your organization conduct business from.
+                Set up all examination types that your organization conduct business from.
             </div>
             <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
                 <TextField
@@ -260,13 +258,13 @@ function ExaminationPackage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {examinationPackagesDisplays
+                            {examinationTypesDisplays
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((examinationPackage: ExaminationPackages) => {
+                                .map((examinationType: ExaminationTypes) => {
                                     return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={examinationPackage.id}>
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={examinationType.id}>
                                             {columns.map((column) => {
-                                                const value = examinationPackage[column.id];
+                                                const value = examinationType[column.id];
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
                                                         {column.id === 'thumbnail' ? (
@@ -287,11 +285,11 @@ function ExaminationPackage() {
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
                                                         className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
-                                                        onClick={() => handleClickEdit(examinationPackage)}
+                                                        onClick={() => handleClickEdit(examinationType)}
                                                     />
                                                     <Images.MdDelete
                                                         className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
-                                                        onClick={() => handleClickRemove(examinationPackage)}
+                                                        onClick={() => handleClickRemove(examinationType)}
                                                     />
                                                 </div>
                                             </TableCell>
@@ -305,7 +303,7 @@ function ExaminationPackage() {
                     rowsPerPageOptions={[10, 25, 100]}
                     component="div"
                     className="border-t bg-[#f4f4f4]"
-                    count={examinationPackagesDisplays.length}
+                    count={examinationTypesDisplays.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
@@ -317,7 +315,7 @@ function ExaminationPackage() {
             <Dialog open={isVisiblePopupAdd} onClose={handleClosePopupAdd}>
                 <DialogTitle>
                     <div className="flex items-center justify-between">
-                        <p>Add new examination package</p>
+                        <p>Add new examination type</p>
                         <Images.MdCancel
                             className="cursor-pointer hover:text-[red] text-[26px]"
                             onClick={() => handleClosePopupAdd()}
@@ -328,13 +326,13 @@ function ExaminationPackage() {
                     <form onSubmit={formik.handleSubmit} className="w-[400px] flex flex-col gap-y-[10px]">
                         <div className="flex flex-col items-center mb-2">
                             <img
-                                className={`${!imageSrc && !examinationPackage?.thumbnail && 'p-[8px]'} w-[80px] h-[80px] object-cover rounded-[175px] border shadow-xl`}
+                                className={`${!imageSrc && !examinationType?.thumbnail && 'p-[8px]'} w-[80px] h-[80px] object-cover rounded-[175px] border shadow-xl`}
                                 alt="thumbnail"
                                 src={
                                     imageSrc
                                         ? imageSrc
-                                        : examinationPackage?.thumbnail
-                                          ? examinationPackage.thumbnail
+                                        : examinationType?.thumbnail
+                                          ? examinationType.thumbnail
                                           : DefaultThumbnail
                                 }
                             />
@@ -356,11 +354,11 @@ function ExaminationPackage() {
                             </div>
                         </div>
                         <div className="flex flex-col w-full">
-                            <div>Package name:</div>
+                            <div>Type:</div>
                             <TextField
                                 id="name"
                                 name="name"
-                                placeholder="Examination package name"
+                                placeholder="Examination type"
                                 type="text"
                                 fullWidth
                                 variant="outlined"
@@ -371,22 +369,24 @@ function ExaminationPackage() {
                                 helperText={formik.touched.name && formik.errors.name}
                             />
                         </div>
-                        <div className="flex flex-col w-full">
-                            <div>Examination type:</div>
-                            <Select
-                                className="w-full"
-                                size="medium"
-                                displayEmpty
-                                value={formik.values.examinationTypeId}
-                                onChange={($event: any) => handleChangeExaminationType($event)}
-                            >
-                                {examinationTypes.map((item: any) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                        {item.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </div>
+                        {mode === FormMode.Add && (
+                            <div className="flex flex-col w-full">
+                                <div>Examination package:</div>
+                                <Select
+                                    className="w-full"
+                                    size="medium"
+                                    displayEmpty
+                                    value={formik.values.examinationPackageId}
+                                    onChange={($event: any) => handleChangeExaminationPackage($event)}
+                                >
+                                    {examinationPackages.map((item: any) => (
+                                        <MenuItem key={item.id} value={item.id}>
+                                            {item.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </div>
+                        )}
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
                             <Button variant="text" onClick={handleClosePopupAdd}>
                                 Cancel
@@ -408,4 +408,4 @@ function ExaminationPackage() {
     );
 }
 
-export default ExaminationPackage;
+export default ExaminationType;

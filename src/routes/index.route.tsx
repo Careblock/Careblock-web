@@ -17,6 +17,7 @@ import AppointmentHistories from '@/pages/doctor-manager/appointment-histories/a
 import ExaminationPackage from '@/pages/doctor-manager/examination-package/examination-package.page';
 import InviteMembersPage from '@/pages/doctor-manager/invite-members/invite-members.page';
 import SpecialistPage from '@/pages/doctor-manager/specialist/specialist.page';
+import ExaminationType from '@/pages/doctor-manager/examination-type/examination-type.page';
 
 export const routesForNotAuthenticatedOnly = [
     { path: PATHS.REGISTER, element: <Register /> },
@@ -60,6 +61,7 @@ export const routesForDoctorManager = [
             { path: PATHS.TEAM_MEMBERS, element: <TeamMembersPage /> },
             { path: PATHS.INVITE_MEMBERS, element: <InviteMembersPage /> },
             { path: PATHS.SPECIALIST, element: <SpecialistPage /> },
+            { path: PATHS.EXAMINATION_TYPE, element: <ExaminationType /> },
             { path: PATHS.EXAMINATION_PACKAGE, element: <ExaminationPackage /> },
             { path: PATHS.APPOINTMENT_HISTORIES, element: <AppointmentHistories /> },
         ],

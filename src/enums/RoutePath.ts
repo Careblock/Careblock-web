@@ -28,6 +28,7 @@ export enum PATHS {
     TEAM_MEMBERS = '/team',
     INVITE_MEMBERS = '/invite-member',
     SPECIALIST = '/specialist',
+    EXAMINATION_TYPE = '/examination-type',
     EXAMINATION_PACKAGE = '/examination-package',
     APPOINTMENT_HISTORIES = '/appoiment-histories',
     // Error

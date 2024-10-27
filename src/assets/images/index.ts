@@ -7,6 +7,7 @@ import * as EyeIcon from '@/assets/svg/eye.svg';
 import * as RemoveIconThin from '@/assets/svg/remove-icon-thin.svg';
 import * as SpriteSortIcon from '@/assets/svg/sprite-icon-sort.svg';
 import * as SpriteIcon from '@/assets/svg/sprite-icon.svg';
+import { FiPackage } from 'react-icons/fi';
 import {
     FaBan,
     FaBars,
@@ -162,6 +163,7 @@ export const Images = {
     EyeSlashIcon,
     SpriteSortIcon,
     SpriteIcon,
+    FiPackage,
     ArrowUpIcon,
     ArrowDownIcon,
     ArrowThinLeftIcon,
