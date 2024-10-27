@@ -11,3 +11,7 @@ export const editExaminationPackagesSchema = createValidation({
     name: Yup.string().required(formatString(Resource.validation.required, 'Examination package name')),
     organizationId: Yup.string().required(formatString(Resource.validation.required, 'Organization')),
 });
+
+export const examinationTypesSchema = createValidation({
+    name: Yup.string().required(formatString(Resource.validation.required, 'Examination type name')),
+});

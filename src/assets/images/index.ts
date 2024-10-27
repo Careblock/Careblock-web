@@ -7,6 +7,7 @@ import * as EyeIcon from '@/assets/svg/eye.svg';
 import * as RemoveIconThin from '@/assets/svg/remove-icon-thin.svg';
 import * as SpriteSortIcon from '@/assets/svg/sprite-icon-sort.svg';
 import * as SpriteIcon from '@/assets/svg/sprite-icon.svg';
+import { FiPackage } from 'react-icons/fi';
 import {
     FaBan,
     FaBars,
@@ -99,7 +100,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { TiTick, TiVideo, TiUserAdd } from 'react-icons/ti';
 import { PiChatsBold, PiVideoFill } from 'react-icons/pi';
 import { BiSolidLogOut, BiSolidMedal } from 'react-icons/bi';
-import { BsSendFill, BsThreeDotsVertical } from 'react-icons/bs';
+import { BsSendFill, BsThreeDotsVertical, BsPersonVcardFill } from 'react-icons/bs';
 import { CiCirclePlus, CiHeart, CiShoppingCart } from 'react-icons/ci';
 import { GrClose, GrDocumentPerformance, GrOrganization, GrPowerReset } from 'react-icons/gr';
 import { IoCartOutline, IoFilterOutline, IoLogOutOutline, IoPeople, IoReorderThree, IoSettings } from 'react-icons/io5';
@@ -162,6 +163,7 @@ export const Images = {
     EyeSlashIcon,
     SpriteSortIcon,
     SpriteIcon,
+    FiPackage,
     ArrowUpIcon,
     ArrowDownIcon,
     ArrowThinLeftIcon,
@@ -179,6 +181,7 @@ export const Images = {
     TfiWorld,
     MdOutlineShoppingCart,
     BsThreeDotsVertical,
+    BsPersonVcardFill,
     FaAngleRight,
     IoMdStarHalf,
     IoMdStar,

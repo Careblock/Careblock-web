@@ -10,9 +10,7 @@ import {
     DialogContent,
     DialogTitle,
     InputAdornment,
-    MenuItem,
     Paper,
-    Select,
     Table,
     TableBody,
     TableCell,
@@ -27,45 +25,42 @@ import { useFormik } from 'formik';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
 import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
-import { columns } from './examination-package.const';
-import { INITIAL_EXAMINATION_PACKAGES_VALUES } from '@/constants/examinationPackage.const';
-import { editExaminationPackagesSchema, examinationPackagesSchema } from '@/validations/examinationPackage.validation';
-import { ExaminationPackages } from '@/types/examinationPackage.type';
-import ExaminationPackageService from '@/services/examinationPackage.service';
-import DefaultThumbnail from '@/assets/images/common/package.jpg';
-import ExaminationTypeService from '@/services/examinationType.service';
-import { ExaminationTypes } from '@/types/examinationType.type';
+import { columns } from './specialist.const';
+import DefaultThumbnail from '@/assets/images/common/specialist.png';
+import { INITIAL_SPECIALIST_VALUES } from '@/constants/specialist.const';
+import { editSpecialistsSchema, specialistsSchema } from '@/validations/specialist.validation';
+import { Specialists } from '@/types/specialist.type';
+import SpecialistService from '@/services/specialist.service';
+import { getNotNullString } from '@/utils/string.helper';
 
-function ExaminationPackage() {
+function SpecialistPage() {
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [examinationPackages, setExaminationPackages] = useState<any[]>([]);
-    const [examinationPackagesDisplays, setExaminationPackagesDisplays] = useState<any[]>([]);
+    const [specialists, setSpecialists] = useState<any[]>([]);
+    const [specialistsDisplays, setSpecialistsDisplays] = useState<any[]>([]);
     const [organizationId, setOrganizationId] = useState<string>('');
     const [isVisiblePopupAdd, setIsVisiblePopupAdd] = useState<boolean>(false);
     const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
     const [mode, setMode] = useState<FormMode>(FormMode.Add);
-    const [examinationPackage, setExaminationPackage] = useState<any>();
+    const [specialist, setSpecialist] = useState<any>();
     const [imageSrc, setImageSrc] = useState<string>('');
     const [selectedFile, setSelectedFile] = useState<any>();
-    const [examinationTypes, setExaminationTypes] = useState<any[]>([]);
 
     const formik = useFormik({
-        initialValues: INITIAL_EXAMINATION_PACKAGES_VALUES.INFORMATION,
-        validationSchema: mode === FormMode.Add ? examinationPackagesSchema : editExaminationPackagesSchema,
+        initialValues: INITIAL_SPECIALIST_VALUES.INFORMATION,
+        validationSchema: mode === FormMode.Add ? specialistsSchema : editSpecialistsSchema,
         onSubmit: (values) => {
             handleSubmit(values);
         },
     });
 
     useEffect(() => {
-        setTitle('Examination Packages | CareBlock');
+        setTitle('Specialist | CareBlock');
         getDatasource();
-        getExaminationType();
     }, []);
 
     useEffect(() => {
@@ -77,29 +72,24 @@ function ExaminationPackage() {
 
     useEffect(() => {
         if (!initialized) {
-            let result = examinationPackages.filter((examinationPackage: ExaminationPackages) => {
-                if (examinationPackage.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())) {
-                    return examinationPackage;
+            let result = specialists.filter((specialist: Specialists) => {
+                if (
+                    specialist.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
+                    specialist.description?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())
+                ) {
+                    return specialist;
                 }
             });
-            setExaminationPackagesDisplays(result);
+            setSpecialistsDisplays(result);
         } else setInitialized(false);
     }, [searchValue]);
 
     const getDatasource = () => {
-        subscribeOnce(ExaminationPackageService.getByOrganization(userData!.id), (res: ExaminationPackages[]) => {
+        subscribeOnce(SpecialistService.getByUserId(userData!.id), (res: Specialists[]) => {
             if (res) {
-                setExaminationPackages(res);
-                if (res[0]?.organizationId) setOrganizationId(res[0].organizationId);
-                setExaminationPackagesDisplays(res);
-            }
-        });
-    };
-
-    const getExaminationType = () => {
-        subscribeOnce(ExaminationTypeService.getAll(), (res: ExaminationTypes[]) => {
-            if (res) {
-                setExaminationTypes(res);
+                setSpecialists(res);
+                setOrganizationId(res[0].organizationId);
+                setSpecialistsDisplays(res);
             }
         });
     };
@@ -117,25 +107,24 @@ function ExaminationPackage() {
         setPage(0);
     };
 
-    const handleClickEdit = (examinationPackage: ExaminationPackages) => {
+    const handleClickEdit = (specialist: Specialists) => {
         setMode(FormMode.Update);
-        setExaminationPackage(examinationPackage);
-        formik.setFieldValue('id', examinationPackage.id);
-        formik.setFieldValue('name', examinationPackage.name);
-        formik.setFieldValue('thumbnail', examinationPackage.thumbnail);
-        formik.setFieldValue('organizationId', examinationPackage.organizationId);
-        if (examinationPackage.examinationTypeId)
-            formik.setFieldValue('examinationTypeId', examinationPackage.examinationTypeId);
+        setSpecialist(specialist);
+        formik.setFieldValue('id', specialist.id);
+        formik.setFieldValue('name', specialist.name);
+        formik.setFieldValue('thumbnail', specialist.thumbnail);
+        formik.setFieldValue('organizationId', specialist.organizationId);
+        formik.setFieldValue('description', specialist.description);
         setIsVisiblePopupAdd(true);
     };
 
-    const handleClickRemove = (examinationPackage: ExaminationPackages) => {
-        formik.setFieldValue('id', examinationPackage.id);
+    const handleClickRemove = (specialist: Specialists) => {
+        formik.setFieldValue('id', specialist.id);
         setIsVisiblePopupConfirm(true);
     };
 
     const onClickAdd = () => {
-        setExaminationPackage(null);
+        setSpecialist(null);
         setIsVisiblePopupAdd(true);
     };
 
@@ -147,16 +136,12 @@ function ExaminationPackage() {
         setIsVisiblePopupConfirm(false);
     };
 
-    const handleChangeExaminationType = ($event: any) => {
-        formik.setFieldValue('examinationTypeId', $event.target.value);
-    };
-
     const handleConfirmDelete = () => {
-        subscribeOnce(ExaminationPackageService.delete(formik.values.id!), (res: any) => {
+        subscribeOnce(SpecialistService.delete(formik.values.id!), (res: any) => {
             if (!res.isError) {
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_EXAMINATION_PACKAGE, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_SPECIALIST, position: 'top-right' });
             }
         });
     };
@@ -166,38 +151,38 @@ function ExaminationPackage() {
         formik.resetForm();
     };
 
-    const handleSubmit = (values: ExaminationPackages) => {
+    const handleSubmit = (values: Specialists) => {
         if (mode === FormMode.Add) {
             subscribeOnce(
-                ExaminationPackageService.insert({
+                SpecialistService.insert({
                     ...values,
                     organizationId: organizationId,
-                    isDeleted: false,
-                    thumbnail: selectedFile ?? examinationPackage?.thumbnail,
+                    isHidden: false,
+                    thumbnail: selectedFile ?? specialist?.thumbnail,
                 }),
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
                         setIsVisiblePopupAdd(false);
                         resetForm();
-                        addToast({ text: SystemMessage.ADD_EXAMINATION_PACKAGE, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_SPECIALIST, position: 'top-right' });
                     }
                 }
             );
         } else {
             subscribeOnce(
-                ExaminationPackageService.update(values.id!, {
+                SpecialistService.update(values.id!, {
                     ...values,
                     organizationId: organizationId,
-                    isDeleted: false,
-                    thumbnail: selectedFile ?? examinationPackage?.thumbnail,
+                    isHidden: false,
+                    thumbnail: selectedFile ?? specialist.thumbnail,
                 }),
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
                         setIsVisiblePopupAdd(false);
                         resetForm();
-                        addToast({ text: SystemMessage.EDIT_EXAMINATION_PACKAGE, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_SPECIALIST, position: 'top-right' });
                     }
                 }
             );
@@ -215,16 +200,14 @@ function ExaminationPackage() {
 
     return (
         <div className="h-full">
-            <div className="text-[24px]">Manage Examination Packages</div>
-            <div className="text-[16px] mb-4">
-                Set up all examination packages that your organization conduct business from.
-            </div>
+            <div className="text-[24px]">Manage Specialists</div>
+            <div className="text-[16px] mb-4">Set up all specialists that your organization conduct business from.</div>
             <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
                 <TextField
                     variant="outlined"
                     label="Search"
                     size="small"
-                    placeholder="Enter name"
+                    placeholder="Enter name or description"
                     className="w-[260px]"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
@@ -260,18 +243,18 @@ function ExaminationPackage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {examinationPackagesDisplays
+                            {specialistsDisplays
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((examinationPackage: ExaminationPackages) => {
+                                .map((specialist: Specialists) => {
                                     return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={examinationPackage.id}>
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={specialist.id}>
                                             {columns.map((column) => {
-                                                const value = examinationPackage[column.id];
+                                                const value = specialist[column.id];
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
                                                         {column.id === 'thumbnail' ? (
                                                             <img
-                                                                src={value ?? DefaultThumbnail}
+                                                                src={getNotNullString(value, DefaultThumbnail)}
                                                                 alt="Thumbnail"
                                                                 className="w-[100px] h-[60px] object-cover"
                                                             />
@@ -287,11 +270,11 @@ function ExaminationPackage() {
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
                                                         className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
-                                                        onClick={() => handleClickEdit(examinationPackage)}
+                                                        onClick={() => handleClickEdit(specialist)}
                                                     />
                                                     <Images.MdDelete
                                                         className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
-                                                        onClick={() => handleClickRemove(examinationPackage)}
+                                                        onClick={() => handleClickRemove(specialist)}
                                                     />
                                                 </div>
                                             </TableCell>
@@ -305,7 +288,7 @@ function ExaminationPackage() {
                     rowsPerPageOptions={[10, 25, 100]}
                     component="div"
                     className="border-t bg-[#f4f4f4]"
-                    count={examinationPackagesDisplays.length}
+                    count={specialistsDisplays.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
@@ -317,7 +300,7 @@ function ExaminationPackage() {
             <Dialog open={isVisiblePopupAdd} onClose={handleClosePopupAdd}>
                 <DialogTitle>
                     <div className="flex items-center justify-between">
-                        <p>Add new examination package</p>
+                        <p>Add new specialist</p>
                         <Images.MdCancel
                             className="cursor-pointer hover:text-[red] text-[26px]"
                             onClick={() => handleClosePopupAdd()}
@@ -328,13 +311,13 @@ function ExaminationPackage() {
                     <form onSubmit={formik.handleSubmit} className="w-[400px] flex flex-col gap-y-[10px]">
                         <div className="flex flex-col items-center mb-2">
                             <img
-                                className={`${!imageSrc && !examinationPackage?.thumbnail && 'p-[8px]'} w-[80px] h-[80px] object-cover rounded-[175px] border shadow-xl`}
+                                className={`${!imageSrc && !specialist?.thumbnail && 'p-[8px]'} w-[80px] h-[80px] object-cover rounded-[175px] border shadow-xl`}
                                 alt="thumbnail"
                                 src={
                                     imageSrc
                                         ? imageSrc
-                                        : examinationPackage?.thumbnail
-                                          ? examinationPackage.thumbnail
+                                        : specialist?.thumbnail
+                                          ? specialist.thumbnail
                                           : DefaultThumbnail
                                 }
                             />
@@ -356,11 +339,11 @@ function ExaminationPackage() {
                             </div>
                         </div>
                         <div className="flex flex-col w-full">
-                            <div>Package name:</div>
+                            <div>Specialist name:</div>
                             <TextField
                                 id="name"
                                 name="name"
-                                placeholder="Examination package name"
+                                placeholder="Specialist name"
                                 type="text"
                                 fullWidth
                                 variant="outlined"
@@ -372,20 +355,20 @@ function ExaminationPackage() {
                             />
                         </div>
                         <div className="flex flex-col w-full">
-                            <div>Examination type:</div>
-                            <Select
-                                className="w-full"
-                                size="medium"
-                                displayEmpty
-                                value={formik.values.examinationTypeId}
-                                onChange={($event: any) => handleChangeExaminationType($event)}
-                            >
-                                {examinationTypes.map((item: any) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                        {item.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                            <div>Description:</div>
+                            <TextField
+                                id="description"
+                                name="description"
+                                placeholder="Description"
+                                type="text"
+                                fullWidth
+                                variant="outlined"
+                                value={formik.values.description}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.description && Boolean(formik.errors.description)}
+                                helperText={formik.touched.description && formik.errors.description}
+                            />
                         </div>
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
                             <Button variant="text" onClick={handleClosePopupAdd}>
@@ -408,4 +391,4 @@ function ExaminationPackage() {
     );
 }
 
-export default ExaminationPackage;
+export default SpecialistPage;

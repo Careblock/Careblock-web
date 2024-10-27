@@ -116,7 +116,6 @@ function InviteMembersPage() {
             connection
                 .start()
                 .then(() => {
-                    console.log('Kết nối SignalR thành công');
                     connection.invoke('SendNotification', {
                         accountId: doctor.id,
                         notificationTypeId: NotificationType.Invite,

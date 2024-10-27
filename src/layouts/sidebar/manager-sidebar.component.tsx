@@ -68,6 +68,18 @@ const ManagerSidebar = () => {
                     </MenuItem>
                 </Menu>
                 <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                    <MenuItem icon={<Images.BsPersonVcardFill />}>
+                        <span className="text-black text-xl">Specialist</span>
+                        <Link to={PATHS.SPECIALIST} />
+                    </MenuItem>
+                </Menu>
+                <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                    <MenuItem icon={<Images.FiPackage />}>
+                        <span className="text-black text-xl">Examination Type</span>
+                        <Link to={PATHS.EXAMINATION_TYPE} />
+                    </MenuItem>
+                </Menu>
+                <Menu iconShape="circle" className="!p-0 hover:bg-gray">
                     <MenuItem icon={<Images.FaBriefcaseMedical />}>
                         <span className="text-black text-xl">Examination Package</span>
                         <Link to={PATHS.EXAMINATION_PACKAGE} />
