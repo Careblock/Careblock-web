@@ -16,13 +16,19 @@ import { AppointmentRequest } from '@/types/appointmentRequest.type';
 import { PagingResponse } from '@/types/pagingResponse.type';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import AccountService from '@/services/account.service';
+import { Place } from '@/enums/Place';
+import { Doctors } from '@/types/doctor.type';
+import { EMPTY_GUID } from '@/constants/common.const';
 
 const AppointmentHistories = () => {
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [searchValue, setSearchValue] = useState('');
+    const [doctors, setDoctors] = useState<any[]>([]);
     const [appointmentData, setAppointmentData] = useState<any[]>([]);
     const [examinationType, setExaminationType] = useState<any>('');
+    const [doctorId, setDoctorId] = useState<any>('');
     const [examinationTypes, setExaminationTypes] = useState<ExaminationTypes[]>([]);
     const [dateFilterData, setDateFilterData] = useState<any>(null);
     const [dateRequestData, setDateRequestData] = useState<any>(null);
@@ -36,6 +42,7 @@ const AppointmentHistories = () => {
 
         if (userData) {
             getDataSource(userData.id);
+            getDoctorDatas();
 
             subscribeOnce(ExaminationTypeService.getAll(), (res: ExaminationTypes[]) => {
                 if (res) setExaminationTypes(res);
@@ -55,12 +62,18 @@ const AppointmentHistories = () => {
         if (pageIndex === 1 && userData) {
             getDataSource(userData.id);
         } else setPageIndex(1);
-    }, [searchValue, examinationType, dateRequestData]);
+    }, [searchValue, examinationType, doctorId, dateRequestData]);
 
     useEffect(() => {
         if (userData) getDataSource(userData.id);
         setIsResetFilter(false);
     }, [isResetFilter]);
+
+    const getDoctorDatas = () => {
+        subscribeOnce(AccountService.getDoctorsOrg(Place.Inclusive, userData?.id), (res: Doctors[]) => {
+            setDoctors(res);
+        });
+    };
 
     const getDataSource = (userId: string) => {
         const request: AppointmentRequest = {
@@ -68,6 +81,7 @@ const AppointmentHistories = () => {
             pageNumber: PAGE_NUMBER,
             userId: userId,
             keyword: searchValue,
+            doctorId: !doctorId ? EMPTY_GUID : doctorId,
             examinationTypeId: !examinationType ? -1 : examinationType,
             createdDate: dateRequestData,
         };
@@ -135,6 +149,10 @@ const AppointmentHistories = () => {
         setExaminationType($event.target.value);
     };
 
+    const handleChangeDoctor = ($event: any) => {
+        setDoctorId($event.target.value);
+    };
+
     const handleChangeDateFilter = (newValue: any) => {
         const tempDate = newValue.format('YYYY-MM-DD');
         setDateRequestData(tempDate);
@@ -145,6 +163,7 @@ const AppointmentHistories = () => {
         setSearchValue('');
         setPageIndex(1);
         setExaminationType(-1);
+        setDoctorId('');
         setDateFilterData(null);
         setDateRequestData(null);
         setIsResetFilter(true);
@@ -169,14 +188,14 @@ const AppointmentHistories = () => {
             <div className="text-center text-[20px] font-bold mb-3">Appointment Histories</div>
             <div className="flex items-center justify-between w-full bg-[#e6e6e6] rounded-lg p-[16px] mb-[10px]">
                 <div className="flex items-center gap-x-[10xp]">
-                    <div className="flex flex-col w-[240px]">
+                    <div className="flex flex-col w-[200px]">
                         <div>Search:</div>
                         <TextField
                             variant="outlined"
                             size="medium"
                             label=""
                             placeholder="Enter keyword"
-                            className="w-[240px]"
+                            className="w-[200px]"
                             value={searchValue}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                             InputProps={{
@@ -188,7 +207,26 @@ const AppointmentHistories = () => {
                             }}
                         />
                     </div>
-                    <div className="flex flex-col ml-[20px] w-[240px]">
+                    <div className="flex flex-col ml-[20px] w-[200px]">
+                        <div>Doctor:</div>
+                        <Select
+                            className="w-full"
+                            size="medium"
+                            displayEmpty
+                            value={doctorId}
+                            onChange={($event: any) => handleChangeDoctor($event)}
+                        >
+                            <MenuItem value="">
+                                <em>All</em>
+                            </MenuItem>
+                            {doctors.map((item: any) => (
+                                <MenuItem key={item.id} value={item.id}>
+                                    {`${item.firstname} ${item.lastname}`}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </div>
+                    <div className="flex flex-col ml-[20px] w-[200px]">
                         <div>Examination type:</div>
                         <Select
                             className="w-full"
@@ -207,11 +245,11 @@ const AppointmentHistories = () => {
                             ))}
                         </Select>
                     </div>
-                    <div className="flex flex-col ml-[20px] w-[260px]">
+                    <div className="flex flex-col ml-[20px] w-[200px]">
                         <div>Date:</div>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                                className="w-[260px]"
+                                className="w-[200px]"
                                 value={dateFilterData}
                                 onChange={(newValue) => handleChangeDateFilter(newValue)}
                             />
