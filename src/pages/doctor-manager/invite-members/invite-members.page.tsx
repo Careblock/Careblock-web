@@ -104,7 +104,7 @@ function InviteMembersPage() {
                     accountId: doctor.id,
                     notificationTypeId: NotificationType.Invite,
                     departmentId: doctor.departmentId,
-                    message: `${getNotNullString(userData?.firstname, 'Someone')} invited you to join `,
+                    message: '',
                     originId: userData?.id,
                     isRead: false,
                 } as Notifications)
@@ -120,7 +120,7 @@ function InviteMembersPage() {
                         accountId: doctor.id,
                         notificationTypeId: NotificationType.Invite,
                         departmentId: doctor.departmentId,
-                        message: `${getNotNullString(userData?.firstname, 'Someone')} invited you to join `,
+                        message: '',
                         originId: userData?.id,
                         isRead: false,
                     } as Notifications);
