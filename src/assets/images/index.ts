@@ -64,6 +64,7 @@ import {
 } from 'react-icons/io';
 import Logo from '@/assets/images/common/logo.jpg';
 import PageNotFound from '@/assets/images/common/notfound.png';
+import Forbidden from '@/assets/images/common/forbidden.png';
 import NoData from '@/assets/images/common/nodata.png';
 import BgNodata from '@/assets/images/common/bg-nodata.png';
 import PatientWaiting from '@/assets/images/appoinment/patients-waiting-for-doctor-appointment.png';
@@ -130,6 +131,7 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 export const Images = {
     Logo,
     PageNotFound,
+    Forbidden,
     MdAddCircleOutline,
     MdMeetingRoom,
     MdEdit,

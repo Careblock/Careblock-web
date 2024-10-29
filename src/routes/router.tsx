@@ -11,9 +11,11 @@ import {
 import Loading from '@/components/base/loading/loading.component';
 import DefaultLayout from '../layouts/default/default.layout';
 import NotFoundPage from '../pages/error/notfound.page';
+import Forbidden from '@/pages/error/forbidden.page';
 import DoctorLayout from '@/layouts/doctor/doctor.layout';
 import PatientLayout from '@/layouts/patient/patient.layout';
 import DoctorManagerLayout from '@/layouts/doctor-manager/doctor-manager.layout';
+import { PATHS } from '@/enums/RoutePath';
 
 const Routes = () => {
     const { userData, isLoading } = useAuth() as AuthContextType;
@@ -27,6 +29,11 @@ const Routes = () => {
             element: <DefaultLayout />,
             errorElement: <NotFoundPage />,
             children: [...(!userData ? routesForNotAuthenticatedOnly : []), ...routesForPublic],
+        },
+        {
+            path: PATHS.FORBIDDEN,
+            element: <Forbidden />,
+            errorElement: <NotFoundPage />,
         },
         {
             element: <DoctorLayout />,

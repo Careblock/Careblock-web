@@ -18,10 +18,10 @@ export const ProtectedRoute = ({
     allowedRoles.forEach((roles) => {
         if (!userData.roles?.includes(roles)) {
             isValid = false;
-            return <Navigate to={PATHS.NOTFOUND} replace />;
+            return <Navigate to={PATHS.FORBIDDEN} replace />;
         }
     });
 
     if (isValid) return <Outlet />;
-    else return <Navigate to={PATHS.NOTFOUND} replace />;
+    else return <Navigate to={PATHS.FORBIDDEN} replace />;
 };

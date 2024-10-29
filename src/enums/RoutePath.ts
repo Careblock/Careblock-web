@@ -33,6 +33,7 @@ export enum PATHS {
     APPOINTMENT_HISTORIES = '/appoiment-histories',
     // Error
     NOTFOUND = '*',
+    FORBIDDEN = '/forbidden',
     // User information
     USER_INFO = '/user/info',
 }
