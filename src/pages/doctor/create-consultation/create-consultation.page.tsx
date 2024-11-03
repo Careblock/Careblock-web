@@ -6,11 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import { CreateConsultationType } from './create-consultation.type';
-import { addToast } from '@/components/base/toast/toast.service';
-import AppointmentDetailService from '@/services/appointmentDetail.service';
-import { SystemMessage } from '@/constants/message.const';
 import useObservable from '@/hooks/use-observable.hook';
-import { useAuth } from '@/contexts/auth.context';
 import { Images } from '@/assets/images';
 import DynamicResult from '@/components/others/dynamic-result/dynamic-result.component';
 import { FormType } from '@/enums/FormType';
@@ -35,7 +31,6 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
 export default function CreateConsultation({
     visible,
     setVisible,
-    patientId,
     clickedSave,
     appointmentId,
 }: CreateConsultationType) {

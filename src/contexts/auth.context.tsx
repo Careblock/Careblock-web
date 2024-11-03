@@ -14,7 +14,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [isLoading, setIsLoading] = useState(true);
     const [userData, setUserData] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(getCookieHelper(localStorageKeys.USER_TOKEN));
+    const [token] = useState<string | null>(getCookieHelper(localStorageKeys.USER_TOKEN));
 
     const { removeCookie } = CookieManager();
     const { subscribeOnce } = useObservable();

@@ -3,7 +3,6 @@ import { NotificationItemType } from './notification.type';
 
 const NotificationItem = ({
     isRead,
-    link,
     message,
     type,
     onClickAccept,

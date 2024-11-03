@@ -2,12 +2,11 @@ import { catchError, finalize, map, Observable, of, Subject, throwError } from '
 import { ajax, AjaxResponse } from 'rxjs/ajax';
 import { HttpMethod, HttpOptions, ProgressOptions, RequestContentType } from './http.type';
 import { isNullOrUndefined, nullSafetyJSONStringify, resolveUri } from '../../utils/common.helpers';
-import { localStorageKeys, REFRESH_TOKEN_KEY } from '../../constants/common.const';
+import { localStorageKeys } from '../../constants/common.const';
 import { addToast } from '@/components/base/toast/toast.service';
 import { SystemMessage } from '../../constants/message.const';
 import { isStringEmpty } from '../../utils/string.helper';
 import { getCookieHelper } from '../../utils/cookie.helper';
-import { Environment } from '../../environment';
 import StorageService from '../storage.service';
 
 class _HttpService {
@@ -177,32 +176,32 @@ class _HttpService {
         return ajaxResponse.response.data;
     }
 
-    private refreshToken(): Observable<any> {
-        const refreshToken = StorageService.get(REFRESH_TOKEN_KEY);
+    // private refreshToken(): Observable<any> {
+    //     const refreshToken = StorageService.get(REFRESH_TOKEN_KEY);
 
-        if (!refreshToken) {
-            return throwError(() => new Error('Refresh token is missing.'));
-        }
+    //     if (!refreshToken) {
+    //         return throwError(() => new Error('Refresh token is missing.'));
+    //     }
 
-        const url = `${Environment.BASE_API}/refresh-token`;
+    //     const url = `${Environment.BASE_API}/refresh-token`;
 
-        const headers = {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${refreshToken}`,
-        };
+    //     const headers = {
+    //         'Content-Type': 'application/json',
+    //         Authorization: `Bearer ${refreshToken}`,
+    //     };
 
-        return ajax({
-            url,
-            method: HttpMethod.POST,
-            headers,
-        }).pipe(
-            map((ajaxResponse) => ajaxResponse.response),
-            catchError((): Observable<any> => {
-                // Xử lý lỗi refresh token, có thể đưa người dùng đến trang đăng nhập lại.
-                return throwError(() => new Error('Failed to refresh token.'));
-            })
-        );
-    }
+    //     return ajax({
+    //         url,
+    //         method: HttpMethod.POST,
+    //         headers,
+    //     }).pipe(
+    //         map((ajaxResponse) => ajaxResponse.response),
+    //         catchError((): Observable<any> => {
+    //             // Xử lý lỗi refresh token, có thể đưa người dùng đến trang đăng nhập lại.
+    //             return throwError(() => new Error('Failed to refresh token.'));
+    //         })
+    //     );
+    // }
 
     private generateHttpParams(params: object) {
         const httpParams: string[] = [];

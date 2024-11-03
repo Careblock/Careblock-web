@@ -12,6 +12,9 @@ export default defineConfig({
             '@': '/src',
         },
     },
+    build: {
+        target: 'esnext',
+    },
     css: {
         postcss: {
             plugins: [tailwindcss()],

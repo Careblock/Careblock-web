@@ -87,7 +87,7 @@ function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Pro
         console.log(temp);
     };
 
-    const getDisplayDateTime = (field: DynamicFieldType) => {
+    const getDisplayDateTime = (_: DynamicFieldType) => {
         const dateTime = new Date();
         const date = dateTime.getDate().toString();
         const month = (dateTime.getMonth() + 1).toString();
@@ -136,7 +136,7 @@ function DynamicResult({ type, datasource, classes, onClickConvertToImage }: Pro
                 return (
                     <DateTimePicker
                         name={field.fieldName}
-                        onChange={(value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) =>
+                        onChange={(value: Dayjs | null, _: PickerChangeHandlerContext<DateTimeValidationError>) =>
                             handleSetFieldValue(field, value)
                         }
                     />
