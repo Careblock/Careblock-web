@@ -33,6 +33,7 @@ const AppointmentPage = () => {
     });
 
     useEffect(() => {
+        if (!userData) return;
         subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
             if (res) {
                 setExtraData(res);
