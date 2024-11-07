@@ -9,6 +9,7 @@ export enum SystemMessage {
     CHANGE_PASSWORD_SUCCESS = 'Change password successfully',
     MAKE_AN_APPOINTMENT_SUCCESS = 'Successfully scheduled an appointment',
     INSERT_DIAGNOSTIC_SUCCESS = 'Successfully inserted a dianostic',
+    INSERT_DIAGNOSTIC_FAILED = 'Insert the dianostic failed',
     EDIT_PROFILE = 'Edit profile successfully!',
     EDIT_ORGANIZATION = 'Edit organization successfully!',
     ADD_DEPARTMENT = 'Add new department successfully!',
@@ -34,4 +35,5 @@ export enum SystemMessage {
     INVITE_MEMBER = 'Invitation sent successfully!',
     JOIN_ORG = 'Participate in organization successfully!',
     JOIN_ORG_FAILED = 'Participate in organization failed!',
+    EXAMINATION_REQUIRED = 'Examination Option is required!',
 }

@@ -132,6 +132,7 @@ const DoctorSchedulePage = () => {
     const handleClickSave = () => {
         setTimeout(() => {
             getDataSource();
+            setDetailsInfo(undefined);
         }, 500);
     };
 

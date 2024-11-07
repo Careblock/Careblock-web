@@ -13,11 +13,20 @@ import { FormType } from '@/enums/FormType';
 import { dynamicFieldData } from '@/mocks/dynamic-field';
 import { jsPDF } from 'jspdf';
 import { toPng } from 'html-to-image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { DynamicFieldType } from '@/types/dynamic-field.type';
 import AccountService from '@/services/account.service';
 import { DataDefaults } from '@/types/dataDefault.type';
 import { cloneDeep } from 'lodash';
+import { DynamicField } from '@/enums/DynamicField';
+import { addToast } from '@/components/base/toast/toast.service';
+import { SystemMessage } from '@/constants/message.const';
+import AppointmentDetailService from '@/services/appointmentDetail.service';
+import { Appointments } from '@/types/appointment.type';
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { ExaminationOptions } from '@/types/examinationOption.type';
+import ExaminationOptionService from '@/services/examinationResult.service';
+import { EMPTY_GUID } from '@/constants/common.const';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -34,31 +43,54 @@ export default function CreateConsultation({
     clickedSave,
     appointmentId,
 }: CreateConsultationType) {
+    const dynamicRef = useRef(null);
+    const dataRef = useRef(null);
+    const [formType, setFormType] = useState(FormType.Create);
     const { subscribeOnce } = useObservable();
     const [dataSource, setDataSource] = useState<DynamicFieldType[]>(getInitialData());
+    const [appointment, setAppointment] = useState<Appointments>({});
+    const [examinationOption, setExaminationOption] = useState<string>('');
+    const [examinationOptions, setExaminationOptions] = useState<ExaminationOptions[]>([]);
 
     useEffect(() => {
+        if (visible) {
+            getDefaultData();
+            getExaminationOptions();
+        }
+    }, [visible]);
+
+    const getExaminationOptions = () => {
+        subscribeOnce(ExaminationOptionService.getByPackage(appointmentId), (res: ExaminationOptions[]) => {
+            setExaminationOptions(res);
+        });
+    };
+
+    const getDefaultData = () => {
         subscribeOnce(AccountService.getDefaultData(appointmentId), (res: DataDefaults) => {
+            setAppointment({
+                id: res.id,
+                doctorId: res.doctorId,
+            });
             let temp = cloneDeep(dataSource);
-            temp[0].images = [res.organizationThumbnail ?? ''];
-            temp[1].value = res.organizationName;
-            temp[2].value = res.organizationAddress;
-            temp[3].value = res.organizationTel;
-            temp[4].value = res.organizationTel;
-            temp[5].value = res.organizationUrl;
-            temp[8].value = res.fullName;
-            temp[9].value = res.dateOfBirth ?? '';
-            temp[10].value = res.gender;
-            temp[11].value = res.address;
-            temp[21].value = Date.now();
-            temp[23].value = res.doctorId;
-            temp[23].displayValue = res.doctorName;
-            temp[24].value = res.doctorId;
-            temp[24].displayValue = res.doctorName;
+            temp[DynamicField.Brand].images = [res.organizationThumbnail ?? ''];
+            temp[DynamicField.Organization].value = res.organizationName ? `${res.organizationName} hospital` : '';
+            temp[DynamicField.OrganizationAddress].value = res.organizationAddress ?? '';
+            temp[DynamicField.OrganizationTel].value = res.organizationTel ?? '';
+            temp[DynamicField.OrganizationFax].value = res.organizationFax ?? '';
+            temp[DynamicField.OrganizationWebsite].value = res.organizationUrl ?? '';
+            temp[DynamicField.Fullname].value = res.fullName ?? '';
+            temp[DynamicField.YearOfBirth].value = res.dateOfBirth ?? '';
+            temp[DynamicField.Gender].value = res.gender ?? '';
+            temp[DynamicField.Address].value = res.address ?? '';
+            temp[DynamicField.Datetime].value = Date.now();
+            temp[DynamicField.DoctorName].value = res.doctorId ?? '';
+            temp[DynamicField.DoctorName].displayValue = res.doctorName ?? '';
+            temp[DynamicField.DoctorDD].value = res.doctorId ?? '';
+            temp[DynamicField.DoctorDD].displayValue = res.doctorName ?? '';
 
             setDataSource(temp);
         });
-    }, []);
+    };
 
     function getInitialData() {
         return cloneDeep(dynamicFieldData);
@@ -68,16 +100,66 @@ export default function CreateConsultation({
         setVisible(false);
     };
 
-    const handleClickSave = () => {
-        // subscribeOnce(AppointmentDetailService.insert(diagnostics), (_: string) => {
-        //     addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: 'top-right' });
-        clickedSave();
-        // });
+    const getFilePDF = async () => {
+        let theFile;
+
+        await toPng(dynamicRef.current as unknown as HTMLElement)
+            .then(function (dataUrl: any) {
+                let img = new Image();
+                img.src = dataUrl;
+
+                const doc = new jsPDF();
+                const imgProps = doc.getImageProperties(img);
+                const pdfWidth = (doc.internal.pageSize.getWidth() * 90) / 100;
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                const pdfX = (doc.internal.pageSize.getWidth() - pdfWidth) / 2;
+
+                doc.addImage(img, 'PNG', pdfX, 20, pdfWidth, pdfHeight);
+
+                // Tạo Blob từ PDF
+                const pdfBlob = doc.output('blob');
+                // Tạo một đối tượng File từ Blob
+                const pdfFile = new File([pdfBlob], 'result.pdf', { type: 'application/pdf' });
+                theFile = pdfFile;
+            })
+            .catch(function (error: any) {
+                console.error('Oops, something went wrong!', error);
+            });
+
+        return theFile;
+    };
+
+    const handleClickSave = async () => {
+        if (!examinationOption) {
+            addToast({ text: SystemMessage.EXAMINATION_REQUIRED, position: 'top-right', status: 'inValid' });
+            return;
+        }
+        setFormType(FormType.Detail);
+        const file = await getFilePDF();
+        const payload = {
+            examinationOptionId: examinationOption,
+            appointmentId: appointment.id ?? '',
+            doctorId: appointment.doctorId ?? '',
+            diagnostic: JSON.stringify(dataRef.current),
+            price: '0',
+            filePDF: file,
+        };
+
+        subscribeOnce(AppointmentDetailService.insert(payload), (id: string) => {
+            if (id !== EMPTY_GUID) {
+                setVisible(false);
+                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: 'top-right' });
+                clickedSave();
+            } else {
+                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_FAILED, position: 'top-right', status: 'inValid' });
+                setFormType(FormType.Create);
+            }
+        });
         handleClose();
     };
 
-    const onClickConvertToImage = (dynamicRef: any) => {
-        toPng(dynamicRef.current)
+    const onClickConvertToImage = () => {
+        toPng(dynamicRef.current as unknown as HTMLElement)
             .then(function (dataUrl: any) {
                 let img = new Image();
                 img.src = dataUrl;
@@ -117,21 +199,47 @@ export default function CreateConsultation({
 
             {/* Content */}
             <DialogContent dividers>
+                {formType === FormType.Create && (
+                    <div className="flex items-center space-x-[16px] mb-[16px]">
+                        <p className="font-semibold text-[18px]">Choose an examination option: </p>
+                        <Select
+                            name="option"
+                            value={examinationOption}
+                            size="small"
+                            className="w-[200px]"
+                            onChange={(event: SelectChangeEvent<any>) => setExaminationOption(event.target.value)}
+                        >
+                            {examinationOptions?.map((item) => (
+                                <MenuItem key={item.id} value={item.id}>
+                                    {item.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </div>
+                )}
                 <DynamicResult
-                    type={FormType.Create}
+                    ref={dynamicRef}
+                    type={formType}
                     datasource={dataSource}
-                    onClickConvertToImage={onClickConvertToImage}
+                    setDataSubmit={(data: any) => (dataRef.current = data)}
                 />
             </DialogContent>
 
             {/* Footer */}
             <DialogActions>
-                <Button variant="contained" autoFocus onClick={handleClickSave}>
-                    Create
-                </Button>
-                <Button variant="text" color="error" autoFocus onClick={handleClose}>
-                    Cancel
-                </Button>
+                <div className="flex items-center justify-between w-full">
+                    <Button variant="contained" onClick={onClickConvertToImage}>
+                        Convert to pdf
+                    </Button>
+                    <div className="flex items-center gap-x-[10px]">
+                        <Button variant="contained" autoFocus onClick={handleClickSave}>
+                            Create
+                        </Button>
+                        <Button variant="text" color="error" autoFocus onClick={handleClose}>
+                            Cancel
+                        </Button>
+                    </div>
+                </div>
             </DialogActions>
         </StyledDialog>
     );
