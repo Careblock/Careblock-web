@@ -8,5 +8,8 @@ export const INITIAL_ORGANIZATION_VALUES = {
         address: '',
         mapUrl: '',
         thumbnail: '',
+        tel: '',
+        website: '',
+        fax: '',
     } as Organizations,
 };

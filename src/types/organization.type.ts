@@ -7,4 +7,7 @@ export interface Organizations {
     address?: string;
     mapUrl?: string;
     thumbnail?: string;
+    tel?: string;
+    website?: string;
+    fax?: string;
 }

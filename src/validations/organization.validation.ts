@@ -9,4 +9,7 @@ export const organizationSchema = createValidation({
     district: Yup.string().required(formatString(Resource.validation.required, 'District')),
     address: Yup.string().required(formatString(Resource.validation.required, 'Address')),
     mapUrl: Yup.string().required(formatString(Resource.validation.required, 'Map URL')),
+    tel: Yup.string().required(formatString(Resource.validation.required, 'Tel')),
+    website: Yup.string().required(formatString(Resource.validation.required, 'Website')),
+    fax: Yup.string().required(formatString(Resource.validation.required, 'Fax')),
 });

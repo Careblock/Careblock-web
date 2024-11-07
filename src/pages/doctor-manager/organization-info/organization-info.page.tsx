@@ -41,11 +41,14 @@ function OrganizationInfoPage() {
     useEffect(() => {
         if (organizationInfo) {
             const updatedOrganizationInfo = { ...organizationInfo };
-            formik.setFieldValue('name', updatedOrganizationInfo.name);
-            formik.setFieldValue('city', updatedOrganizationInfo.city);
-            formik.setFieldValue('district', updatedOrganizationInfo.district);
-            formik.setFieldValue('address', updatedOrganizationInfo.address);
-            formik.setFieldValue('mapUrl', updatedOrganizationInfo.mapUrl);
+            formik.setFieldValue('name', updatedOrganizationInfo.name ?? '');
+            formik.setFieldValue('city', updatedOrganizationInfo.city ?? '');
+            formik.setFieldValue('district', updatedOrganizationInfo.district ?? '');
+            formik.setFieldValue('address', updatedOrganizationInfo.address ?? '');
+            formik.setFieldValue('mapUrl', updatedOrganizationInfo.mapUrl ?? '');
+            formik.setFieldValue('tel', updatedOrganizationInfo.tel ?? '');
+            formik.setFieldValue('website', updatedOrganizationInfo.website ?? '');
+            formik.setFieldValue('fax', updatedOrganizationInfo.fax ?? '');
         }
     }, [organizationInfo]);
 
@@ -180,7 +183,7 @@ function OrganizationInfoPage() {
                         </div>
                     </div>
                     <div className="flex mb-3 gap-x-3">
-                        <div className="w-full">
+                        <div className="flex flex-col w-1/2">
                             <h4 className="text-left mb-2">Map URL</h4>
                             <TextField
                                 className="w-full rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
@@ -193,6 +196,53 @@ function OrganizationInfoPage() {
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.mapUrl && Boolean(formik.errors.mapUrl)}
                                 helperText={formik.touched.mapUrl && formik.errors.mapUrl}
+                            />
+                        </div>
+                        <div className="flex flex-col w-1/2">
+                            <h4 className="text-left mb-2">Website</h4>
+                            <TextField
+                                className="w-full rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
+                                name="website"
+                                placeholder="Type value"
+                                type="text"
+                                size="small"
+                                value={formik.values.website}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.website && Boolean(formik.errors.website)}
+                                helperText={formik.touched.website && formik.errors.website}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex mb-3 gap-x-3">
+                        <div className="flex flex-col w-1/2">
+                            <h4 className="text-left mb-2">Tel</h4>
+                            <TextField
+                                className="w-full rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
+                                name="tel"
+                                placeholder="Type value"
+                                type="text"
+                                size="small"
+                                value={formik.values.tel}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.tel && Boolean(formik.errors.tel)}
+                                helperText={formik.touched.tel && formik.errors.tel}
+                            />
+                        </div>
+                        <div className="flex flex-col w-1/2">
+                            <h4 className="text-left mb-2">Fax</h4>
+                            <TextField
+                                className="w-full rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
+                                name="fax"
+                                placeholder="Type value"
+                                type="text"
+                                size="small"
+                                value={formik.values.fax}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.fax && Boolean(formik.errors.fax)}
+                                helperText={formik.touched.fax && formik.errors.fax}
                             />
                         </div>
                     </div>
