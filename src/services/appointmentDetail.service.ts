@@ -1,12 +1,15 @@
-import { AppointmentDetails } from '@/types/appointmentDetail.type';
 import HttpService from './http/http.service';
+import { RequestContentType } from './http/http.type';
 
 class _AppointmentDetailService {
-    public insert(diagnostic: AppointmentDetails) {
-        return HttpService.post<string>(`/AppointmentDetail/create`, { body: { ...diagnostic } });
+    public insert(payload: any) {
+        return HttpService.post<string>(`/AppointmentDetail/create`, {
+            body: { ...payload },
+            requestContentType: RequestContentType.MULTIPART,
+        });
     }
 }
 
-const DiagnosticService = new _AppointmentDetailService();
+const AppointmentDetailService = new _AppointmentDetailService();
 
-export default DiagnosticService;
+export default AppointmentDetailService;

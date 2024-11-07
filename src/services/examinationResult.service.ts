@@ -12,6 +12,10 @@ class _ExaminationOptionService {
         });
     }
 
+    public getByPackage(examinationPackageId: string) {
+        return HttpService.get<ExaminationOptions[]>(`/ExaminationOption/get-by-package/${examinationPackageId}`);
+    }
+
     public insert(result: ExaminationOptions) {
         return HttpService.post<string>(`/ExaminationOption/create`, {
             body: { ...result },

@@ -5,5 +5,5 @@ export interface Props {
     type: FormType;
     classes?: string;
     datasource: DynamicFieldType[];
-    onClickConvertToImage: Function;
+    setDataSubmit: Function;
 }

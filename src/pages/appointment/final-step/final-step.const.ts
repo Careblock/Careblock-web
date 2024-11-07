@@ -6,7 +6,7 @@ export const getInitValue = (extraData: any) => {
     return {
         patientId: '',
         status: APPOINTMENT_STATUS.ACTIVE,
-        name: `${extraData?.firstname} ${extraData?.lastname}`,
+        name: extraData ? `${extraData?.firstname} ${extraData?.lastname}` : '',
         gender: extraData?.gender ?? GENDER.MALE,
         phone: extraData?.phone,
         email: extraData?.email,

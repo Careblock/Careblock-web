@@ -51,5 +51,6 @@ module.exports = {
         'react/prop-types': 'off',
         'no-case-declarations': 'off',
         '@typescript-eslint/prefer-optional-chain': 'off',
+        'react/display-name': 'off',
     },
 };

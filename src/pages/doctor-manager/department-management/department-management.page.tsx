@@ -94,7 +94,7 @@ function DepartmentManagement() {
         setSearchValue(event.target.value);
     };
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (_: unknown, newPage: number) => {
         setPage(newPage);
     };
 
