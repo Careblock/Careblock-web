@@ -81,6 +81,7 @@ function Register() {
 
     const onChangeOrganization = (event: any) => {
         formik.setFieldValue('departmentId', '');
+        if (!event.target?.value) return;
         subscribeOnce(DepartmentService.getByOrganization(event.target.value), (res: any) => {
             setDepartment(res.map((data: any) => ({ name: data.name, departmentId: data.id })));
         });

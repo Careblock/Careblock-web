@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
-import { AuthContextType } from '@/types/auth.type';
 import { addToast } from '@/components/base/toast/toast.service';
 import useObservable from '@/hooks/use-observable.hook';
-import { useAuth } from '@/contexts/auth.context';
 import { setTitle } from '@/utils/document';
 import {
     Button,
@@ -10,9 +8,7 @@ import {
     DialogContent,
     DialogTitle,
     InputAdornment,
-    MenuItem,
     Paper,
-    Select,
     Table,
     TableBody,
     TableCell,
@@ -33,19 +29,15 @@ import DefaultThumbnail from '@/assets/images/common/package.jpg';
 import ExaminationTypeService from '@/services/examinationType.service';
 import { ExaminationTypes } from '@/types/examinationType.type';
 import { columns } from './examination-type.const';
-import ExaminationPackageService from '@/services/examinationPackage.service';
-import { ExaminationPackages } from '@/types/examinationPackage.type';
 
 function ExaminationType() {
     const { subscribeOnce } = useObservable();
-    const { userData } = useAuth() as AuthContextType;
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [examinationTypes, setExaminationTypes] = useState<any[]>([]);
     const [examinationTypesDisplays, setExaminationTypesDisplays] = useState<any[]>([]);
-    const [examinationPackages, setExaminationPackages] = useState<any[]>([]);
     const [isVisiblePopupAdd, setIsVisiblePopupAdd] = useState<boolean>(false);
     const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
     const [mode, setMode] = useState<FormMode>(FormMode.Add);
@@ -70,8 +62,6 @@ function ExaminationType() {
         if (!isVisiblePopupAdd) {
             formik.resetForm();
             setMode(FormMode.Add);
-        } else {
-            getExaminationPackages();
         }
     }, [isVisiblePopupAdd]);
 
@@ -83,19 +73,12 @@ function ExaminationType() {
                 }
             });
             setExaminationTypesDisplays(result);
+            setPage(0);
         } else setInitialized(false);
     }, [searchValue]);
 
-    const getExaminationPackages = () => {
-        subscribeOnce(ExaminationPackageService.getByOrganization(userData!.id), (res: ExaminationPackages[]) => {
-            if (res) {
-                setExaminationPackages(res);
-            }
-        });
-    };
-
     const getDatasource = () => {
-        subscribeOnce(ExaminationTypeService.getByUserId(userData!.id), (res: ExaminationTypes[]) => {
+        subscribeOnce(ExaminationTypeService.getAll(), (res: ExaminationTypes[]) => {
             if (res) {
                 setExaminationTypes(res);
                 setExaminationTypesDisplays(res);
@@ -122,7 +105,6 @@ function ExaminationType() {
         formik.setFieldValue('id', examinationType.id);
         formik.setFieldValue('name', examinationType.name);
         formik.setFieldValue('thumbnail', examinationType.thumbnail);
-        formik.setFieldValue('examinationPackageId', examinationType.examinationPackageId);
         setIsVisiblePopupAdd(true);
     };
 
@@ -144,13 +126,11 @@ function ExaminationType() {
         setIsVisiblePopupConfirm(false);
     };
 
-    const handleChangeExaminationPackage = ($event: any) => {
-        formik.setFieldValue('examinationPackageId', $event.target.value);
-    };
-
     const handleConfirmDelete = () => {
-        subscribeOnce(ExaminationTypeService.delete(formik.values.id!), (res: any) => {
+        if (!formik.values?.id) return;
+        subscribeOnce(ExaminationTypeService.delete(formik.values.id), (res: any) => {
             if (!res.isError) {
+                setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
                 addToast({ text: SystemMessage.DELETE_EXAMINATION_TYPE, position: 'top-right' });
@@ -165,11 +145,6 @@ function ExaminationType() {
 
     const handleSubmit = (values: ExaminationTypes) => {
         if (mode === FormMode.Add) {
-            if (!formik.values.examinationPackageId) {
-                addToast({ text: SystemMessage.LACK_OF_PACKAGE, position: 'top-right', status: 'inValid' });
-                return;
-            }
-
             subscribeOnce(
                 ExaminationTypeService.insert({
                     ...values,
@@ -185,8 +160,9 @@ function ExaminationType() {
                 }
             );
         } else {
+            if (!values?.id) return;
             subscribeOnce(
-                ExaminationTypeService.update(values.id!, {
+                ExaminationTypeService.update(values.id, {
                     ...values,
                     thumbnail: selectedFile ?? examinationType?.thumbnail,
                 }),
@@ -269,7 +245,7 @@ function ExaminationType() {
                                                     <TableCell key={column.id} align={column.align}>
                                                         {column.id === 'thumbnail' ? (
                                                             <img
-                                                                src={value ?? DefaultThumbnail}
+                                                                src={value ? value : DefaultThumbnail}
                                                                 alt="Thumbnail"
                                                                 className="w-[100px] h-[60px] object-cover"
                                                             />
@@ -369,24 +345,6 @@ function ExaminationType() {
                                 helperText={formik.touched.name && formik.errors.name}
                             />
                         </div>
-                        {mode === FormMode.Add && (
-                            <div className="flex flex-col w-full">
-                                <div>Examination package:</div>
-                                <Select
-                                    className="w-full"
-                                    size="medium"
-                                    displayEmpty
-                                    value={formik.values.examinationPackageId}
-                                    onChange={($event: any) => handleChangeExaminationPackage($event)}
-                                >
-                                    {examinationPackages.map((item: any) => (
-                                        <MenuItem key={item.id} value={item.id}>
-                                            {item.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </div>
-                        )}
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
                             <Button variant="text" onClick={handleClosePopupAdd}>
                                 Cancel

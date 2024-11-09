@@ -21,8 +21,8 @@ class _ExaminationPackageService {
         return HttpService.get<ExaminationPackages[]>(`/examinationPackage/get-by-organization/${userId}`);
     }
 
-    public insert(examinationPackage: ExaminationPackages) {
-        return HttpService.post<string>(`/examinationPackage/create`, {
+    public insert(examinationPackage: ExaminationPackages, userId: string) {
+        return HttpService.post<string>(`/examinationPackage/create/${userId}`, {
             body: { ...examinationPackage },
             requestContentType: RequestContentType.MULTIPART,
         });

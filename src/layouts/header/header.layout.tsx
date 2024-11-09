@@ -69,7 +69,8 @@ const HeaderLayout = () => {
     const email = userInfo?.email;
 
     const getUserInfor = () => {
-        subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
+        if (!userData?.id) return;
+        subscribeOnce(AccountService.getById(userData.id), (res: User) => {
             if (res) {
                 setUserInfo(res);
             }
@@ -77,7 +78,8 @@ const HeaderLayout = () => {
     };
 
     const getNotificationDatas = () => {
-        subscribeOnce(NotificationService.getByUserId(userData?.id), (res: Notifications[]) => {
+        if (!userData?.id) return;
+        subscribeOnce(NotificationService.getByUserId(userData.id), (res: Notifications[]) => {
             if (res) {
                 setNotifications(res);
                 SetNotificationNumber(res.filter((noti: Notifications) => !noti.isRead).length);
@@ -132,6 +134,7 @@ const HeaderLayout = () => {
     };
 
     const getDepartmentData = (orgId: string) => {
+        if (!orgId) return;
         subscribeOnce(DepartmentService.getByOrganization(orgId), (res: any) => {
             if (res) setDepartments(res.map((data: any) => ({ name: data.name, departmentId: data.id })));
         });
@@ -146,7 +149,8 @@ const HeaderLayout = () => {
     };
 
     const handleClickDecline = (noti: Notifications) => {
-        subscribeOnce(NotificationService.decline(noti.id!), (res: boolean) => {
+        if (!noti?.id) return;
+        subscribeOnce(NotificationService.decline(noti.id), (res: boolean) => {
             if (res) {
                 getNotificationDatas();
             }
@@ -154,8 +158,8 @@ const HeaderLayout = () => {
     };
 
     const handleClickRead = (noti: Notifications) => {
-        if (!noti.isRead) {
-            subscribeOnce(NotificationService.updateIsRead(noti.id!), (res: Notifications) => {
+        if (!noti.isRead && noti?.id) {
+            subscribeOnce(NotificationService.updateIsRead(noti.id), (res: Notifications) => {
                 if (res) {
                     getNotificationDatas();
                 }
@@ -169,8 +173,9 @@ const HeaderLayout = () => {
     };
 
     const handleConfirmDepartment = () => {
+        if (!userData?.id) return;
         subscribeOnce(
-            AccountService.chooseDepartment(userData?.id, {
+            AccountService.chooseDepartment(userData.id, {
                 notificationId: notification?.id!,
                 departmentId: departmentId,
             }),

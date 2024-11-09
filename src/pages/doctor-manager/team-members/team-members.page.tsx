@@ -87,13 +87,15 @@ function TeamMembersPage() {
     }, [searchValue]);
 
     const getSpecialistData = () => {
-        subscribeOnce(SpecialistService.getByUserId(userData?.id), (res: Specialists[]) => {
+        if (!userData?.id) return;
+        subscribeOnce(SpecialistService.getByUserId(userData.id), (res: Specialists[]) => {
             setSpecialist(res);
         });
     };
 
     const getDoctorDatas = () => {
-        subscribeOnce(AccountService.getDoctorsOrg(Place.Inclusive, userData?.id), (res: Doctors[]) => {
+        if (!userData?.id) return;
+        subscribeOnce(AccountService.getDoctorsOrg(Place.Inclusive, userData.id), (res: Doctors[]) => {
             setDoctors(res);
             setDoctorDisplays(res.slice(0, 9));
             setTotalPage(Math.ceil(res.length / MAX_RECORE_PERPAGE));
@@ -165,7 +167,8 @@ function TeamMembersPage() {
     };
 
     const handleConfirmDelete = () => {
-        subscribeOnce(AccountService.removeDoctorFromOrg(deletedId!), (res: boolean) => {
+        if (!deletedId) return;
+        subscribeOnce(AccountService.removeDoctorFromOrg(deletedId), (res: boolean) => {
             if (res === true) {
                 setIsVisiblePopupConfirm(false);
                 addToast({
@@ -217,6 +220,7 @@ function TeamMembersPage() {
     };
 
     const handleGrantPermission = (permissionRequest: string[]) => {
+        if (!grantedDoctor.id) return;
         subscribeOnce(AccountService.grantPermission(grantedDoctor.id, permissionRequest), (res: boolean) => {
             if (res === true) {
                 setIsVisiblePopupGrant(false);
@@ -253,6 +257,7 @@ function TeamMembersPage() {
     };
 
     const handleConfirmEdit = () => {
+        if (!editDoctor.id) return;
         subscribeOnce(SpecialistService.assignSpecialist(editDoctor.id, selectedSpecialist), (res: boolean) => {
             if (res === true) {
                 setIsVisiblePopupEdit(false);

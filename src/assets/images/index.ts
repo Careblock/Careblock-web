@@ -113,6 +113,7 @@ import {
     RiPencilFill,
     RiTeamFill,
     RiAdminFill,
+    RiMedicineBottleFill,
 } from 'react-icons/ri';
 import {
     FaAngleLeft,
@@ -127,8 +128,10 @@ import {
     FaLocationDot,
 } from 'react-icons/fa6';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import { GiMedicines } from 'react-icons/gi';
 
 export const Images = {
+    GiMedicines,
     Logo,
     PageNotFound,
     Forbidden,
@@ -222,6 +225,7 @@ export const Images = {
     RiPencilFill,
     RiTeamFill,
     RiAdminFill,
+    RiMedicineBottleFill,
     MdDelete,
     FaBold,
     FaItalic,

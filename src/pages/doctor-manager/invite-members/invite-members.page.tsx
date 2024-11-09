@@ -59,7 +59,8 @@ function InviteMembersPage() {
     }, [searchValue]);
 
     const getDoctorDatas = () => {
-        subscribeOnce(AccountService.getDoctorsOrg(Place.Exclusive, userData?.id), (res: Doctors[]) => {
+        if (!userData?.id) return;
+        subscribeOnce(AccountService.getDoctorsOrg(Place.Exclusive, userData.id), (res: Doctors[]) => {
             setDoctors(res);
             setDoctorDisplays(res.slice(0, 9));
             setTotalPage(Math.ceil(res.length / MAX_RECORE_PERPAGE));

@@ -6,7 +6,6 @@ export const INITIAL_EXAMINATION_PACKAGES_VALUES = {
         name: '',
         thumbnail: '',
         organizationId: '',
-        examinationTypeId: '',
     } as ExaminationPackages,
 };
 
@@ -14,6 +13,5 @@ export const INITIAL_EXAMINATION_TYPES_VALUES = {
     INFORMATION: {
         name: '',
         thumbnail: '',
-        examinationPackageId: '',
     } as ExaminationTypes,
 };

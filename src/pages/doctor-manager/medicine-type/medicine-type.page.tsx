@@ -4,8 +4,6 @@ import { addToast } from '@/components/base/toast/toast.service';
 import useObservable from '@/hooks/use-observable.hook';
 import { useAuth } from '@/contexts/auth.context';
 import { setTitle } from '@/utils/document';
-import DepartmentService from '@/services/department.service';
-import { Departments } from '@/types/department.type';
 import {
     Button,
     Dialog,
@@ -22,40 +20,40 @@ import {
     TableRow,
     TextField,
 } from '@mui/material';
-import { columns } from './department-management.const';
 import { Images } from '@/assets/images';
 import { useFormik } from 'formik';
-import { INITIAL_DEPARTMENT_VALUES } from '@/constants/department.const';
-import { departmentSchema } from '@/validations/department.validation';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
 import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import { columns } from './medicine-type.const';
+import { MedicineTypes } from '@/types/medicineType.type';
+import MedicineTypeService from '@/services/medicineType.service';
+import { medicineTypesSchema } from '@/validations/medicine.validation';
+import { INITIAL_MEDICINE_TYPES_VALUES } from '@/constants/medicines.const';
 
-function DepartmentManagement() {
+function MedicineType() {
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [departments, setDepartments] = useState<any[]>([]);
-    const [departmentDisplays, setDepartmentDisplays] = useState<any[]>([]);
-    const [organizationId, setOrganizationId] = useState<string>('');
+    const [medicineTypes, setMedicineTypes] = useState<any[]>([]);
+    const [medicineTypesDisplays, setMedicineTypesDisplays] = useState<any[]>([]);
     const [isVisiblePopupAdd, setIsVisiblePopupAdd] = useState<boolean>(false);
     const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
     const [mode, setMode] = useState<FormMode>(FormMode.Add);
 
     const formik = useFormik({
-        initialValues: INITIAL_DEPARTMENT_VALUES.INFORMATION,
-        validationSchema: departmentSchema,
+        initialValues: INITIAL_MEDICINE_TYPES_VALUES.INFORMATION,
+        validationSchema: medicineTypesSchema,
         onSubmit: (values) => {
             handleSubmit(values);
         },
     });
 
     useEffect(() => {
-        setTitle('Departments | CareBlock');
-
+        setTitle('Medicine Types | CareBlock');
         getDatasource();
     }, []);
 
@@ -68,26 +66,21 @@ function DepartmentManagement() {
 
     useEffect(() => {
         if (!initialized) {
-            let result = departments.filter((department: Departments) => {
-                if (
-                    department.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
-                    department.location?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())
-                ) {
-                    return department;
+            let result = medicineTypes.filter((medicineType: MedicineTypes) => {
+                if (medicineType.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())) {
+                    return medicineType;
                 }
             });
-            setDepartmentDisplays(result);
-            setPage(0);
+            setMedicineTypesDisplays(result);
         } else setInitialized(false);
     }, [searchValue]);
 
     const getDatasource = () => {
         if (!userData?.id) return;
-        subscribeOnce(DepartmentService.getByUserId(userData.id), (res: Departments[]) => {
+        subscribeOnce(MedicineTypeService.getAll(), (res: MedicineTypes[]) => {
             if (res) {
-                setDepartments(res);
-                setOrganizationId(res[0].organizationId!);
-                setDepartmentDisplays(res);
+                setMedicineTypes(res);
+                setMedicineTypesDisplays(res);
             }
         });
     };
@@ -105,16 +98,15 @@ function DepartmentManagement() {
         setPage(0);
     };
 
-    const handleClickEdit = (department: Departments) => {
+    const handleClickEdit = (medicineType: MedicineTypes) => {
         setMode(FormMode.Update);
-        formik.setFieldValue('id', department.id);
-        formik.setFieldValue('name', department.name);
-        formik.setFieldValue('location', department.location);
+        formik.setFieldValue('id', medicineType.id);
+        formik.setFieldValue('name', medicineType.name);
         setIsVisiblePopupAdd(true);
     };
 
-    const handleClickRemove = (department: Departments) => {
-        formik.setFieldValue('id', department.id);
+    const handleClickRemove = (medicineType: MedicineTypes) => {
+        formik.setFieldValue('id', medicineType.id);
         setIsVisiblePopupConfirm(true);
     };
 
@@ -132,43 +124,46 @@ function DepartmentManagement() {
 
     const handleConfirmDelete = () => {
         if (!formik.values?.id) return;
-        subscribeOnce(DepartmentService.delete(formik.values.id), (res: any) => {
+        subscribeOnce(MedicineTypeService.delete(formik.values.id), (res: any) => {
             if (!res.isError) {
-                setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_DEPARTMENT, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_MEDICINE_TYPE, position: 'top-right' });
             }
         });
     };
 
-    const handleSubmit = (values: Departments) => {
+    const resetForm = () => {
+        formik.resetForm();
+    };
+
+    const handleSubmit = (values: MedicineTypes) => {
         if (mode === FormMode.Add) {
             subscribeOnce(
-                DepartmentService.insert({
+                MedicineTypeService.insert({
                     ...values,
-                    organizationId: organizationId,
                 }),
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_DEPARTMENT, position: 'top-right' });
+                        resetForm();
+                        addToast({ text: SystemMessage.ADD_MEDICINE_TYPE, position: 'top-right' });
                     }
                 }
             );
         } else {
             if (!values?.id) return;
             subscribeOnce(
-                DepartmentService.update(values.id, {
+                MedicineTypeService.update(values.id, {
                     ...values,
-                    organizationId: organizationId,
                 }),
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_DEPARTMENT, position: 'top-right' });
+                        resetForm();
+                        addToast({ text: SystemMessage.EDIT_MEDICINE_TYPE, position: 'top-right' });
                     }
                 }
             );
@@ -177,14 +172,16 @@ function DepartmentManagement() {
 
     return (
         <div className="h-full">
-            <div className="text-[24px]">Manage Departments</div>
-            <div className="text-[16px] mb-4">Set up all departments that your organization conduct business from.</div>
+            <div className="text-[24px]">Manage Medicine Types</div>
+            <div className="text-[16px] mb-4">
+                Set up all medicine types that your organization conduct business from.
+            </div>
             <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
                 <TextField
                     variant="outlined"
                     label="Search"
                     size="small"
-                    placeholder="Enter name or location"
+                    placeholder="Enter name"
                     className="w-[260px]"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
@@ -220,13 +217,13 @@ function DepartmentManagement() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {departmentDisplays
+                            {medicineTypesDisplays
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((department: Departments) => {
+                                .map((medicineType: MedicineTypes) => {
                                     return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={department.id}>
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={medicineType.id}>
                                             {columns.map((column) => {
-                                                const value = department[column.id];
+                                                const value = medicineType[column.id];
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
                                                         {column.format && typeof value === 'number'
@@ -239,11 +236,11 @@ function DepartmentManagement() {
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
                                                         className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
-                                                        onClick={() => handleClickEdit(department)}
+                                                        onClick={() => handleClickEdit(medicineType)}
                                                     />
                                                     <Images.MdDelete
                                                         className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
-                                                        onClick={() => handleClickRemove(department)}
+                                                        onClick={() => handleClickRemove(medicineType)}
                                                     />
                                                 </div>
                                             </TableCell>
@@ -257,7 +254,7 @@ function DepartmentManagement() {
                     rowsPerPageOptions={[10, 25, 100]}
                     component="div"
                     className="border-t bg-[#f4f4f4]"
-                    count={departmentDisplays.length}
+                    count={medicineTypesDisplays.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
@@ -269,7 +266,7 @@ function DepartmentManagement() {
             <Dialog open={isVisiblePopupAdd} onClose={handleClosePopupAdd}>
                 <DialogTitle>
                     <div className="flex items-center justify-between">
-                        <p>Add new department</p>
+                        <p>Add new medicine type</p>
                         <Images.MdCancel
                             className="cursor-pointer hover:text-[red] text-[26px]"
                             onClick={() => handleClosePopupAdd()}
@@ -278,32 +275,22 @@ function DepartmentManagement() {
                 </DialogTitle>
                 <DialogContent>
                     <form onSubmit={formik.handleSubmit} className="w-[400px] flex flex-col gap-y-[10px]">
-                        <TextField
-                            id="name"
-                            name="name"
-                            placeholder="Department name"
-                            type="text"
-                            fullWidth
-                            variant="outlined"
-                            value={formik.values.name}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.name && Boolean(formik.errors.name)}
-                            helperText={formik.touched.name && formik.errors.name}
-                        />
-                        <TextField
-                            id="location"
-                            name="location"
-                            placeholder="Enter location"
-                            type="text"
-                            fullWidth
-                            variant="outlined"
-                            value={formik.values.location}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.location && Boolean(formik.errors.location)}
-                            helperText={formik.touched.location && formik.errors.location}
-                        />
+                        <div className="flex flex-col w-full">
+                            <div>Type:</div>
+                            <TextField
+                                id="name"
+                                name="name"
+                                placeholder="Medicine type"
+                                type="text"
+                                fullWidth
+                                variant="outlined"
+                                value={formik.values.name}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.name && Boolean(formik.errors.name)}
+                                helperText={formik.touched.name && formik.errors.name}
+                            />
+                        </div>
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
                             <Button variant="text" onClick={handleClosePopupAdd}>
                                 Cancel
@@ -325,4 +312,4 @@ function DepartmentManagement() {
     );
 }
 
-export default DepartmentManagement;
+export default MedicineType;
