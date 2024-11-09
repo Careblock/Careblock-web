@@ -1,4 +1,4 @@
 export interface MedicineTypes {
-    id: string;
+    id?: number;
     name: string;
 }

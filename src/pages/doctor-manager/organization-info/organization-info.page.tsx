@@ -23,7 +23,8 @@ function OrganizationInfoPage() {
     useEffect(() => {
         setTitle('Organization | CareBlock');
 
-        subscribeOnce(OrganizationService.getByUserId(userData?.id), (res: Organizations) => {
+        if (!userData?.id) return;
+        subscribeOnce(OrganizationService.getByUserId(userData.id), (res: Organizations) => {
             if (res) {
                 setOrganizationInfo({ ...res });
             }
@@ -53,8 +54,9 @@ function OrganizationInfoPage() {
     }, [organizationInfo]);
 
     const handleSubmit = (values: Organizations) => {
+        if (!organizationInfo?.id) return;
         subscribeOnce(
-            OrganizationService.update(organizationInfo?.id, {
+            OrganizationService.update(organizationInfo.id, {
                 ...values,
                 thumbnail: selectedFile ?? organizationInfo.thumbnail,
             }),

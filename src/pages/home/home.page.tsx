@@ -24,17 +24,15 @@ const Homepage = () => {
         subscribeOnce(ExaminationTypeService.getAll(), (res: ExaminationTypes[]) => {
             const data = res;
             if (data) {
-                if (data) {
-                    let temp: CarouselDataSource[] = [];
-                    data.forEach((type) => {
-                        temp.push({
-                            id: `${type.id}`,
-                            avatar: type.thumbnail ?? '',
-                            title: type.name,
-                        });
+                let temp: CarouselDataSource[] = [];
+                data.forEach((type) => {
+                    temp.push({
+                        id: `${type.id}`,
+                        avatar: type.thumbnail ?? '',
+                        title: type.name,
                     });
-                    setCarouselDatasource(temp);
-                }
+                });
+                setCarouselDatasource(temp);
             }
         });
     }, []);

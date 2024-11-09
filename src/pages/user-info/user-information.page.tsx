@@ -26,7 +26,8 @@ function UserInfo() {
     useEffect(() => {
         setTitle('Information | CareBlock');
 
-        subscribeOnce(AccountService.getById(userData?.id), (res: User) => {
+        if (!userData?.id) return;
+        subscribeOnce(AccountService.getById(userData.id), (res: User) => {
             if (res) {
                 setUserInfo({ ...res, dateOfBirth: format(new Date(res?.dateOfBirth), 'yyyy-MM-dd') });
             }
@@ -56,23 +57,25 @@ function UserInfo() {
     }, [userInfo]);
 
     const handleSubmit = (values: AccountRequest) => {
-        subscribeOnce(
-            AccountService.update(userData?.id, {
-                ...values,
-                avatar: selectedFile ?? userInfo.avatar,
-            }),
-            (res: User) => {
-                try {
-                    if (res) {
-                        setUser(res);
-                        StorageService.setObject(localStorageKeys.USER_INFO, res);
-                        addToast({ text: SystemMessage.EDIT_PROFILE, position: 'top-right' });
+        if (userData?.id) {
+            subscribeOnce(
+                AccountService.update(userData.id, {
+                    ...values,
+                    avatar: selectedFile ?? userInfo.avatar,
+                }),
+                (res: User) => {
+                    try {
+                        if (res) {
+                            setUser(res);
+                            StorageService.setObject(localStorageKeys.USER_INFO, res);
+                            addToast({ text: SystemMessage.EDIT_PROFILE, position: 'top-right' });
+                        }
+                    } catch (err) {
+                        console.error(err);
                     }
-                } catch (err) {
-                    console.error(err);
                 }
-            }
-        );
+            );
+        }
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {

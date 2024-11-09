@@ -40,6 +40,7 @@ export const Login = ({ handleClose }: any) => {
             setCookie('stakeId', stakeId);
             setAssets(_assets);
             setLoading(false);
+            if (!stakeId) return;
             subscribeOnce(AuthService.hasAccount(stakeId), (res: any) => {
                 if (res === false) {
                     addToast({ text: SystemMessage.HAS_ACCOUNT, position: 'top-right', status: 'warn' });

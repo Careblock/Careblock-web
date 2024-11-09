@@ -31,6 +31,9 @@ export enum PATHS {
     EXAMINATION_TYPE = '/examination-type',
     EXAMINATION_PACKAGE = '/examination-package',
     APPOINTMENT_HISTORIES = '/appoiment-histories',
+    // Medical
+    MEDICINE_TYPE = '/medicine-type',
+    MEDICINES = '/medicines',
     // Error
     NOTFOUND = '*',
     FORBIDDEN = '/forbidden',

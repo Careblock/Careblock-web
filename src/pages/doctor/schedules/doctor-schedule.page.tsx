@@ -83,8 +83,9 @@ const DoctorSchedulePage = () => {
         setActivePatients(temp);
         if (postponedPatients) setPostponedPatients([...postponedPatients, patient]);
         else setPostponedPatients([patient]);
+        if (!patient.appointmentId) return;
         subscribeOnce(
-            AppointmentService.updateStatus(APPOINTMENT_STATUS.POSTPONED, patient.appointmentId!),
+            AppointmentService.updateStatus(APPOINTMENT_STATUS.POSTPONED, patient.appointmentId),
             (_: boolean) => {
                 getDataSource();
             }
@@ -98,8 +99,9 @@ const DoctorSchedulePage = () => {
             setPostponedPatients(temp);
             if (activePatients) setActivePatients([...activePatients, patient]);
             else setActivePatients([patient]);
+            if (!patient.appointmentId) return;
             subscribeOnce(
-                AppointmentService.updateStatus(APPOINTMENT_STATUS.ACTIVE, patient.appointmentId!),
+                AppointmentService.updateStatus(APPOINTMENT_STATUS.ACTIVE, patient.appointmentId),
                 (_: boolean) => {
                     getDataSource();
                 }
@@ -121,8 +123,9 @@ const DoctorSchedulePage = () => {
             let temp = postponedPatients?.filter((data) => data.id !== patient.id);
             setPostponedPatients(temp);
         }
+        if (!patient.appointmentId) return;
         subscribeOnce(
-            AppointmentService.updateStatus(APPOINTMENT_STATUS.REJECTED, patient.appointmentId!),
+            AppointmentService.updateStatus(APPOINTMENT_STATUS.REJECTED, patient.appointmentId),
             (_: boolean) => {
                 getDataSource();
             }
@@ -137,6 +140,7 @@ const DoctorSchedulePage = () => {
     };
 
     const handleClickItem = (id: string, appointmentId: string) => {
+        if (!id) return;
         subscribeOnce(AccountService.getById(id), (res: any) => {
             setDetailsInfo({
                 ...res,

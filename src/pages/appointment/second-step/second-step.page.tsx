@@ -38,7 +38,8 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
     }, []);
 
     const getExaminationPackageByType = () => {
-        subscribeOnce(ExaminationPackageService.getByType(examinationType!.id!), (res: any) => {
+        if (!examinationType?.id) return;
+        subscribeOnce(ExaminationPackageService.getByType(examinationType.id), (res: any) => {
             handleSetDatasource(res);
         });
     };
@@ -78,9 +79,9 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
     };
 
     useEffect(() => {
-        if (organization) {
+        if (organization && examinationType?.id) {
             subscribeOnce(
-                ExaminationPackageService.getByTypeAndOrganization(examinationType!.id!, organization),
+                ExaminationPackageService.getByTypeAndOrganization(examinationType.id, organization),
                 (res: any) => {
                     handleSetDatasource(res);
                 }

@@ -8,5 +8,5 @@ export interface Medicines {
     thumbnail?: string;
     createdDate?: string;
     modifiedDate?: string;
-    isDeleted: boolean;
+    isDeleted?: boolean;
 }

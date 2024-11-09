@@ -81,11 +81,13 @@ function SpecialistPage() {
                 }
             });
             setSpecialistsDisplays(result);
+            setPage(0);
         } else setInitialized(false);
     }, [searchValue]);
 
     const getDatasource = () => {
-        subscribeOnce(SpecialistService.getByUserId(userData!.id), (res: Specialists[]) => {
+        if (!userData?.id) return;
+        subscribeOnce(SpecialistService.getByUserId(userData.id), (res: Specialists[]) => {
             if (res) {
                 setSpecialists(res);
                 setOrganizationId(res[0].organizationId);
@@ -137,8 +139,10 @@ function SpecialistPage() {
     };
 
     const handleConfirmDelete = () => {
-        subscribeOnce(SpecialistService.delete(formik.values.id!), (res: any) => {
+        if (!formik.values?.id) return;
+        subscribeOnce(SpecialistService.delete(formik.values.id), (res: any) => {
             if (!res.isError) {
+                setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
                 addToast({ text: SystemMessage.DELETE_SPECIALIST, position: 'top-right' });
@@ -170,8 +174,9 @@ function SpecialistPage() {
                 }
             );
         } else {
+            if (!values?.id) return;
             subscribeOnce(
-                SpecialistService.update(values.id!, {
+                SpecialistService.update(values.id, {
                     ...values,
                     organizationId: organizationId,
                     isHidden: false,

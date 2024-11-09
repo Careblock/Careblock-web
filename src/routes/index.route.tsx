@@ -14,10 +14,12 @@ import TeamMembersPage from '@/pages/doctor-manager/team-members/team-members.pa
 import OrganizationInfoPage from '@/pages/doctor-manager/organization-info/organization-info.page';
 import DepartmentManagement from '@/pages/doctor-manager/department-management/department-management.page';
 import AppointmentHistories from '@/pages/doctor-manager/appointment-histories/appointment-histories.page';
+import MedicineType from '@/pages/doctor-manager/medicine-type/medicine-type.page';
 import ExaminationPackage from '@/pages/doctor-manager/examination-package/examination-package.page';
 import InviteMembersPage from '@/pages/doctor-manager/invite-members/invite-members.page';
 import SpecialistPage from '@/pages/doctor-manager/specialist/specialist.page';
 import ExaminationType from '@/pages/doctor-manager/examination-type/examination-type.page';
+import Medicines from '@/pages/doctor-manager/medicines/medicines.page';
 
 export const routesForNotAuthenticatedOnly = [
     { path: PATHS.REGISTER, element: <Register /> },
@@ -63,6 +65,8 @@ export const routesForDoctorManager = [
             { path: PATHS.SPECIALIST, element: <SpecialistPage /> },
             { path: PATHS.EXAMINATION_TYPE, element: <ExaminationType /> },
             { path: PATHS.EXAMINATION_PACKAGE, element: <ExaminationPackage /> },
+            { path: PATHS.MEDICINE_TYPE, element: <MedicineType /> },
+            { path: PATHS.MEDICINES, element: <Medicines /> },
             { path: PATHS.APPOINTMENT_HISTORIES, element: <AppointmentHistories /> },
         ],
     },

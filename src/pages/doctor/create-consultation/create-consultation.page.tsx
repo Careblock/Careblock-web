@@ -60,12 +60,14 @@ export default function CreateConsultation({
     }, [visible]);
 
     const getExaminationOptions = () => {
+        if (!appointmentId) return;
         subscribeOnce(ExaminationOptionService.getByPackage(appointmentId), (res: ExaminationOptions[]) => {
             setExaminationOptions(res);
         });
     };
 
     const getDefaultData = () => {
+        if (!appointmentId) return;
         subscribeOnce(AccountService.getDefaultData(appointmentId), (res: DataDefaults) => {
             setAppointment({
                 id: res.id,

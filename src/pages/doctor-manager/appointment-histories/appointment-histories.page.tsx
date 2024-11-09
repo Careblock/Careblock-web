@@ -44,7 +44,7 @@ const AppointmentHistories = () => {
             getDataSource(userData.id);
             getDoctorDatas();
 
-            subscribeOnce(ExaminationTypeService.getAll(), (res: ExaminationTypes[]) => {
+            subscribeOnce(ExaminationTypeService.getByUserId(userData.id), (res: ExaminationTypes[]) => {
                 if (res) setExaminationTypes(res);
             });
         }
@@ -70,7 +70,8 @@ const AppointmentHistories = () => {
     }, [isResetFilter]);
 
     const getDoctorDatas = () => {
-        subscribeOnce(AccountService.getDoctorsOrg(Place.Inclusive, userData?.id), (res: Doctors[]) => {
+        if (!userData?.id) return;
+        subscribeOnce(AccountService.getDoctorsOrg(Place.Inclusive, userData.id), (res: Doctors[]) => {
             setDoctors(res);
         });
     };
@@ -293,29 +294,33 @@ const AppointmentHistories = () => {
                                     >
                                         {appointment.examinationPackageName}
                                     </p>
-                                    <div className="flex justify-between">
-                                        <div className="flex flex-col items-center w-[40%] gap-2 pr-2">
-                                            <img
-                                                alt="avatar"
-                                                className="w-[60px] h-[60px] object-cover rounded-[175px] border mb-1"
-                                                src={
-                                                    appointment.doctorAvatar ? appointment.doctorAvatar : avatarDefault
-                                                }
-                                            />
-                                            {appointment.doctorName && <p>{appointment.doctorName}</p>}
-                                            <div className="items-center justify-center">
-                                                <div className="flex gap-2 items-center">
-                                                    <Images.LuClock size={18} />
-                                                    <span>
-                                                        {appointment.startDateExpectation} -{' '}
-                                                        {appointment.endDateExpectation}
-                                                    </span>
+                                    <div className="flex justify-between h-full">
+                                        <div className="flex flex-col items-center w-[40%] gap-2 pr-2 h-full justify-between">
+                                            <div className="flex flex-col items-center gap-2 pr-2">
+                                                <img
+                                                    alt="avatar"
+                                                    className="w-[60px] h-[60px] object-cover rounded-[175px] border mb-1"
+                                                    src={
+                                                        appointment.doctorAvatar
+                                                            ? appointment.doctorAvatar
+                                                            : avatarDefault
+                                                    }
+                                                />
+                                                {appointment.doctorName && <p>{appointment.doctorName}</p>}
+                                                <div className="items-center justify-center">
+                                                    <div className="flex gap-2 items-center">
+                                                        <Images.LuClock size={18} />
+                                                        <span>
+                                                            {appointment.startDateExpectation} -{' '}
+                                                            {appointment.endDateExpectation}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="items-center justify-center">
-                                                <div className="flex gap-2 items-center">
-                                                    <Images.FaRegCalendarAlt size={18} />
-                                                    <span>{appointment.dateExpectation}</span>
+                                                <div className="items-center justify-center">
+                                                    <div className="flex gap-2 items-center">
+                                                        <Images.FaRegCalendarAlt size={18} />
+                                                        <span>{appointment.dateExpectation}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div>
