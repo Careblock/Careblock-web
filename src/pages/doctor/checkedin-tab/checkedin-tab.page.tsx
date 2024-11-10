@@ -3,7 +3,7 @@ import BasePatientQueue from '../base-patient-queue.component';
 import { ScheduleTabs } from '@/enums/Common';
 import { Images } from '@/assets/images';
 
-const CheckedinTab = ({ patients }: CheckedinTabType) => {
+const CheckedinTab = ({ patients, handleClickItem }: CheckedinTabType) => {
     return (
         <div>
             {patients?.length ? (
@@ -13,7 +13,9 @@ const CheckedinTab = ({ patients }: CheckedinTabType) => {
                             key={data.appointmentId}
                             no={index + 1}
                             patient={data}
-                            handleClickItem={null}
+                            handleClickItem={($event: any) => {
+                                if (handleClickItem) handleClickItem($event, data.appointmentId);
+                            }}
                             scheduleTab={ScheduleTabs.CHECKEDIN}
                             handleClickPositiveIcon={() => {}}
                             handleClickNegativeIcon={() => {}}

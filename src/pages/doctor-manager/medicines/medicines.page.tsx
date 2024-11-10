@@ -129,6 +129,9 @@ function Medicines() {
         formik.setFieldValue('id', medicine.id);
         formik.setFieldValue('name', medicine.name);
         formik.setFieldValue('thumbnail', medicine.thumbnail);
+        formik.setFieldValue('price', medicine.price);
+        formik.setFieldValue('unitPrice', medicine.unitPrice);
+        formik.setFieldValue('description', medicine.description ?? '');
         if (medicine.medicineTypeId) formik.setFieldValue('medicineTypeId', medicine.medicineTypeId);
         setIsVisiblePopupAdd(true);
     };
@@ -195,8 +198,8 @@ function Medicines() {
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
-                        setIsVisiblePopupAdd(false);
                         resetForm();
+                        setIsVisiblePopupAdd(false);
                         addToast({ text: SystemMessage.ADD_MEDICINE, position: 'top-right' });
                     }
                 }
@@ -212,8 +215,8 @@ function Medicines() {
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
-                        setIsVisiblePopupAdd(false);
                         resetForm();
+                        setIsVisiblePopupAdd(false);
                         addToast({ text: SystemMessage.EDIT_MEDICINE, position: 'top-right' });
                     }
                 }
@@ -419,7 +422,7 @@ function Medicines() {
                                     className="w-full"
                                     size="medium"
                                     displayEmpty
-                                    value={formik.values.unitPrice}
+                                    value={formik.values.unitPrice ?? ''}
                                     onChange={($event: any) => handleChangeUnitPrice($event)}
                                 >
                                     {UnitPriceOptions.map((item: any) => (
@@ -436,7 +439,7 @@ function Medicines() {
                                 className="w-full"
                                 size="medium"
                                 displayEmpty
-                                value={formik.values.medicineTypeId}
+                                value={formik.values.medicineTypeId ?? ''}
                                 onChange={($event: any) => handleChangeMedicineType($event)}
                             >
                                 {medicineTypes.map((item: any) => (

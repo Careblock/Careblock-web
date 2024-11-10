@@ -39,6 +39,7 @@ export enum SystemMessage {
     EDIT_SPECIALIST = 'Update specialist successfully!',
     EDIT_SPECIALIST_FAILED = 'Update specialist failed!',
     INVITE_MEMBER = 'Invitation sent successfully!',
+    SEND_RESULT = 'Send result successfully!',
     JOIN_ORG = 'Participate in organization successfully!',
     JOIN_ORG_FAILED = 'Participate in organization failed!',
     EXAMINATION_REQUIRED = 'Examination Option is required!',

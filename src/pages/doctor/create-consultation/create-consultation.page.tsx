@@ -25,7 +25,7 @@ import AppointmentDetailService from '@/services/appointmentDetail.service';
 import { Appointments } from '@/types/appointment.type';
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { ExaminationOptions } from '@/types/examinationOption.type';
-import ExaminationOptionService from '@/services/examinationResult.service';
+import ExaminationOptionService from '@/services/examinationOption.service';
 import { EMPTY_GUID } from '@/constants/common.const';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -51,11 +51,14 @@ export default function CreateConsultation({
     const [appointment, setAppointment] = useState<Appointments>({});
     const [examinationOption, setExaminationOption] = useState<string>('');
     const [examinationOptions, setExaminationOptions] = useState<ExaminationOptions[]>([]);
+    const [patientId, setPatientId] = useState<string>('');
 
     useEffect(() => {
         if (visible) {
             getDefaultData();
             getExaminationOptions();
+        } else {
+            setDataSource(getInitialData());
         }
     }, [visible]);
 
@@ -69,6 +72,7 @@ export default function CreateConsultation({
     const getDefaultData = () => {
         if (!appointmentId) return;
         subscribeOnce(AccountService.getDefaultData(appointmentId), (res: DataDefaults) => {
+            setPatientId(res.patientId ?? '');
             setAppointment({
                 id: res.id,
                 doctorId: res.doctorId,
@@ -121,7 +125,9 @@ export default function CreateConsultation({
                 // Tạo Blob từ PDF
                 const pdfBlob = doc.output('blob');
                 // Tạo một đối tượng File từ Blob
-                const pdfFile = new File([pdfBlob], 'result.pdf', { type: 'application/pdf' });
+                const pdfFile = new File([pdfBlob], `result-${patientId}-${appointment.id}.pdf`, {
+                    type: 'application/pdf',
+                });
                 theFile = pdfFile;
             })
             .catch(function (error: any) {
@@ -173,7 +179,7 @@ export default function CreateConsultation({
                 const pdfX = (doc.internal.pageSize.getWidth() - pdfWidth) / 2;
 
                 doc.addImage(img, 'PNG', pdfX, 20, pdfWidth, pdfHeight);
-                doc.save('result.pdf');
+                doc.save(`result-${patientId}-${appointment.id}.pdf`);
             })
             .catch(function (error: any) {
                 console.error('Oops, something went wrong!', error);

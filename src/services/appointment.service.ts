@@ -9,6 +9,10 @@ class _AppointmentService {
         return HttpService.get<Appointments[]>(`/appointment`);
     }
 
+    public getById(id: string) {
+        return HttpService.get<Appointments>(`/appointment/${id}`);
+    }
+
     public getAppointmentHistories(patientId: string) {
         return HttpService.get<any>(`/appointment/get-by-patient/${patientId}`);
     }

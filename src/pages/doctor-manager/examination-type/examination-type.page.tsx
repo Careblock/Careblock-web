@@ -153,8 +153,8 @@ function ExaminationType() {
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
-                        setIsVisiblePopupAdd(false);
                         resetForm();
+                        setIsVisiblePopupAdd(false);
                         addToast({ text: SystemMessage.ADD_EXAMINATION_TYPE, position: 'top-right' });
                     }
                 }
@@ -169,8 +169,8 @@ function ExaminationType() {
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
-                        setIsVisiblePopupAdd(false);
                         resetForm();
+                        setIsVisiblePopupAdd(false);
                         addToast({ text: SystemMessage.EDIT_EXAMINATION_TYPE, position: 'top-right' });
                     }
                 }

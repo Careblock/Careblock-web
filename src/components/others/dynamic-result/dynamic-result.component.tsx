@@ -17,8 +17,7 @@ import { Doctors } from '@/types/doctor.type';
 
 const DynamicResult = forwardRef(({ type, datasource, classes, setDataSubmit }: Props, ref: any) => {
     const { subscribeOnce } = useObservable();
-    const rowLength = datasource[datasource.length - 1].rowIndex;
-    const rowArray = new Array(rowLength).fill(0);
+    const [rowArray, setRowArray] = useState<any[]>(new Array(datasource[datasource.length - 1].rowIndex).fill(0));
     const [data, setData] = useState<DynamicFieldType[]>(datasource);
     const [doctorList, setDoctorList] = useState<Doctors[]>([]);
 
@@ -90,6 +89,7 @@ const DynamicResult = forwardRef(({ type, datasource, classes, setDataSubmit }: 
         });
         for (let i = theIndex + 1; i < temp.length; i++) temp[i].rowIndex += 1;
         setData([...temp]);
+        setRowArray(new Array(temp[temp.length - 1].rowIndex).fill(0));
     };
 
     const getDisplayDateTime = (_: DynamicFieldType) => {
@@ -107,6 +107,7 @@ const DynamicResult = forwardRef(({ type, datasource, classes, setDataSubmit }: 
             temp.splice(theIndex, 1);
             setData([...temp]);
             for (let i = theIndex; i < temp.length; i++) temp[i].rowIndex -= 1;
+            setRowArray(new Array(temp[temp.length - 1].rowIndex).fill(0));
         }
     };
 
@@ -269,11 +270,13 @@ const DynamicResult = forwardRef(({ type, datasource, classes, setDataSubmit }: 
                                                 <div
                                                     className={`size-[60px] overflow-hidden ${index === 0 && 'absolute top-[0px] left-[20px]'}`}
                                                 >
-                                                    <img
-                                                        className="w-full h-full object-cover"
-                                                        src={field.images ? field.images[0] : ''}
-                                                        alt="Brand"
-                                                    />
+                                                    {field.images && field.images[0] && (
+                                                        <img
+                                                            className="w-full h-full object-cover"
+                                                            src={field.images[0]}
+                                                            alt="Brand"
+                                                        />
+                                                    )}
                                                 </div>
                                             )}
                                             {field.caption && <div className="mr-[8px]">{`${field.caption}:`}</div>}
@@ -305,11 +308,13 @@ const DynamicResult = forwardRef(({ type, datasource, classes, setDataSubmit }: 
                                                 <div
                                                     className={`size-[100px] overflow-hidden ${index === 0 && 'absolute top-[0px] left-[20px]'}`}
                                                 >
-                                                    <img
-                                                        className="w-full h-full object-cover"
-                                                        src={field.images ? field.images[0] : ''}
-                                                        alt="Brand"
-                                                    />
+                                                    {field.images && field.images[0] && (
+                                                        <img
+                                                            className="w-full h-full object-cover"
+                                                            src={field.images[0]}
+                                                            alt="Brand"
+                                                        />
+                                                    )}
                                                 </div>
                                             )}
                                             {field.caption && !field.isCustomField && (

@@ -146,8 +146,8 @@ function MedicineType() {
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
-                        setIsVisiblePopupAdd(false);
                         resetForm();
+                        setIsVisiblePopupAdd(false);
                         addToast({ text: SystemMessage.ADD_MEDICINE_TYPE, position: 'top-right' });
                     }
                 }
@@ -161,8 +161,8 @@ function MedicineType() {
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
-                        setIsVisiblePopupAdd(false);
                         resetForm();
+                        setIsVisiblePopupAdd(false);
                         addToast({ text: SystemMessage.EDIT_MEDICINE_TYPE, position: 'top-right' });
                     }
                 }
