@@ -20,7 +20,7 @@ import { setTitle } from '@/utils/document';
 const DoctorSchedulePage = () => {
     const { userData } = useAuth() as AuthContextType;
     const { subscribeOnce } = useObservable();
-    const [value, setValue] = useState(ScheduleTabs.ACTIVE);
+    const [currentTab, setCurrentTab] = useState(ScheduleTabs.ACTIVE);
     const [schedules, setSchedules] = useState<DoctorScheduleTab[]>(doctorScheduleTabs);
     const [activePatients, setActivePatients] = useState<Patients[] | undefined>([]);
     const [postponedPatients, setPostponedPatients] = useState<Patients[] | undefined>([]);
@@ -31,6 +31,10 @@ const DoctorSchedulePage = () => {
         setTitle('Doctor schedule | CareBlock');
         getDataSource();
     }, []);
+
+    useEffect(() => {
+        setDetailsInfo(undefined);
+    }, [currentTab]);
 
     function getDataSource() {
         if (userData) {
@@ -66,7 +70,7 @@ const DoctorSchedulePage = () => {
     }
 
     const handleChange = (_: SyntheticEvent, newValue: ScheduleTabs) => {
-        setValue(newValue);
+        setCurrentTab(newValue);
     };
 
     function handleSetSchedules(activeNumber: number, postponedNumber: number, checkedinNumber: number) {
@@ -156,7 +160,7 @@ const DoctorSchedulePage = () => {
             <div className="uppercase bg-[#eee] mb-2 rounded px-2 py-4">Front Desk</div>
             <div className="flex w-full justify-between h-[calc(100%-24px-30px-50px-30px)]">
                 <div className="w-[400px] h-fit border border-solid rounded-lg border-[#ddd] mr-5 max-h-[610px] overflow-auto">
-                    <TabContext value={value}>
+                    <TabContext value={currentTab}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <TabList onChange={handleChange} aria-label="lab API tabs example">
                                 {schedules.map((tab) => (
@@ -180,13 +184,13 @@ const DoctorSchedulePage = () => {
                             />
                         </TabPanel>
                         <TabPanel value={ScheduleTabs.CHECKEDIN}>
-                            <CheckedinTab patients={checkedinPatients} />
+                            <CheckedinTab handleClickItem={handleClickItem} patients={checkedinPatients} />
                         </TabPanel>
                     </TabContext>
                 </div>
                 <div className="flex-1">
                     {detailsInfo ? (
-                        <DetailsInfo dataSource={detailsInfo} clickedSave={handleClickSave} />
+                        <DetailsInfo currentTab={currentTab} dataSource={detailsInfo} clickedSave={handleClickSave} />
                     ) : (
                         <div className="empty-schedule overflow-hidden">
                             <img

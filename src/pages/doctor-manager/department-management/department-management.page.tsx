@@ -109,7 +109,7 @@ function DepartmentManagement() {
         setMode(FormMode.Update);
         formik.setFieldValue('id', department.id);
         formik.setFieldValue('name', department.name);
-        formik.setFieldValue('location', department.location);
+        formik.setFieldValue('location', department.location ?? '');
         setIsVisiblePopupAdd(true);
     };
 

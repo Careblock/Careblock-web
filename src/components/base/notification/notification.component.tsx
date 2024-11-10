@@ -5,6 +5,7 @@ const NotificationItem = ({
     isRead,
     message,
     type,
+    link,
     onClickAccept,
     onClickDecline,
     onClickRead,
@@ -42,7 +43,16 @@ const NotificationItem = ({
                         className={`w-full border border-[#ccc] rounded-md py-[6px] px-[8px] select-none ${isRead ? '' : 'font-bold text-primary flex items-center justify-between hover:bg-[#ededed] cursor-pointer'}`}
                         onClick={() => onClickRead && onClickRead()}
                     >
-                        <div className="flex-1 mb-[10px]">{message}</div>
+                        {!link ? (
+                            <div className="flex-1 mb-[10px]">{message}</div>
+                        ) : (
+                            <div className="flex-1 mb-[10px]">
+                                <div className="mb-[6px]">{message}</div>
+                                <a href={link} className="text-light-blue-800 underline mr-[20px]">
+                                    Click to open the Link
+                                </a>
+                            </div>
+                        )}
                         {!isRead && <div className="font-bold size-[8px] bg-primary rounded-full"></div>}
                     </div>
                 );

@@ -116,7 +116,7 @@ function SpecialistPage() {
         formik.setFieldValue('name', specialist.name);
         formik.setFieldValue('thumbnail', specialist.thumbnail);
         formik.setFieldValue('organizationId', specialist.organizationId);
-        formik.setFieldValue('description', specialist.description);
+        formik.setFieldValue('description', specialist.description ?? '');
         setIsVisiblePopupAdd(true);
     };
 
@@ -167,8 +167,8 @@ function SpecialistPage() {
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
-                        setIsVisiblePopupAdd(false);
                         resetForm();
+                        setIsVisiblePopupAdd(false);
                         addToast({ text: SystemMessage.ADD_SPECIALIST, position: 'top-right' });
                     }
                 }
@@ -185,8 +185,8 @@ function SpecialistPage() {
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
-                        setIsVisiblePopupAdd(false);
                         resetForm();
+                        setIsVisiblePopupAdd(false);
                         addToast({ text: SystemMessage.EDIT_SPECIALIST, position: 'top-right' });
                     }
                 }

@@ -190,8 +190,8 @@ function ExaminationPackage() {
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
-                        setIsVisiblePopupAdd(false);
                         resetForm();
+                        setIsVisiblePopupAdd(false);
                         addToast({ text: SystemMessage.ADD_EXAMINATION_PACKAGE, position: 'top-right' });
                     }
                 }
@@ -208,8 +208,8 @@ function ExaminationPackage() {
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
-                        setIsVisiblePopupAdd(false);
                         resetForm();
+                        setIsVisiblePopupAdd(false);
                         addToast({ text: SystemMessage.EDIT_EXAMINATION_PACKAGE, position: 'top-right' });
                     }
                 }
@@ -390,7 +390,7 @@ function ExaminationPackage() {
                                 className="w-full"
                                 size="medium"
                                 displayEmpty
-                                value={formik.values.examinationTypeId}
+                                value={formik.values.examinationTypeId ?? ''}
                                 onChange={($event: any) => handleChangeExaminationType($event)}
                             >
                                 {examinationTypes.map((item: any) => (
