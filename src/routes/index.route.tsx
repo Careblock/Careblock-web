@@ -63,11 +63,20 @@ export const routesForDoctorManager = [
             { path: PATHS.TEAM_MEMBERS, element: <TeamMembersPage /> },
             { path: PATHS.INVITE_MEMBERS, element: <InviteMembersPage /> },
             { path: PATHS.SPECIALIST, element: <SpecialistPage /> },
-            { path: PATHS.EXAMINATION_TYPE, element: <ExaminationType /> },
             { path: PATHS.EXAMINATION_PACKAGE, element: <ExaminationPackage /> },
-            { path: PATHS.MEDICINE_TYPE, element: <MedicineType /> },
             { path: PATHS.MEDICINES, element: <Medicines /> },
             { path: PATHS.APPOINTMENT_HISTORIES, element: <AppointmentHistories /> },
+        ],
+    },
+];
+
+export const routesForAdmin = [
+    {
+        path: PATHS.DEFAULT,
+        element: <ProtectedRoute allowedRoles={[ROLE_NAMES.ADMIN]} />,
+        children: [
+            { path: PATHS.EXAMINATION_TYPE, element: <ExaminationType /> },
+            { path: PATHS.MEDICINE_TYPE, element: <MedicineType /> },
         ],
     },
 ];

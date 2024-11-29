@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { AuthContextType } from '@/types/auth.type';
 import { useAuth } from '@/contexts/auth.context';
 import {
+    routesForAdmin,
     routesForDoctor,
     routesForDoctorManager,
     routesForNotAuthenticatedOnly,
@@ -49,6 +50,11 @@ const Routes = () => {
             element: <DoctorManagerLayout />,
             errorElement: <NotFoundPage />,
             children: [...routesForDoctorManager],
+        },
+        {
+            element: <DoctorManagerLayout />,
+            errorElement: <NotFoundPage />,
+            children: [...routesForAdmin],
         },
     ]);
 
