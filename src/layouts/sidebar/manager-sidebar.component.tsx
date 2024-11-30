@@ -104,7 +104,13 @@ const ManagerSidebar = () => {
                         <Menu iconShape="circle" className="!p-0 hover:bg-gray">
                             <MenuItem icon={<Images.GrOrganization />}>
                                 <span className="text-black text-xl">Organizations</span>
-                                <Link to={PATHS.ORGANIZATIONS} />
+                                <Link to={PATHS.ORGANIZATION_ADMIN} />
+                            </MenuItem>
+                        </Menu>
+                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                            <MenuItem icon={<Images.MdMeetingRoom />}>
+                                <span className="text-black text-xl">Departments</span>
+                                <Link to={PATHS.DEPARTMENT_ADMIN} />
                             </MenuItem>
                         </Menu>
                         <Menu iconShape="circle" className="!p-0 hover:bg-gray">

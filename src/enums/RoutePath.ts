@@ -32,7 +32,8 @@ export enum PATHS {
     MEDICINES = '/medicines',
     APPOINTMENT_HISTORIES = '/appoiment-histories',
     // Super admin
-    ORGANIZATIONS = '/organizations',
+    ORGANIZATION_ADMIN = '/organization-admin',
+    DEPARTMENT_ADMIN = '/department-admin',
     EXAMINATION_TYPE = '/examination-type',
     MEDICINE_TYPE = '/medicine-type',
     // Error

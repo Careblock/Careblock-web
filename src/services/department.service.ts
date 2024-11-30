@@ -2,6 +2,10 @@ import HttpService from './http/http.service';
 import { Departments } from '@/types/department.type';
 
 class _DepartmentService {
+    public getAllDepartment() {
+        return HttpService.get<Departments[]>('/department/get-all');
+    }
+
     public getByOrganization(organizationId: string) {
         return HttpService.get<Departments[]>(`/department/get-by-organization/${organizationId}`);
     }
