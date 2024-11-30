@@ -146,10 +146,16 @@ function TeamMembersPage() {
     };
 
     const handleClickEdit = (doctor: any) => {
-        const specialistData = doctor.specialist.filter((spec: string) => spec !== EMPTY_GUID);
+        const specialistData: any[] = doctor.specialist.filter((spec: string) => spec !== EMPTY_GUID);
+        const ids = specialist.map((sp: Specialists) => sp.id);
+        const existedIds = specialistData.filter((item: string) => ids.includes(item));
         let result = new Set();
-        specialistData.forEach((item: string) => result.add(item));
-        setSelectedSpecialist(Array.from(result));
+        if (existedIds.length) {
+            specialistData.forEach((item: string) => result.add(item));
+            setSelectedSpecialist(Array.from(result));
+        } else {
+            setSelectedSpecialist([]);
+        }
         setEditDoctor(doctor);
         setIsVisiblePopupEdit(true);
     };

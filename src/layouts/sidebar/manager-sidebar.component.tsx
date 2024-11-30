@@ -81,12 +81,14 @@ const ManagerSidebar = () => {
                         </Menu>
                     </>
                 )}
-                <Menu iconShape="circle" className="!p-0 hover:bg-gray">
-                    <MenuItem icon={<Images.FiPackage />}>
-                        <span className="text-black text-xl">Examination Type</span>
-                        <Link to={PATHS.EXAMINATION_TYPE} />
-                    </MenuItem>
-                </Menu>
+                {userData?.roles.includes(ROLE_NAMES.ADMIN) && (
+                    <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <MenuItem icon={<Images.FiPackage />}>
+                            <span className="text-black text-xl">Examination Type</span>
+                            <Link to={PATHS.EXAMINATION_TYPE} />
+                        </MenuItem>
+                    </Menu>
+                )}
                 {!userData?.roles.includes(ROLE_NAMES.ADMIN) && (
                     <Menu iconShape="circle" className="!p-0 hover:bg-gray">
                         <MenuItem icon={<Images.FaBriefcaseMedical />}>
@@ -95,12 +97,14 @@ const ManagerSidebar = () => {
                         </MenuItem>
                     </Menu>
                 )}
-                <Menu iconShape="circle" className="!p-0 hover:bg-gray">
-                    <MenuItem icon={<Images.RiMedicineBottleFill />}>
-                        <span className="text-black text-xl">Medicine Type</span>
-                        <Link to={PATHS.MEDICINE_TYPE} />
-                    </MenuItem>
-                </Menu>
+                {userData?.roles.includes(ROLE_NAMES.ADMIN) && (
+                    <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <MenuItem icon={<Images.RiMedicineBottleFill />}>
+                            <span className="text-black text-xl">Medicine Type</span>
+                            <Link to={PATHS.MEDICINE_TYPE} />
+                        </MenuItem>
+                    </Menu>
+                )}
                 {!userData?.roles.includes(ROLE_NAMES.ADMIN) && (
                     <>
                         <Menu iconShape="circle" className="!p-0 hover:bg-gray">

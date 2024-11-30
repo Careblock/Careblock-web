@@ -21,4 +21,5 @@ export interface Appointments {
     endDateReality?: string;
     createdDate?: string;
     modifiedDate?: string;
+    isDeleted?: boolean;
 }
