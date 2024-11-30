@@ -28,12 +28,13 @@ export enum PATHS {
     TEAM_MEMBERS = '/team',
     INVITE_MEMBERS = '/invite-member',
     SPECIALIST = '/specialist',
-    EXAMINATION_TYPE = '/examination-type',
     EXAMINATION_PACKAGE = '/examination-package',
-    APPOINTMENT_HISTORIES = '/appoiment-histories',
-    // Medical
-    MEDICINE_TYPE = '/medicine-type',
     MEDICINES = '/medicines',
+    APPOINTMENT_HISTORIES = '/appoiment-histories',
+    // Super admin
+    ORGANIZATIONS = '/organizations',
+    EXAMINATION_TYPE = '/examination-type',
+    MEDICINE_TYPE = '/medicine-type',
     // Error
     NOTFOUND = '*',
     FORBIDDEN = '/forbidden',

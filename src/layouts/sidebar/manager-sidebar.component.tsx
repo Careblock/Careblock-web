@@ -79,34 +79,12 @@ const ManagerSidebar = () => {
                                 <Link to={PATHS.SPECIALIST} />
                             </MenuItem>
                         </Menu>
-                    </>
-                )}
-                {userData?.roles.includes(ROLE_NAMES.ADMIN) && (
-                    <Menu iconShape="circle" className="!p-0 hover:bg-gray">
-                        <MenuItem icon={<Images.FiPackage />}>
-                            <span className="text-black text-xl">Examination Type</span>
-                            <Link to={PATHS.EXAMINATION_TYPE} />
-                        </MenuItem>
-                    </Menu>
-                )}
-                {!userData?.roles.includes(ROLE_NAMES.ADMIN) && (
-                    <Menu iconShape="circle" className="!p-0 hover:bg-gray">
-                        <MenuItem icon={<Images.FaBriefcaseMedical />}>
-                            <span className="text-black text-xl">Examination Package</span>
-                            <Link to={PATHS.EXAMINATION_PACKAGE} />
-                        </MenuItem>
-                    </Menu>
-                )}
-                {userData?.roles.includes(ROLE_NAMES.ADMIN) && (
-                    <Menu iconShape="circle" className="!p-0 hover:bg-gray">
-                        <MenuItem icon={<Images.RiMedicineBottleFill />}>
-                            <span className="text-black text-xl">Medicine Type</span>
-                            <Link to={PATHS.MEDICINE_TYPE} />
-                        </MenuItem>
-                    </Menu>
-                )}
-                {!userData?.roles.includes(ROLE_NAMES.ADMIN) && (
-                    <>
+                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                            <MenuItem icon={<Images.FaBriefcaseMedical />}>
+                                <span className="text-black text-xl">Examination Package</span>
+                                <Link to={PATHS.EXAMINATION_PACKAGE} />
+                            </MenuItem>
+                        </Menu>
                         <Menu iconShape="circle" className="!p-0 hover:bg-gray">
                             <MenuItem icon={<Images.GiMedicines />}>
                                 <span className="text-black text-xl">Medicines</span>
@@ -117,6 +95,28 @@ const ManagerSidebar = () => {
                             <MenuItem icon={<Images.FaHistory />}>
                                 <span className="text-black text-xl">Appoinment histories</span>
                                 <Link to={PATHS.APPOINTMENT_HISTORIES} />
+                            </MenuItem>
+                        </Menu>
+                    </>
+                )}
+                {userData?.roles.includes(ROLE_NAMES.ADMIN) && (
+                    <>
+                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                            <MenuItem icon={<Images.GrOrganization />}>
+                                <span className="text-black text-xl">Organizations</span>
+                                <Link to={PATHS.ORGANIZATIONS} />
+                            </MenuItem>
+                        </Menu>
+                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                            <MenuItem icon={<Images.FiPackage />}>
+                                <span className="text-black text-xl">Examination Type</span>
+                                <Link to={PATHS.EXAMINATION_TYPE} />
+                            </MenuItem>
+                        </Menu>
+                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                            <MenuItem icon={<Images.RiMedicineBottleFill />}>
+                                <span className="text-black text-xl">Medicine Type</span>
+                                <Link to={PATHS.MEDICINE_TYPE} />
                             </MenuItem>
                         </Menu>
                     </>
