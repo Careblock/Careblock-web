@@ -22,6 +22,7 @@ import ExaminationType from '@/pages/super-admin/examination-type/examination-ty
 import Medicines from '@/pages/doctor-manager/medicines/medicines.page';
 import Organizations from '@/pages/super-admin/organizations/organizations.page';
 import Departments from '@/pages/super-admin/departments/departments.page';
+import SpecialistPageAdmin from '@/pages/super-admin/specialist/specialist.page';
 
 export const routesForNotAuthenticatedOnly = [
     { path: PATHS.REGISTER, element: <Register /> },
@@ -79,6 +80,7 @@ export const routesForAdmin = [
         children: [
             { path: PATHS.ORGANIZATION_ADMIN, element: <Organizations /> },
             { path: PATHS.DEPARTMENT_ADMIN, element: <Departments /> },
+            { path: PATHS.SPECIALIST_ADMIN, element: <SpecialistPageAdmin /> },
             { path: PATHS.EXAMINATION_TYPE, element: <ExaminationType /> },
             { path: PATHS.MEDICINE_TYPE, element: <MedicineType /> },
         ],

@@ -34,8 +34,9 @@ export enum PATHS {
     // Super admin
     ORGANIZATION_ADMIN = '/organization-admin',
     DEPARTMENT_ADMIN = '/department-admin',
-    EXAMINATION_TYPE = '/examination-type',
-    MEDICINE_TYPE = '/medicine-type',
+    SPECIALIST_ADMIN = '/specialist-admin',
+    EXAMINATION_TYPE = '/examination-type-admin',
+    MEDICINE_TYPE = '/medicine-type-admin',
     // Error
     NOTFOUND = '*',
     FORBIDDEN = '/forbidden',
