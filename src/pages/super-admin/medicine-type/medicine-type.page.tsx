@@ -174,7 +174,7 @@ function MedicineType() {
         <div className="h-full">
             <div className="text-[24px]">Manage Medicine Types</div>
             <div className="text-[16px] mb-4">
-                Set up all medicine types that your organization conduct business from.
+                Set up all medicine types that the organization conduct business from.
             </div>
             <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
                 <TextField

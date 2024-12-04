@@ -1,4 +1,4 @@
-import { Column } from './specialist.type';
+import { Column } from './examination-package.type';
 
 export const columns: readonly Column[] = [
     {
@@ -14,14 +14,14 @@ export const columns: readonly Column[] = [
         align: 'left',
     },
     {
-        id: 'organizationName',
-        label: 'Organization',
+        id: 'examinationTypeName',
+        label: 'Examination Type',
         minWidth: 170,
         align: 'left',
     },
     {
-        id: 'description',
-        label: 'Description',
+        id: 'organizationName',
+        label: 'Organization',
         minWidth: 170,
         align: 'left',
     },

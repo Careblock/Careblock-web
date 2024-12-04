@@ -120,7 +120,9 @@ function DepartmentManagement() {
         formik.setFieldValue('id', department.id);
         formik.setFieldValue('name', department.name);
         formik.setFieldValue('location', department.location ?? '');
-        formik.setFieldValue('organizationId', department.organizationId ?? '');
+        setTimeout(() => {
+            formik.setFieldValue('organizationId', department.organizationId ?? '');
+        }, 10);
         setIsVisiblePopupAdd(true);
     };
 

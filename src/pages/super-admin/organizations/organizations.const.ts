@@ -14,6 +14,12 @@ export const columns: readonly Column[] = [
         align: 'left',
     },
     {
+        id: 'thumbnail',
+        label: 'Thumbnail',
+        minWidth: 160,
+        align: 'left',
+    },
+    {
         id: 'city',
         label: 'City',
         minWidth: 150,
@@ -34,12 +40,6 @@ export const columns: readonly Column[] = [
     {
         id: 'mapUrl',
         label: 'MapUrl',
-        minWidth: 160,
-        align: 'left',
-    },
-    {
-        id: 'thumbnail',
-        label: 'Thumbnail',
         minWidth: 160,
         align: 'left',
     },

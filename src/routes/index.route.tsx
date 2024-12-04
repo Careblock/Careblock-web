@@ -23,6 +23,7 @@ import Medicines from '@/pages/doctor-manager/medicines/medicines.page';
 import Organizations from '@/pages/super-admin/organizations/organizations.page';
 import Departments from '@/pages/super-admin/departments/departments.page';
 import SpecialistPageAdmin from '@/pages/super-admin/specialist/specialist.page';
+import ExaminationPackageAdmin from '@/pages/super-admin/examination-package/examination-package.page';
 
 export const routesForNotAuthenticatedOnly = [
     { path: PATHS.REGISTER, element: <Register /> },
@@ -82,6 +83,7 @@ export const routesForAdmin = [
             { path: PATHS.DEPARTMENT_ADMIN, element: <Departments /> },
             { path: PATHS.SPECIALIST_ADMIN, element: <SpecialistPageAdmin /> },
             { path: PATHS.EXAMINATION_TYPE, element: <ExaminationType /> },
+            { path: PATHS.EXAMINATION_PACKAGE_ADMIN, element: <ExaminationPackageAdmin /> },
             { path: PATHS.MEDICINE_TYPE, element: <MedicineType /> },
         ],
     },

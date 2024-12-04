@@ -216,7 +216,7 @@ function SpecialistPage() {
     return (
         <div className="h-full">
             <div className="text-[24px]">Manage Specialists</div>
-            <div className="text-[16px] mb-4">Set up all specialists that your organization conduct business from.</div>
+            <div className="text-[16px] mb-4">Set up all specialists that the organization conduct business from.</div>
             <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
                 <TextField
                     variant="outlined"

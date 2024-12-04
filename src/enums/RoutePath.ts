@@ -36,6 +36,7 @@ export enum PATHS {
     DEPARTMENT_ADMIN = '/department-admin',
     SPECIALIST_ADMIN = '/specialist-admin',
     EXAMINATION_TYPE = '/examination-type-admin',
+    EXAMINATION_PACKAGE_ADMIN = '/examination-package-admin',
     MEDICINE_TYPE = '/medicine-type-admin',
     // Error
     NOTFOUND = '*',

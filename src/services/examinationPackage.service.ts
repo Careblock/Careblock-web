@@ -28,6 +28,13 @@ class _ExaminationPackageService {
         });
     }
 
+    public insertNew(examinationPackage: ExaminationPackages) {
+        return HttpService.post<string>(`/examinationPackage/create`, {
+            body: { ...examinationPackage },
+            requestContentType: RequestContentType.MULTIPART,
+        });
+    }
+
     public update(id: string, examinationPackage: ExaminationPackages) {
         return HttpService.put<ExaminationPackages>(`/examinationPackage/${id}`, {
             body: { ...examinationPackage },
