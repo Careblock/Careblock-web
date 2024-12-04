@@ -356,7 +356,7 @@ function SpecialistPage() {
                                     type="text"
                                     fullWidth
                                     variant="outlined"
-                                    value={formik.values.code}
+                                    value={formik.values.code ?? ''}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.code && Boolean(formik.errors.code)}
@@ -372,7 +372,7 @@ function SpecialistPage() {
                                     type="text"
                                     fullWidth
                                     variant="outlined"
-                                    value={formik.values.name}
+                                    value={formik.values.name ?? ''}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.name && Boolean(formik.errors.name)}
@@ -390,7 +390,7 @@ function SpecialistPage() {
                                     type="text"
                                     fullWidth
                                     variant="outlined"
-                                    value={formik.values.city}
+                                    value={formik.values.city ?? ''}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.city && Boolean(formik.errors.city)}
@@ -406,7 +406,7 @@ function SpecialistPage() {
                                     type="text"
                                     fullWidth
                                     variant="outlined"
-                                    value={formik.values.district}
+                                    value={formik.values.district ?? ''}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.district && Boolean(formik.errors.district)}
@@ -423,7 +423,7 @@ function SpecialistPage() {
                                 type="text"
                                 fullWidth
                                 variant="outlined"
-                                value={formik.values.address}
+                                value={formik.values.address ?? ''}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.address && Boolean(formik.errors.address)}
@@ -440,7 +440,7 @@ function SpecialistPage() {
                                     type="text"
                                     fullWidth
                                     variant="outlined"
-                                    value={formik.values.mapUrl}
+                                    value={formik.values.mapUrl ?? ''}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.mapUrl && Boolean(formik.errors.mapUrl)}
@@ -456,7 +456,7 @@ function SpecialistPage() {
                                     type="text"
                                     fullWidth
                                     variant="outlined"
-                                    value={formik.values.tel}
+                                    value={formik.values.tel ?? ''}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.tel && Boolean(formik.errors.tel)}
@@ -474,7 +474,7 @@ function SpecialistPage() {
                                     type="text"
                                     fullWidth
                                     variant="outlined"
-                                    value={formik.values.website}
+                                    value={formik.values.website ?? ''}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.website && Boolean(formik.errors.website)}
@@ -490,7 +490,7 @@ function SpecialistPage() {
                                     type="text"
                                     fullWidth
                                     variant="outlined"
-                                    value={formik.values.fax}
+                                    value={formik.values.fax ?? ''}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.fax && Boolean(formik.errors.fax)}

@@ -28,7 +28,7 @@ import { FormMode } from '@/enums/FormMode';
 import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
 import { columns } from './examination-package.const';
 import { INITIAL_EXAMINATION_PACKAGES_VALUES } from '@/constants/examinationPackage.const';
-import { editExaminationPackagesSchema, examinationPackagesSchema } from '@/validations/examinationPackage.validation';
+import { editExaminationPackagesAdminSchema } from '@/validations/examinationPackage.validation';
 import { ExaminationPackages } from '@/types/examinationPackage.type';
 import ExaminationPackageService from '@/services/examinationPackage.service';
 import DefaultThumbnail from '@/assets/images/common/package.jpg';
@@ -56,7 +56,7 @@ function ExaminationPackage() {
 
     const formik = useFormik({
         initialValues: INITIAL_EXAMINATION_PACKAGES_VALUES.INFORMATION,
-        validationSchema: mode === FormMode.Add ? examinationPackagesSchema : editExaminationPackagesSchema,
+        validationSchema: editExaminationPackagesAdminSchema,
         onSubmit: (values) => {
             handleSubmit(values);
         },
@@ -134,13 +134,9 @@ function ExaminationPackage() {
         formik.setFieldValue('name', examinationPackage.name);
         formik.setFieldValue('thumbnail', examinationPackage.thumbnail);
         setTimeout(() => {
-            formik.setFieldValue('organizationId', examinationPackage.organizationId);
-        }, 10);
-        if (examinationPackage.examinationTypeId) {
-            setTimeout(() => {
-                formik.setFieldValue('examinationTypeId', examinationPackage.examinationTypeId);
-            }, 10);
-        }
+            formik.setFieldValue('organizationId', examinationPackage.organizationId ?? '');
+        }, 0);
+        formik.setFieldValue('examinationTypeId', examinationPackage.examinationTypeId ?? '');
         setIsVisiblePopupAdd(true);
     };
 
@@ -162,10 +158,6 @@ function ExaminationPackage() {
         setIsVisiblePopupConfirm(false);
     };
 
-    const handleChangeExaminationType = ($event: any) => {
-        formik.setFieldValue('examinationTypeId', $event.target.value);
-    };
-
     const handleConfirmDelete = () => {
         if (!formik.values?.id) return;
         subscribeOnce(ExaminationPackageService.delete(formik.values.id), (res: any) => {
@@ -185,10 +177,6 @@ function ExaminationPackage() {
 
     const handleSubmit = (values: ExaminationPackages) => {
         if (mode === FormMode.Add) {
-            if (!values.examinationTypeId) {
-                addToast({ text: SystemMessage.EXAMINATION_TYPE_REQUIRED, position: 'top-right', status: 'inValid' });
-                return;
-            }
             subscribeOnce(
                 ExaminationPackageService.insertNew({
                     ...values,
@@ -391,14 +379,17 @@ function ExaminationPackage() {
                                 helperText={formik.touched.name && formik.errors.name}
                             />
                         </div>
-                        <div className="flex flex-col w-full">
+                        <div className="mt-[10px]">
                             <div>Examination type:</div>
                             <Select
                                 className="w-full"
+                                name="examinationTypeId"
                                 size="medium"
                                 displayEmpty
                                 value={formik.values.examinationTypeId ?? ''}
-                                onChange={($event: any) => handleChangeExaminationType($event)}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.examinationTypeId && Boolean(formik.errors.examinationTypeId)}
                             >
                                 {examinationTypes.map((item: any) => (
                                     <MenuItem key={item.id} value={item.id}>
@@ -406,8 +397,11 @@ function ExaminationPackage() {
                                     </MenuItem>
                                 ))}
                             </Select>
+                            <FormHelperText>
+                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.examinationTypeId}</span>
+                            </FormHelperText>
                         </div>
-                        <div className="mt-[20px]">
+                        <div>
                             <div>Organization:</div>
                             <Select
                                 className="w-full"

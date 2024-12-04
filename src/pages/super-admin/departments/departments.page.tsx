@@ -27,7 +27,7 @@ import { columns } from './departments.const';
 import { Images } from '@/assets/images';
 import { useFormik } from 'formik';
 import { INITIAL_DEPARTMENT_VALUES } from '@/constants/department.const';
-import { departmentSchema } from '@/validations/department.validation';
+import { departmentAdminSchema } from '@/validations/department.validation';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
 import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
@@ -49,7 +49,7 @@ function DepartmentManagement() {
 
     const formik = useFormik({
         initialValues: INITIAL_DEPARTMENT_VALUES.INFORMATION,
-        validationSchema: departmentSchema,
+        validationSchema: departmentAdminSchema,
         onSubmit: (values) => {
             handleSubmit(values);
         },

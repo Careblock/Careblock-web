@@ -5,5 +5,6 @@ export const INITIAL_SPECIALIST_VALUES = {
         name: '',
         thumbnail: '',
         description: '',
+        organizationId: '',
     } as Specialists,
 };
