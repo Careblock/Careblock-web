@@ -132,6 +132,12 @@ const ManagerSidebar = () => {
                             </MenuItem>
                         </Menu>
                         <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                            <MenuItem icon={<Images.TbTableOptions />}>
+                                <span className="text-black text-xl">Examination Options</span>
+                                <Link to={PATHS.EXAMINATION_OPTIONS_ADMIN} />
+                            </MenuItem>
+                        </Menu>
+                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
                             <MenuItem icon={<Images.RiMedicineBottleFill />}>
                                 <span className="text-black text-xl">Medicine Type</span>
                                 <Link to={PATHS.MEDICINE_TYPE} />

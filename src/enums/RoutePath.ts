@@ -37,6 +37,7 @@ export enum PATHS {
     SPECIALIST_ADMIN = '/specialist-admin',
     EXAMINATION_TYPE = '/examination-type-admin',
     EXAMINATION_PACKAGE_ADMIN = '/examination-package-admin',
+    EXAMINATION_OPTIONS_ADMIN = '/examination-options-admin',
     MEDICINE_TYPE = '/medicine-type-admin',
     MEDICINES_ADMIN = '/medicines-admin',
     // Error
