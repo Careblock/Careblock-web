@@ -38,6 +38,7 @@ export enum PATHS {
     EXAMINATION_TYPE = '/examination-type-admin',
     EXAMINATION_PACKAGE_ADMIN = '/examination-package-admin',
     MEDICINE_TYPE = '/medicine-type-admin',
+    MEDICINES_ADMIN = '/medicines-admin',
     // Error
     NOTFOUND = '*',
     FORBIDDEN = '/forbidden',

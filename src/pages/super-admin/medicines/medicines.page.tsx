@@ -26,96 +26,95 @@ import { useFormik } from 'formik';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
 import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
-import { columns } from './examination-package.const';
-import { INITIAL_EXAMINATION_PACKAGES_VALUES } from '@/constants/examinationPackage.const';
-import { editExaminationPackagesAdminSchema } from '@/validations/examinationPackage.validation';
-import { ExaminationPackages } from '@/types/examinationPackage.type';
-import ExaminationPackageService from '@/services/examinationPackage.service';
+import { columns } from './medicines.const';
 import DefaultThumbnail from '@/assets/images/common/package.jpg';
-import ExaminationTypeService from '@/services/examinationType.service';
-import { ExaminationTypes } from '@/types/examinationType.type';
-import OrganizationService from '@/services/organization.service';
-import { Organizations } from '@/types/organization.type';
+import { INITIAL_MEDICINES_VALUES, UnitPriceOptions } from '@/constants/medicines.const';
+import { medicinesAdminSchema } from '@/validations/medicine.validation';
+import { type Medicines } from '@/types/medicine.type';
+import MedicineService from '@/services/medicine.service';
+import MedicineTypeService from '@/services/medicineType.service';
+import { MedicineTypes } from '@/types/medicineType.type';
+import { UnitPrice, UnitPriceName } from '@/enums/UnitPrice';
 
-function ExaminationPackage() {
+function Medicines() {
     const { subscribeOnce } = useObservable();
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [examinationPackages, setExaminationPackages] = useState<any[]>([]);
-    const [examinationPackagesDisplays, setExaminationPackagesDisplays] = useState<any[]>([]);
+    const [medicines, setMedicines] = useState<any[]>([]);
+    const [medicinesDisplays, setMedicinesDisplays] = useState<any[]>([]);
     const [isVisiblePopupAdd, setIsVisiblePopupAdd] = useState<boolean>(false);
     const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
     const [mode, setMode] = useState<FormMode>(FormMode.Add);
-    const [examinationPackage, setExaminationPackage] = useState<any>();
+    const [medicine, setMedicine] = useState<any>();
     const [imageSrc, setImageSrc] = useState<string>('');
     const [selectedFile, setSelectedFile] = useState<any>();
-    const [examinationTypes, setExaminationTypes] = useState<any[]>([]);
-    const [organizations, setOrganizations] = useState<any[]>([]);
+    const [medicineTypes, setMedicineTypes] = useState<any[]>([]);
 
     const formik = useFormik({
-        initialValues: INITIAL_EXAMINATION_PACKAGES_VALUES.INFORMATION,
-        validationSchema: editExaminationPackagesAdminSchema,
+        initialValues: INITIAL_MEDICINES_VALUES.INFORMATION,
+        validationSchema: medicinesAdminSchema,
         onSubmit: (values) => {
             handleSubmit(values);
         },
     });
 
     useEffect(() => {
-        setTitle('Examination Packages | CareBlock');
-
-        getOrganizations();
-        getExaminationType();
+        setTitle('Medicines | CareBlock');
         getDatasource();
+        getMedicineType();
     }, []);
 
     useEffect(() => {
         if (!isVisiblePopupAdd) {
             formik.resetForm();
             setMode(FormMode.Add);
+        } else if (mode === FormMode.Add) {
+            formik.setFieldValue('unitPrice', UnitPrice.USD, false);
         }
     }, [isVisiblePopupAdd]);
 
     useEffect(() => {
         if (!initialized) {
-            let result = examinationPackages.filter((examinationPackage: ExaminationPackages) => {
+            let result = medicines.filter((medicine: Medicines) => {
                 if (
-                    examinationPackage.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
-                    examinationPackage.examinationTypeName
-                        ?.toLocaleLowerCase()
-                        .includes(searchValue?.toLocaleLowerCase()) ||
-                    examinationPackage.organizationName?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())
+                    medicine.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
+                    medicine.medicineTypeName.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
+                    medicine.description?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())
                 ) {
-                    return examinationPackage;
+                    return medicine;
                 }
             });
-            setExaminationPackagesDisplays(result);
+            setMedicinesDisplays(result);
             setPage(0);
         } else setInitialized(false);
     }, [searchValue]);
 
+    const getUnitPriceName = (unitPrice: UnitPrice) => {
+        if (unitPrice === UnitPrice.USD) return UnitPriceName.USD;
+        if (unitPrice === UnitPrice.VND) return UnitPriceName.VND;
+    };
+
     const getDatasource = () => {
-        subscribeOnce(ExaminationPackageService.getAll(), (res: ExaminationPackages[]) => {
+        subscribeOnce(MedicineService.getAll(), (res: Medicines[]) => {
             if (res) {
-                setExaminationPackages(res);
-                setExaminationPackagesDisplays(res);
+                const theData = res.map((item: Medicines) => {
+                    return {
+                        ...item,
+                        unitPriceName: getUnitPriceName(item.unitPrice),
+                    };
+                });
+                setMedicines(theData);
+                setMedicinesDisplays(theData);
             }
         });
     };
 
-    const getOrganizations = () => {
-        subscribeOnce(OrganizationService.getAllOrganization(), (res: Organizations[]) => {
+    const getMedicineType = () => {
+        subscribeOnce(MedicineTypeService.getAll(), (res: MedicineTypes[]) => {
             if (res) {
-                setOrganizations(res);
-            }
-        });
-    };
-
-    const getExaminationType = () => {
-        subscribeOnce(ExaminationTypeService.getAll(), (res: ExaminationTypes[]) => {
-            if (res) {
-                setExaminationTypes(res);
+                setMedicineTypes(res);
             }
         });
     };
@@ -133,26 +132,28 @@ function ExaminationPackage() {
         setPage(0);
     };
 
-    const handleClickEdit = (examinationPackage: ExaminationPackages) => {
+    const handleClickEdit = (medicine: Medicines) => {
         setMode(FormMode.Update);
-        setExaminationPackage(examinationPackage);
-        formik.setFieldValue('id', examinationPackage.id);
-        formik.setFieldValue('name', examinationPackage.name);
-        formik.setFieldValue('thumbnail', examinationPackage.thumbnail);
+        setMedicine(medicine);
+        formik.setFieldValue('id', medicine.id);
+        formik.setFieldValue('name', medicine.name);
+        formik.setFieldValue('price', medicine.price);
+        formik.setFieldValue('unitPrice', medicine.unitPrice);
+        formik.setFieldValue('description', medicine.description ?? '');
+        formik.setFieldValue('thumbnail', medicine.thumbnail);
         setTimeout(() => {
-            formik.setFieldValue('organizationId', examinationPackage.organizationId ?? '');
-        }, 0);
-        formik.setFieldValue('examinationTypeId', examinationPackage.examinationTypeId ?? '');
+            formik.setFieldValue('medicineTypeId', medicine.medicineTypeId);
+        }, 10);
         setIsVisiblePopupAdd(true);
     };
 
-    const handleClickRemove = (examinationPackage: ExaminationPackages) => {
-        formik.setFieldValue('id', examinationPackage.id);
+    const handleClickRemove = (medicine: Medicines) => {
+        formik.setFieldValue('id', medicine.id);
         setIsVisiblePopupConfirm(true);
     };
 
     const onClickAdd = () => {
-        setExaminationPackage(null);
+        setMedicine(null);
         setIsVisiblePopupAdd(true);
     };
 
@@ -166,12 +167,12 @@ function ExaminationPackage() {
 
     const handleConfirmDelete = () => {
         if (!formik.values?.id) return;
-        subscribeOnce(ExaminationPackageService.delete(formik.values.id), (res: any) => {
+        subscribeOnce(MedicineService.delete(formik.values.id), (res: any) => {
             if (!res.isError) {
                 setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_EXAMINATION_PACKAGE, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_MEDICINE, position: 'top-right' });
             }
         });
     };
@@ -181,37 +182,41 @@ function ExaminationPackage() {
         formik.resetForm();
     };
 
-    const handleSubmit = (values: ExaminationPackages) => {
+    const handleSubmit = (values: Medicines) => {
         if (mode === FormMode.Add) {
+            if (!values.medicineTypeId) {
+                addToast({ text: SystemMessage.MEDICINE_TYPE_REQUIRED, position: 'top-right', status: 'inValid' });
+                return;
+            }
             subscribeOnce(
-                ExaminationPackageService.insertNew({
+                MedicineService.insertNew({
                     ...values,
                     isDeleted: false,
-                    thumbnail: selectedFile ?? examinationPackage?.thumbnail,
+                    thumbnail: selectedFile ?? medicine?.thumbnail,
                 }),
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_EXAMINATION_PACKAGE, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_MEDICINE, position: 'top-right' });
                     }
                 }
             );
         } else {
             if (!values?.id) return;
             subscribeOnce(
-                ExaminationPackageService.update(values.id, {
+                MedicineService.update(values.id, {
                     ...values,
                     isDeleted: false,
-                    thumbnail: selectedFile ?? examinationPackage?.thumbnail,
+                    thumbnail: selectedFile ?? medicine?.thumbnail,
                 }),
                 (res: any) => {
                     if (!res.isError) {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_EXAMINATION_PACKAGE, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_MEDICINE, position: 'top-right' });
                     }
                 }
             );
@@ -229,16 +234,14 @@ function ExaminationPackage() {
 
     return (
         <div className="h-full">
-            <div className="text-[24px]">Manage Examination Packages</div>
-            <div className="text-[16px] mb-4">
-                Set up all examination packages that the organization conduct business from.
-            </div>
+            <div className="text-[24px]">Manage Medicines</div>
+            <div className="text-[16px] mb-4">Set up all medicines that the organization conduct business from.</div>
             <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
                 <TextField
                     variant="outlined"
                     label="Search"
                     size="small"
-                    placeholder="Enter name"
+                    placeholder="Enter name or description"
                     className="w-[260px]"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
@@ -274,18 +277,18 @@ function ExaminationPackage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {examinationPackagesDisplays
+                            {medicinesDisplays
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((examinationPackage: ExaminationPackages) => {
+                                .map((medicine: Medicines) => {
                                     return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={examinationPackage.id}>
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={medicine.id}>
                                             {columns.map((column) => {
-                                                const value = examinationPackage[column.id];
+                                                const value = medicine[column.id];
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
                                                         {column.id === 'thumbnail' ? (
                                                             <img
-                                                                src={value ? value : DefaultThumbnail}
+                                                                src={value ? (value as string) : DefaultThumbnail}
                                                                 alt="Thumbnail"
                                                                 className="w-[100px] h-[60px] object-cover"
                                                             />
@@ -301,11 +304,11 @@ function ExaminationPackage() {
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
                                                         className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
-                                                        onClick={() => handleClickEdit(examinationPackage)}
+                                                        onClick={() => handleClickEdit(medicine)}
                                                     />
                                                     <Images.MdDelete
                                                         className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
-                                                        onClick={() => handleClickRemove(examinationPackage)}
+                                                        onClick={() => handleClickRemove(medicine)}
                                                     />
                                                 </div>
                                             </TableCell>
@@ -319,7 +322,7 @@ function ExaminationPackage() {
                     rowsPerPageOptions={[10, 25, 100]}
                     component="div"
                     className="border-t bg-[#f4f4f4]"
-                    count={examinationPackagesDisplays.length}
+                    count={medicinesDisplays.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
@@ -331,7 +334,7 @@ function ExaminationPackage() {
             <Dialog open={isVisiblePopupAdd} onClose={handleClosePopupAdd}>
                 <DialogTitle>
                     <div className="flex items-center justify-between">
-                        <p>Add new examination package</p>
+                        <p>Add new medicine</p>
                         <Images.MdCancel
                             className="cursor-pointer hover:text-[red] text-[26px]"
                             onClick={() => handleClosePopupAdd()}
@@ -339,18 +342,12 @@ function ExaminationPackage() {
                     </div>
                 </DialogTitle>
                 <DialogContent>
-                    <form onSubmit={formik.handleSubmit} className="w-[400px] flex flex-col gap-y-[10px]">
-                        <div className="flex flex-col items-center mb-2">
+                    <form onSubmit={formik.handleSubmit} className="w-auto flex flex-col gap-y-[10px] overflow-hidden">
+                        <div className="flex flex-col items-center mb-2 w-[552px]">
                             <img
-                                className={`${!imageSrc && !examinationPackage?.thumbnail && 'p-[8px]'} w-[80px] h-[80px] object-cover rounded-[175px] border shadow-xl`}
+                                className={`${!imageSrc && !medicine?.thumbnail && 'p-[8px]'} w-[80px] h-[80px] object-cover rounded-[175px] border shadow-xl`}
                                 alt="thumbnail"
-                                src={
-                                    imageSrc
-                                        ? imageSrc
-                                        : examinationPackage?.thumbnail
-                                          ? examinationPackage.thumbnail
-                                          : DefaultThumbnail
-                                }
+                                src={imageSrc ? imageSrc : medicine?.thumbnail ? medicine.thumbnail : DefaultThumbnail}
                             />
                             <div className="my-3">
                                 <label
@@ -369,12 +366,12 @@ function ExaminationPackage() {
                                 />
                             </div>
                         </div>
-                        <div className="flex flex-col w-full">
-                            <div>Package name:</div>
+                        <div className="flex flex-col flex-1">
+                            <div>Medicine name:</div>
                             <TextField
                                 id="name"
                                 name="name"
-                                placeholder="Examination package name"
+                                placeholder="Medicine name"
                                 type="text"
                                 fullWidth
                                 variant="outlined"
@@ -385,47 +382,79 @@ function ExaminationPackage() {
                                 helperText={formik.touched.name && formik.errors.name}
                             />
                         </div>
-                        <div className="mt-[16px]">
-                            <div>Examination type:</div>
+                        <div className="flex flex-col w-full">
+                            <div>Description:</div>
+                            <TextField
+                                id="description"
+                                name="description"
+                                placeholder="Description"
+                                type="text"
+                                fullWidth
+                                variant="outlined"
+                                value={formik.values.description}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.description && Boolean(formik.errors.description)}
+                                helperText={formik.touched.description && formik.errors.description}
+                            />
+                        </div>
+                        <div className="flex items-center justify-between gap-x-[16px]">
+                            <div className="flex flex-col w-full">
+                                <div>Price:</div>
+                                <TextField
+                                    id="price"
+                                    name="price"
+                                    placeholder="Price"
+                                    type="number"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={formik.values.price}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.price && Boolean(formik.errors.price)}
+                                    helperText={formik.touched.price && formik.errors.price}
+                                />
+                            </div>
+                            <div className="flex flex-col w-full">
+                                <div>Unit Price:</div>
+                                <Select
+                                    className="w-full"
+                                    name="unitPrice"
+                                    size="medium"
+                                    displayEmpty
+                                    value={formik.values.unitPrice ?? ''}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.unitPrice && Boolean(formik.errors.unitPrice)}
+                                >
+                                    {UnitPriceOptions.map((item: any) => (
+                                        <MenuItem key={item.id} value={item.id}>
+                                            {item.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </div>
+                        </div>
+                        <div className="flex flex-col w-full">
+                            <div>Medicine type:</div>
                             <Select
                                 className="w-full"
-                                name="examinationTypeId"
+                                name="medicineTypeId"
                                 size="medium"
                                 displayEmpty
-                                value={formik.values.examinationTypeId ?? ''}
+                                value={formik.values.medicineTypeId ?? ''}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                error={formik.touched.examinationTypeId && Boolean(formik.errors.examinationTypeId)}
+                                error={formik.touched.medicineTypeId && Boolean(formik.errors.medicineTypeId)}
                             >
-                                {examinationTypes.map((item: any) => (
+                                {medicineTypes.map((item: any) => (
                                     <MenuItem key={item.id} value={item.id}>
                                         {item.name}
                                     </MenuItem>
                                 ))}
                             </Select>
                             <FormHelperText>
-                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.examinationTypeId}</span>
-                            </FormHelperText>
-                        </div>
-                        <div>
-                            <div>Organization:</div>
-                            <Select
-                                className="w-full"
-                                name="organizationId"
-                                size="medium"
-                                value={formik.values.organizationId ?? ''}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.organizationId && Boolean(formik.errors.organizationId)}
-                            >
-                                {organizations.map((item: Organizations) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                        {item.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                            <FormHelperText>
-                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.organizationId}</span>
+                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.medicineTypeId}</span>
                             </FormHelperText>
                         </div>
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
@@ -449,4 +478,4 @@ function ExaminationPackage() {
     );
 }
 
-export default ExaminationPackage;
+export default Medicines;

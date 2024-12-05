@@ -26,6 +26,13 @@ class _MedicineService {
         });
     }
 
+    public insertNew(medicine: Medicines) {
+        return HttpService.post<string>(`/medicine/create`, {
+            body: { ...medicine },
+            requestContentType: RequestContentType.MULTIPART,
+        });
+    }
+
     public update(id: string, medicine: Medicines) {
         return HttpService.put<Medicines>(`/medicine/${id}`, {
             body: { ...medicine },

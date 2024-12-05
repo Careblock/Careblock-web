@@ -137,6 +137,12 @@ const ManagerSidebar = () => {
                                 <Link to={PATHS.MEDICINE_TYPE} />
                             </MenuItem>
                         </Menu>
+                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                            <MenuItem icon={<Images.GiMedicines />}>
+                                <span className="text-black text-xl">Medicines</span>
+                                <Link to={PATHS.MEDICINES_ADMIN} />
+                            </MenuItem>
+                        </Menu>
                     </>
                 )}
             </SidebarContent>

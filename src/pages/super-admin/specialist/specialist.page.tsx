@@ -79,6 +79,7 @@ function SpecialistPage() {
             let result = specialists.filter((specialist: Specialists) => {
                 if (
                     specialist.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
+                    specialist.organizationName?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
                     specialist.description?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())
                 ) {
                     return specialist;
@@ -353,7 +354,7 @@ function SpecialistPage() {
                                 />
                             </div>
                         </div>
-                        <div className="flex flex-col w-full">
+                        <div className="flex flex-col w-full mb-[16px]">
                             <div>Specialist name:</div>
                             <TextField
                                 id="name"
@@ -369,7 +370,7 @@ function SpecialistPage() {
                                 helperText={formik.touched.name && formik.errors.name}
                             />
                         </div>
-                        <div className="mt-[20px]">
+                        <div>
                             <div>Organization:</div>
                             <Select
                                 className="w-full"
