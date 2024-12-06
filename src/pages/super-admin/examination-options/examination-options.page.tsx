@@ -34,7 +34,7 @@ import ExaminationOptionService from '@/services/examinationOption.service';
 import SpecialistService from '@/services/specialist.service';
 import { Specialists } from '@/types/specialist.type';
 
-function ExaminationPackage() {
+function ExaminationOption() {
     const { subscribeOnce } = useObservable();
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState<string>('');
@@ -405,4 +405,4 @@ function ExaminationPackage() {
     );
 }
 
-export default ExaminationPackage;
+export default ExaminationOption;

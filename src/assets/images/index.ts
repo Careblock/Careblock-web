@@ -49,6 +49,7 @@ import {
     MdMeetingRoom,
     MdEdit,
     MdCancel,
+    MdOutlinePayment,
 } from 'react-icons/md';
 import {
     IoIosAttach,
@@ -139,6 +140,7 @@ export const Images = {
     MdMeetingRoom,
     MdEdit,
     MdCancel,
+    MdOutlinePayment,
     MailOutlineIcon,
     IoLogOutOutline,
     IoMdHelp,

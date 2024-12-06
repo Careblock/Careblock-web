@@ -26,6 +26,7 @@ import SpecialistPageAdmin from '@/pages/super-admin/specialist/specialist.page'
 import ExaminationPackageAdmin from '@/pages/super-admin/examination-package/examination-package.page';
 import MedicinesAdmin from '@/pages/super-admin/medicines/medicines.page';
 import ExaminationOptions from '@/pages/super-admin/examination-options/examination-options.page';
+import PaymentMethod from '@/pages/super-admin/payment-method/payment-method.page';
 
 export const routesForNotAuthenticatedOnly = [
     { path: PATHS.REGISTER, element: <Register /> },
@@ -89,6 +90,7 @@ export const routesForAdmin = [
             { path: PATHS.EXAMINATION_OPTIONS_ADMIN, element: <ExaminationOptions /> },
             { path: PATHS.MEDICINE_TYPE, element: <MedicineType /> },
             { path: PATHS.MEDICINES_ADMIN, element: <MedicinesAdmin /> },
+            { path: PATHS.PAYMENT_METHOD_ADMIN, element: <PaymentMethod /> },
         ],
     },
 ];

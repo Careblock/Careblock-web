@@ -149,6 +149,12 @@ const ManagerSidebar = () => {
                                 <Link to={PATHS.MEDICINES_ADMIN} />
                             </MenuItem>
                         </Menu>
+                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                            <MenuItem icon={<Images.MdOutlinePayment />}>
+                                <span className="text-black text-xl">Payment Method</span>
+                                <Link to={PATHS.PAYMENT_METHOD_ADMIN} />
+                            </MenuItem>
+                        </Menu>
                     </>
                 )}
             </SidebarContent>

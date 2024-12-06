@@ -31,7 +31,7 @@ import { organizationsSchema } from '@/validations/organizations.validation';
 import { Organizations } from '@/types/organization.type';
 import OrganizationService from '@/services/organization.service';
 
-function SpecialistPage() {
+function OrganizationPage() {
     const { subscribeOnce } = useObservable();
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState<string>('');
@@ -519,4 +519,4 @@ function SpecialistPage() {
     );
 }
 
-export default SpecialistPage;
+export default OrganizationPage;

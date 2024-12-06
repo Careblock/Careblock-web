@@ -23,34 +23,34 @@ import { useFormik } from 'formik';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
 import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
-import { columns } from './medicine-type.const';
-import { MedicineTypes } from '@/types/medicineType.type';
-import MedicineTypeService from '@/services/medicineType.service';
-import { medicineTypesSchema } from '@/validations/medicine.validation';
-import { INITIAL_MEDICINE_TYPES_VALUES } from '@/constants/medicines.const';
+import { columns } from './payment-method.const';
+import { INITIAL_PAYMENT_METHOD_VALUES } from '@/constants/payment.const';
+import { paymentMethodSchema } from '@/validations/payment.validation';
+import { PaymentMethods } from '@/types/paymentMethods.type';
+import PaymentMethodService from '@/services/paymentMethod.service';
 
-function MedicineType() {
+function PaymentMethodPage() {
     const { subscribeOnce } = useObservable();
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [medicineTypes, setMedicineTypes] = useState<any[]>([]);
-    const [medicineTypesDisplays, setMedicineTypesDisplays] = useState<any[]>([]);
+    const [paymentMethods, setPaymentMethods] = useState<any[]>([]);
+    const [paymentMethodsDisplays, setPaymentMethodsDisplays] = useState<any[]>([]);
     const [isVisiblePopupAdd, setIsVisiblePopupAdd] = useState<boolean>(false);
     const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
     const [mode, setMode] = useState<FormMode>(FormMode.Add);
 
     const formik = useFormik({
-        initialValues: INITIAL_MEDICINE_TYPES_VALUES.INFORMATION,
-        validationSchema: medicineTypesSchema,
+        initialValues: INITIAL_PAYMENT_METHOD_VALUES.INFORMATION,
+        validationSchema: paymentMethodSchema,
         onSubmit: (values) => {
             handleSubmit(values);
         },
     });
 
     useEffect(() => {
-        setTitle('Medicine Types | CareBlock');
+        setTitle('Payment Methods | CareBlock');
         getDatasource();
     }, []);
 
@@ -63,20 +63,20 @@ function MedicineType() {
 
     useEffect(() => {
         if (!initialized) {
-            let result = medicineTypes.filter((medicineType: MedicineTypes) => {
-                if (medicineType.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())) {
-                    return medicineType;
+            let result = paymentMethods.filter((paymentMethod: PaymentMethods) => {
+                if (paymentMethod.name.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())) {
+                    return paymentMethod;
                 }
             });
-            setMedicineTypesDisplays(result);
+            setPaymentMethodsDisplays(result);
         } else setInitialized(false);
     }, [searchValue]);
 
     const getDatasource = () => {
-        subscribeOnce(MedicineTypeService.getAll(), (res: MedicineTypes[]) => {
+        subscribeOnce(PaymentMethodService.getAll(), (res: PaymentMethods[]) => {
             if (res) {
-                setMedicineTypes(res);
-                setMedicineTypesDisplays(res);
+                setPaymentMethods(res);
+                setPaymentMethodsDisplays(res);
             }
         });
     };
@@ -94,15 +94,15 @@ function MedicineType() {
         setPage(0);
     };
 
-    const handleClickEdit = (medicineType: MedicineTypes) => {
+    const handleClickEdit = (paymentMethod: PaymentMethods) => {
         setMode(FormMode.Update);
-        formik.setFieldValue('id', medicineType.id);
-        formik.setFieldValue('name', medicineType.name);
+        formik.setFieldValue('id', paymentMethod.id);
+        formik.setFieldValue('name', paymentMethod.name);
         setIsVisiblePopupAdd(true);
     };
 
-    const handleClickRemove = (medicineType: MedicineTypes) => {
-        formik.setFieldValue('id', medicineType.id);
+    const handleClickRemove = (paymentMethod: PaymentMethods) => {
+        formik.setFieldValue('id', paymentMethod.id);
         setIsVisiblePopupConfirm(true);
     };
 
@@ -120,11 +120,11 @@ function MedicineType() {
 
     const handleConfirmDelete = () => {
         if (!formik.values?.id) return;
-        subscribeOnce(MedicineTypeService.delete(formik.values.id), (res: any) => {
+        subscribeOnce(PaymentMethodService.delete(formik.values.id), (res: any) => {
             if (!res.isError) {
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_MEDICINE_TYPE, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_PAYMENT_METHOD, position: 'top-right' });
             }
         });
     };
@@ -133,10 +133,10 @@ function MedicineType() {
         formik.resetForm();
     };
 
-    const handleSubmit = (values: MedicineTypes) => {
+    const handleSubmit = (values: PaymentMethods) => {
         if (mode === FormMode.Add) {
             subscribeOnce(
-                MedicineTypeService.insert({
+                PaymentMethodService.insert({
                     ...values,
                 }),
                 (res: any) => {
@@ -144,14 +144,14 @@ function MedicineType() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_MEDICINE_TYPE, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_PAYMENT_METHOD, position: 'top-right' });
                     }
                 }
             );
         } else {
             if (!values?.id) return;
             subscribeOnce(
-                MedicineTypeService.update(values.id, {
+                PaymentMethodService.update(values.id, {
                     ...values,
                 }),
                 (res: any) => {
@@ -159,7 +159,7 @@ function MedicineType() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_MEDICINE_TYPE, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_PAYMENT_METHOD, position: 'top-right' });
                     }
                 }
             );
@@ -168,9 +168,9 @@ function MedicineType() {
 
     return (
         <div className="h-full">
-            <div className="text-[24px]">Manage Medicine Types</div>
+            <div className="text-[24px]">Manage Payment Methods</div>
             <div className="text-[16px] mb-4">
-                Set up all medicine types that the organization conduct business from.
+                Set up all payment methods that the organization conduct business from.
             </div>
             <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
                 <TextField
@@ -213,13 +213,13 @@ function MedicineType() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {medicineTypesDisplays
+                            {paymentMethodsDisplays
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((medicineType: MedicineTypes) => {
+                                .map((paymentMethod: PaymentMethods) => {
                                     return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={medicineType.id}>
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={paymentMethod.id}>
                                             {columns.map((column) => {
-                                                const value = medicineType[column.id];
+                                                const value = paymentMethod[column.id];
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
                                                         {column.format && typeof value === 'number'
@@ -232,11 +232,11 @@ function MedicineType() {
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
                                                         className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
-                                                        onClick={() => handleClickEdit(medicineType)}
+                                                        onClick={() => handleClickEdit(paymentMethod)}
                                                     />
                                                     <Images.MdDelete
                                                         className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
-                                                        onClick={() => handleClickRemove(medicineType)}
+                                                        onClick={() => handleClickRemove(paymentMethod)}
                                                     />
                                                 </div>
                                             </TableCell>
@@ -250,7 +250,7 @@ function MedicineType() {
                     rowsPerPageOptions={[10, 25, 100]}
                     component="div"
                     className="border-t bg-[#f4f4f4]"
-                    count={medicineTypesDisplays.length}
+                    count={paymentMethodsDisplays.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
@@ -262,7 +262,7 @@ function MedicineType() {
             <Dialog open={isVisiblePopupAdd} onClose={handleClosePopupAdd}>
                 <DialogTitle>
                     <div className="flex items-center justify-between">
-                        <p>Add new medicine type</p>
+                        <p>Add new payment method</p>
                         <Images.MdCancel
                             className="cursor-pointer hover:text-[red] text-[26px]"
                             onClick={() => handleClosePopupAdd()}
@@ -272,11 +272,11 @@ function MedicineType() {
                 <DialogContent>
                     <form onSubmit={formik.handleSubmit} className="w-[400px] flex flex-col gap-y-[10px]">
                         <div className="flex flex-col w-full">
-                            <div>Type:</div>
+                            <div>Payment Method:</div>
                             <TextField
                                 id="name"
                                 name="name"
-                                placeholder="Medicine type"
+                                placeholder="Payment method name"
                                 type="text"
                                 fullWidth
                                 variant="outlined"
@@ -308,4 +308,4 @@ function MedicineType() {
     );
 }
 
-export default MedicineType;
+export default PaymentMethodPage;
