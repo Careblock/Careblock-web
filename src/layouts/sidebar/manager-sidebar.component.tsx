@@ -138,9 +138,15 @@ const ManagerSidebar = () => {
                             </MenuItem>
                         </Menu>
                         <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                            <MenuItem icon={<Images.RxLapTimer />}>
+                                <span className="text-black text-xl">Time slot</span>
+                                <Link to={PATHS.TIME_SLOT_ADMIN} />
+                            </MenuItem>
+                        </Menu>
+                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
                             <MenuItem icon={<Images.RiMedicineBottleFill />}>
                                 <span className="text-black text-xl">Medicine Type</span>
-                                <Link to={PATHS.MEDICINE_TYPE} />
+                                <Link to={PATHS.MEDICINE_TYPE_ADMIN} />
                             </MenuItem>
                         </Menu>
                         <Menu iconShape="circle" className="!p-0 hover:bg-gray">
