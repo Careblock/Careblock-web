@@ -3,6 +3,10 @@ import { Specialists } from '@/types/specialist.type';
 import { RequestContentType } from './http/http.type';
 
 class _SpecialistService {
+    public getAll() {
+        return HttpService.get<Specialists[]>(`/specialist/get-all`);
+    }
+
     public getByUserId(userId: string) {
         return HttpService.get<Specialists[]>(`/specialist/get-by-user/${userId}`);
     }

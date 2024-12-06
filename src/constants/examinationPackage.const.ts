@@ -6,6 +6,7 @@ export const INITIAL_EXAMINATION_PACKAGES_VALUES = {
         name: '',
         thumbnail: '',
         organizationId: '',
+        examinationTypeId: '',
     } as ExaminationPackages,
 };
 

@@ -49,6 +49,7 @@ import {
     MdMeetingRoom,
     MdEdit,
     MdCancel,
+    MdOutlinePayment,
 } from 'react-icons/md';
 import {
     IoIosAttach,
@@ -94,8 +95,8 @@ import VaccinesIcon from '@mui/icons-material/Vaccines';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { FcGoogle, FcInvite } from 'react-icons/fc';
 import { LuClock } from 'react-icons/lu';
-import { RxUpdate } from 'react-icons/rx';
-import { TbListDetails } from 'react-icons/tb';
+import { RxUpdate, RxLapTimer } from 'react-icons/rx';
+import { TbListDetails, TbTableOptions } from 'react-icons/tb';
 import { TfiWorld } from 'react-icons/tfi';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { TiTick, TiVideo, TiUserAdd } from 'react-icons/ti';
@@ -139,6 +140,7 @@ export const Images = {
     MdMeetingRoom,
     MdEdit,
     MdCancel,
+    MdOutlinePayment,
     MailOutlineIcon,
     IoLogOutOutline,
     IoMdHelp,
@@ -209,10 +211,12 @@ export const Images = {
     FaGem,
     MdDashboard,
     RxUpdate,
+    RxLapTimer,
     RiDeleteBin6Line,
     ManageAccountsIcon,
     FaBan,
     TbListDetails,
+    TbTableOptions,
     FaCheck,
     GrClose,
     FaShare,

@@ -4,10 +4,10 @@ import { MedicineTypes } from '@/types/medicineType.type';
 
 export const INITIAL_MEDICINES_VALUES = {
     INFORMATION: {
-        medicineTypeId: '',
         name: '',
         price: 0,
         unitPrice: UnitPrice.USD,
+        medicineTypeId: '',
         description: '',
         thumbnail: '',
     } as Medicines,
