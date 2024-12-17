@@ -1,12 +1,12 @@
-import { MedicalServices } from '@/types/medical-services.type';
+import { Medicines } from '@/types/medicine.type';
 import HttpService from './http/http.service';
 
-class _MedicalService {
+class _MedicineService {
     public filterByOrganization(organizationID: string) {
-        return HttpService.get<MedicalServices[]>(`/MedicalService/filter-by-organization/${organizationID}`);
+        return HttpService.get<Medicines[]>(`/medicine/filter-by-organization/${organizationID}`);
     }
 }
 
-const MedicalService = new _MedicalService();
+const MedicalService = new _MedicineService();
 
 export default MedicalService;

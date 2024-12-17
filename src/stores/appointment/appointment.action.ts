@@ -1,10 +1,10 @@
 import { AppointmentActionType } from './appointment.type';
 import { AppAction } from '@/types/action.type';
 
-export const storeAppointment = (organizationId: string): AppAction => {
+export const storeAppointment = (examinationTypeId: string | number): AppAction => {
     return {
         type: AppointmentActionType.STORE_APPOINTMENT,
-        payload: { organizationId },
+        payload: { examinationTypeId },
     };
 };
 

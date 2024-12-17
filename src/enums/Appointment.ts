@@ -7,7 +7,7 @@ export enum APPOINTMENT_STATUS {
 
 export enum APPOINTMENT_STATUS_NAME {
     ACTIVE = 'Active',
-    POSTPONED = 'Postponed',
+    POSTPONED = 'PostPoned',
     REJECTED = 'Rejected',
     CHECKEDIN = 'CheckedIn',
 }

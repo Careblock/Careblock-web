@@ -47,16 +47,15 @@ export default function ToastContainer() {
                 <div
                     key={index}
                     className={clsx(
-                        'flex items-center justify-between w-[300px] min-h-[48px] rounded-sm mb-3 shadow-[0_4px_8px_0_rgb(0,0,0,10%),0_2px_4px_0_rgb(0,0,0,10%),0_0_0_1px_rgb(0,0,0,5%)]',
+                        'flex items-center justify-between w-[300px] min-h-[48px] rounded mb-3 shadow-[0_4px_8px_0_rgb(0,0,0,10%),0_2px_4px_0_rgb(0,0,0,10%),0_0_0_1px_rgb(0,0,0,5%)] px-[10px] py-[6px]',
                         {
-                            'bg-[#e54e87]': toast.status === 'inValid',
-                            'bg-[#16dd16bf]': toast.status === 'valid',
-                            'bg-[#ecf008bf]': toast.status === 'warn',
+                            'bg-[#e23636]': toast.status === 'inValid',
+                            'bg-[#50b41e]': toast.status === 'valid',
+                            'bg-[#edb95e]': toast.status === 'warn',
                         }
                     )}
                 >
-                    <div className="ml-2 text-black break-words w-[270px] pr-2 py-2 text-xl">{toast.text}</div>
-
+                    <div className="ml-2 text-white break-words w-[270px] pr-2 py-2 text-xl">{toast.text}</div>
                     <div
                         className="text-2xl text-white mr-2 cursor-pointer"
                         onClick={() => handleRemoveToast(toast.id)}

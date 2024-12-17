@@ -6,8 +6,15 @@ export enum DataType {
 export enum ROLES {
     PATIENT = 1,
     DOCTOR = 2,
-    DOCTOR_MANAGER = 3,
+    MANAGER = 3,
     ADMIN = 4,
+}
+
+export enum ROLE_NAMES {
+    PATIENT = 'PATIENT',
+    DOCTOR = 'DOCTOR',
+    MANAGER = 'MANAGER',
+    ADMIN = 'ADMIN',
 }
 
 export enum GENDER {

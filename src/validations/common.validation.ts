@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 
 interface ValidationConfig {
-    [key: string]: Yup.StringSchema<string | undefined>;
+    [key: string]: Yup.StringSchema<string | undefined> | any;
 }
 
 export const createValidation = (config: ValidationConfig) => {

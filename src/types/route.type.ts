@@ -1,8 +1,8 @@
 import { ComponentType } from 'react';
-import { ROLES } from '../enums/Common';
+import { ROLE_NAMES } from '../enums/Common';
 
 export interface ProtectedRouteProps {
-    allowedRoles?: ROLES[];
+    allowedRoles?: ROLE_NAMES[];
 }
 
 export interface RouteShape {

@@ -5,7 +5,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as React from 'react';
 import { Login } from '@/pages/authentication/login/login.page';
 import IconButton from '@mui/material/IconButton';
-import { ScrollToTop } from './scroll-top.component';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import AppBar from '@mui/material/AppBar';
@@ -13,6 +12,7 @@ import Menu from '@mui/material/Menu';
 import Box from '@mui/material/Box';
 import { PATHS } from '@/enums/RoutePath';
 import { Images } from '@/assets/images';
+import { ScrollToTop } from '@/components/base/scroll-to-top/scroll-top.component';
 
 export default function PrimarySearchAppBar() {
     const navigate = useNavigate();
@@ -80,7 +80,7 @@ export default function PrimarySearchAppBar() {
                 </p>
             </MenuItem>
             <MenuItem>
-                <a href="https://eternl.io/app/mainnet/welcome" className="py-2 px-4">
+                <a href="https://eternl.io/app/mainnet/welcome" target="_blank" rel="noreferrer" className="py-2 px-4">
                     REGISTER
                 </a>
             </MenuItem>
@@ -97,7 +97,6 @@ export default function PrimarySearchAppBar() {
                             onClick={() => handleMoveToPage(PATHS.HOME)}
                         >
                             <img
-                                aria-hidden="true"
                                 alt="Selected Avatar"
                                 className="w-10 h-10 object-cover rounded-[175px] mr-3"
                                 src={Images.Logo}
@@ -110,7 +109,7 @@ export default function PrimarySearchAppBar() {
                                 <Button variant="contained" color="orange" onClick={handleClickOpen}>
                                     Login
                                 </Button>
-                                <Link to="https://eternl.io/app/mainnet/welcome">
+                                <Link to="https://eternl.io/app/mainnet/welcome" target="_blank">
                                     <Button variant="contained" color="purple">
                                         Register
                                     </Button>

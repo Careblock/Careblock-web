@@ -9,7 +9,7 @@ export default function appointmentReducer(
         case AppointmentActionType.STORE_APPOINTMENT:
             return {
                 ...state,
-                organizationId: action.payload?.organizationId,
+                examinationTypeId: action.payload?.examinationTypeId,
             };
         case AppointmentActionType.CLEAR_APPOINTMENT:
             return initialState;
@@ -19,5 +19,5 @@ export default function appointmentReducer(
 }
 
 const initialState: AppointmentState = {
-    organizationId: '',
+    examinationTypeId: '',
 };

@@ -5,11 +5,20 @@ import Accordion from '@mui/material/Accordion';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import { Button, CardContent, Checkbox, FormControlLabel, MenuItem, Select, TextField } from '@mui/material';
+import {
+    Button,
+    CardContent,
+    Checkbox,
+    FormControlLabel,
+    FormHelperText,
+    MenuItem,
+    Select,
+    TextField,
+} from '@mui/material';
 import { registerPatientSchema, registerDoctorSchema } from '@/validations/auth.validation';
 import { SignUpInitialValues } from '@/types/auth.type';
-import { dropDownBloodTypes, dropDownGenders, dropDownRoles } from '@/constants/dropdown.const';
-import { INITIAL_VALUES } from '@/constants/common.const';
+import { dropDownGenders, dropDownRoles } from '@/constants/dropdown.const';
+import { EMPTY_GUID, INITIAL_USER_VALUES } from '@/constants/common.const';
 import { SystemMessage } from '@/constants/message.const';
 import OrganizationService from '@/services/organization.service';
 import { addToast } from '@/components/base/toast/toast.service';
@@ -21,6 +30,9 @@ import { PATHS } from '@/enums/RoutePath';
 import avatarRegister from '@/assets/images/auth/background.png';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
 import 'react-toastify/dist/ReactToastify.css';
+import { setTitle } from '@/utils/document';
+import DepartmentService from '@/services/department.service';
+import { getNotNullString } from '@/utils/string.helper';
 
 function Register() {
     const navigate = useNavigate();
@@ -28,20 +40,31 @@ function Register() {
     const { subscribeOnce } = useObservable();
     const [role, setRole] = useState(ROLES.PATIENT);
     const [imageSrc, setImageSrc] = useState<string>('');
-    const [organization, setOrganization] = useState([]);
+    const [organization, setOrganization] = useState<any[]>([]);
+    const [department, setDepartment] = useState<any[]>([]);
     const [selectedFile, setSelectedFile] = useState<any>();
     const [isChecked, setIsChecked] = useState<boolean>(false);
     const [showAdditionalInfo, setShowAdditionalInfo] = useState<boolean>(false);
     const stakeIdCookie = getCookie('stakeId');
-    const stakeId = stakeIdCookie ? JSON.stringify(stakeIdCookie).slice(1, -1) : '';
+    const stakeId = stakeIdCookie ?? '';
+
+    useEffect(() => {
+        setTitle('Register | CareBlock');
+    }, []);
 
     const formik = useFormik({
-        initialValues: INITIAL_VALUES.REGISTER,
+        initialValues: INITIAL_USER_VALUES.REGISTER,
         validationSchema: role === ROLES.PATIENT ? registerPatientSchema : registerDoctorSchema,
         onSubmit: (values) => {
             handleSubmit(values);
         },
     });
+
+    const getOrganizationData = () => {
+        subscribeOnce(OrganizationService.getAllOrganization(), (res: any) => {
+            setOrganization(res.map((data: any) => ({ name: data.name, organizationId: data.id })));
+        });
+    };
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsChecked(event.target.checked);
@@ -56,11 +79,13 @@ function Register() {
         }
     };
 
-    useEffect(() => {
-        subscribeOnce(OrganizationService.getAllOrganization(), (res: any) => {
-            setOrganization(res.map((data: any) => ({ name: data.name, organizationId: data.id })));
+    const onChangeOrganization = (event: any) => {
+        formik.setFieldValue('departmentId', '');
+        if (!event.target?.value) return;
+        subscribeOnce(DepartmentService.getByOrganization(event.target.value), (res: any) => {
+            setDepartment(res.map((data: any) => ({ name: data.name, departmentId: data.id })));
         });
-    }, []);
+    };
 
     const handleSubmit = (values: SignUpInitialValues) => {
         if (stakeId === '') {
@@ -68,13 +93,14 @@ function Register() {
             return;
         }
         if (values.role === ROLES.PATIENT) {
-            if ('seniority' in values || 'organizationId' in values) {
+            if ('seniority' in values || 'organizationId' in values || 'departmentId' in values) {
                 delete values?.seniority;
                 delete values?.organizationId;
+                delete values?.departmentId;
             }
         }
         subscribeOnce(AuthService.register({ ...values, stakeId: stakeId, avatar: selectedFile }), (res: any) => {
-            if (res === '00000000-0000-0000-0000-000000000000') {
+            if (res === EMPTY_GUID) {
                 addToast({ text: SystemMessage.ACCOUNT_EXISTED, position: 'top-right', status: 'warn' });
             } else {
                 addToast({ text: SystemMessage.REGISTER_SUCCESS, position: 'top-right', status: 'valid' });
@@ -86,30 +112,25 @@ function Register() {
     const handleChangeRole = (e: any) => {
         formik.handleChange(e);
         setRole(e.target.value);
+        getOrganizationData();
         setShowAdditionalInfo(e.target.value !== ROLES.PATIENT);
     };
 
     return (
-        <div className="flex min-h-screen bg-center bg-cover rounded-xl">
+        <div className="flex h-[calc(100vh-52px-52px-40px)] overflow-hidden bg-center bg-cover rounded-xl mt-[10px] mx-[-4px]">
             <div className="w-full flex items-center rounded-[10px] bg-blue-100 shadow-2xl">
-                <div className="flex flex-col justify-center items-center w-1/3 h-full">
-                    <img
-                        src={avatarRegister}
-                        alt="Register logo"
-                        className="w-full h-full object-contain rounded"
-                        aria-hidden="true"
-                    />
+                <div className="flex flex-col justify-center items-center w-2/5 h-full select-none">
+                    <img src={avatarRegister} alt="Register logo" className="w-full h-full object-contain rounded" />
                 </div>
-                <div className="pb-8 w-2/3 min-h-screen flex-1 text-center rounded-xl shadow-sm bg-white">
-                    <h2 className="my-4 text-[20px] font-bold text-center">Register</h2>
+                <div className="pb-8 w-2/3 flex-1 text-center rounded-xl shadow-sm bg-white overflow-auto h-[calc(100vh-52px-52px-20px)]">
+                    <h2 className="my-4 text-[26px] font-bold text-center select-none">Register</h2>
                     <form onSubmit={formik.handleSubmit} className="w-4/5 mx-auto">
                         <div className="mb-15">
                             <div className="flex flex-col items-center">
                                 <img
-                                    src={imageSrc ? imageSrc : avatarDefault}
+                                    src={getNotNullString(imageSrc, avatarDefault)}
                                     alt="Selected Avatar"
                                     className="w-[80px] h-[80px] object-cover rounded-[175px] border"
-                                    aria-hidden="true"
                                 />
                                 <div className="mt-2 mb-4">
                                     <label
@@ -193,19 +214,22 @@ function Register() {
                                     />
                                 </div>
                                 <div className="flex flex-col w-1/2">
-                                    <h3 className="text-left mb-1">Email</h3>
-                                    <TextField
-                                        className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
-                                        name="email"
-                                        placeholder="Type value"
-                                        type="text"
+                                    <h4 className="text-left mb-1">Gender</h4>
+                                    <Select
+                                        name="gender"
+                                        className="w-full"
                                         size="small"
-                                        value={formik.values.email}
+                                        value={formik.values.gender}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
-                                        error={formik.touched.email && Boolean(formik.errors.email)}
-                                        helperText={formik.touched.email && formik.errors.email}
-                                    />
+                                        error={formik.touched.gender && Boolean(formik.errors.gender)}
+                                    >
+                                        {dropDownGenders.map((item) => (
+                                            <MenuItem key={item.gender} value={item.gender}>
+                                                {item.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
                                 </div>
                             </div>
                             <div className="flex gap-3 mb-2">
@@ -249,7 +273,10 @@ function Register() {
                                             name="organizationId"
                                             size="small"
                                             value={formik.values.organizationId}
-                                            onChange={formik.handleChange}
+                                            onChange={($event: any) => {
+                                                formik.handleChange($event);
+                                                onChangeOrganization($event);
+                                            }}
                                             onBlur={formik.handleBlur}
                                             error={
                                                 formik.touched.organizationId && Boolean(formik.errors.organizationId)
@@ -261,11 +288,43 @@ function Register() {
                                                 </MenuItem>
                                             ))}
                                         </Select>
+                                        <FormHelperText>
+                                            <span className="text-[#d32f2f] mx-[14px]">
+                                                {formik.errors.organizationId}
+                                            </span>
+                                        </FormHelperText>
                                     </div>
                                     <div className="flex flex-col w-1/2">
+                                        <h4 className="text-left mb-1">Department</h4>
+                                        <Select
+                                            className="w-full"
+                                            name="departmentId"
+                                            size="small"
+                                            value={formik.values.departmentId}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.departmentId && Boolean(formik.errors.departmentId)}
+                                        >
+                                            {department.map((item: any) => (
+                                                <MenuItem key={item.departmentId} value={item.departmentId}>
+                                                    {item.name}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                        <FormHelperText>
+                                            <span className="text-[#d32f2f] mx-[14px]">
+                                                {formik.errors.departmentId}
+                                            </span>
+                                        </FormHelperText>
+                                    </div>
+                                </div>
+                            )}
+                            {showAdditionalInfo && (
+                                <div className="flex mb-5">
+                                    <div className="w-full">
                                         <h4 className="text-left mb-1">Experience Year</h4>
                                         <TextField
-                                            className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
+                                            className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto w-full"
                                             name="seniority"
                                             placeholder="Type value"
                                             type="number"
@@ -279,61 +338,40 @@ function Register() {
                                     </div>
                                 </div>
                             )}
-                            <div className="flex gap-3 mb-2">
+                            <div className="flex gap-3 mb-5">
                                 <div className="w-1/2">
-                                    <h4 className="text-left mb-1">Gender</h4>
-                                    <Select
-                                        name="gender"
-                                        className="w-full"
+                                    <h3 className="text-left mb-1">Email</h3>
+                                    <TextField
+                                        className="rounded-[10px] focus:outline-none focus:border-blue-500 w-full"
+                                        name="email"
+                                        placeholder="Type value"
+                                        type="text"
                                         size="small"
-                                        value={formik.values.gender}
+                                        value={formik.values.email}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
-                                        error={formik.touched.gender && Boolean(formik.errors.gender)}
+                                        error={formik.touched.email && Boolean(formik.errors.email)}
+                                        helperText={formik.touched.email && formik.errors.email}
+                                    />
+                                </div>
+                                <div className="w-1/2">
+                                    <h4 className="text-left mb-1">Role</h4>
+                                    <Select
+                                        name="role"
+                                        className="w-full"
+                                        size="small"
+                                        value={formik.values.role}
+                                        onChange={handleChangeRole}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.role && Boolean(formik.errors.role)}
                                     >
-                                        {dropDownGenders.map((item) => (
-                                            <MenuItem key={item.gender} value={item.gender}>
+                                        {dropDownRoles.map((item) => (
+                                            <MenuItem key={item.role} value={item.role}>
                                                 {item.name}
                                             </MenuItem>
                                         ))}
                                     </Select>
                                 </div>
-                                <div className="w-1/2">
-                                    <h4 className="text-left mb-1">Blood Type</h4>
-                                    <Select
-                                        name="bloodType"
-                                        className="w-full"
-                                        size="small"
-                                        value={formik.values.bloodType}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.bloodType && Boolean(formik.errors.bloodType)}
-                                    >
-                                        {dropDownBloodTypes.map((item) => (
-                                            <MenuItem key={item.bloodType} value={item.bloodType}>
-                                                {item.name}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </div>
-                            </div>
-                            <div className="mb-5">
-                                <h4 className="text-left mb-1">Role</h4>
-                                <Select
-                                    name="role"
-                                    className="w-full"
-                                    size="small"
-                                    value={formik.values.role}
-                                    onChange={handleChangeRole}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.role && Boolean(formik.errors.role)}
-                                >
-                                    {dropDownRoles.map((item) => (
-                                        <MenuItem key={item.role} value={item.role}>
-                                            {item.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
                             </div>
                         </div>
                         <Accordion>
@@ -342,7 +380,7 @@ function Register() {
                                 aria-controls="panel1a-content"
                                 expandIcon={<ExpandMoreIcon />}
                             >
-                                <p className="mb-1">
+                                <p>
                                     Before using our services, please read and agree to the following terms and
                                     conditions.
                                 </p>
@@ -389,11 +427,11 @@ function Register() {
                                         onChange={handleCheckboxChange}
                                     />
                                 }
-                                label={<p>I Agree</p>}
+                                label={<p className="select-none">I Agree</p>}
                                 htmlFor="policy"
                             />
                             <Link to={PATHS.DEFAULT}>
-                                <Button variant="contained">Back to home</Button>
+                                <Button variant="text">Back to home</Button>
                             </Link>
                         </div>
                         {isChecked ? (

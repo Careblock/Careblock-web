@@ -10,15 +10,9 @@ export const registerPatientSchema = createValidation(commonUserSchema);
 
 export const registerDoctorSchema = createValidation({
     ...commonUserSchema,
+    departmentId: Yup.string().required(formatString(Resource.validation.required, 'Department')),
     organizationId: Yup.string().required(formatString(Resource.validation.required, 'Organization')),
     seniority: Yup.string().required(formatString(Resource.validation.required, 'Seniority')),
-});
-
-export const loginSchema = createValidation({
-    email: Yup.string()
-        .required(formatString(Resource.validation.required, 'Email'))
-        .matches(REGEX.EMAIL, formatString(Resource.validation.invalid, 'email')),
-    password: Yup.string().required(formatString(Resource.validation.required, 'Password')),
 });
 
 export const forgotPasswordSchema = createValidation({

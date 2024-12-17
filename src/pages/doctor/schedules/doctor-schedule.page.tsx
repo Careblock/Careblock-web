@@ -13,14 +13,14 @@ import AccountService from '@/services/account.service';
 import useObservable from '@/hooks/use-observable.hook';
 import { AuthContextType } from '@/types/auth.type';
 import { Patients } from '@/types/patient.type';
-import { Accounts } from '@/types/account.type';
 import { ScheduleTabs } from '@/enums/Common';
 import { Images } from '@/assets/images';
+import { setTitle } from '@/utils/document';
 
 const DoctorSchedulePage = () => {
     const { userData } = useAuth() as AuthContextType;
     const { subscribeOnce } = useObservable();
-    const [value, setValue] = useState(ScheduleTabs.ACTIVE);
+    const [currentTab, setCurrentTab] = useState(ScheduleTabs.ACTIVE);
     const [schedules, setSchedules] = useState<DoctorScheduleTab[]>(doctorScheduleTabs);
     const [activePatients, setActivePatients] = useState<Patients[] | undefined>([]);
     const [postponedPatients, setPostponedPatients] = useState<Patients[] | undefined>([]);
@@ -28,8 +28,13 @@ const DoctorSchedulePage = () => {
     const [detailsInfo, setDetailsInfo] = useState<Patients | undefined>();
 
     useEffect(() => {
+        setTitle('Doctor schedule | CareBlock');
         getDataSource();
     }, []);
+
+    useEffect(() => {
+        setDetailsInfo(undefined);
+    }, [currentTab]);
 
     function getDataSource() {
         if (userData) {
@@ -65,7 +70,7 @@ const DoctorSchedulePage = () => {
     }
 
     const handleChange = (_: SyntheticEvent, newValue: ScheduleTabs) => {
-        setValue(newValue);
+        setCurrentTab(newValue);
     };
 
     function handleSetSchedules(activeNumber: number, postponedNumber: number, checkedinNumber: number) {
@@ -82,8 +87,9 @@ const DoctorSchedulePage = () => {
         setActivePatients(temp);
         if (postponedPatients) setPostponedPatients([...postponedPatients, patient]);
         else setPostponedPatients([patient]);
+        if (!patient.appointmentId) return;
         subscribeOnce(
-            AppointmentService.updateStatus(APPOINTMENT_STATUS.POSTPONED, patient.appointmentId!),
+            AppointmentService.updateStatus(APPOINTMENT_STATUS.POSTPONED, patient.appointmentId),
             (_: boolean) => {
                 getDataSource();
             }
@@ -97,8 +103,9 @@ const DoctorSchedulePage = () => {
             setPostponedPatients(temp);
             if (activePatients) setActivePatients([...activePatients, patient]);
             else setActivePatients([patient]);
+            if (!patient.appointmentId) return;
             subscribeOnce(
-                AppointmentService.updateStatus(APPOINTMENT_STATUS.ACTIVE, patient.appointmentId!),
+                AppointmentService.updateStatus(APPOINTMENT_STATUS.ACTIVE, patient.appointmentId),
                 (_: boolean) => {
                     getDataSource();
                 }
@@ -120,8 +127,9 @@ const DoctorSchedulePage = () => {
             let temp = postponedPatients?.filter((data) => data.id !== patient.id);
             setPostponedPatients(temp);
         }
+        if (!patient.appointmentId) return;
         subscribeOnce(
-            AppointmentService.updateStatus(APPOINTMENT_STATUS.REJECTED, patient.appointmentId!),
+            AppointmentService.updateStatus(APPOINTMENT_STATUS.REJECTED, patient.appointmentId),
             (_: boolean) => {
                 getDataSource();
             }
@@ -131,23 +139,28 @@ const DoctorSchedulePage = () => {
     const handleClickSave = () => {
         setTimeout(() => {
             getDataSource();
+            setDetailsInfo(undefined);
         }, 500);
     };
 
-    const handleClickItem = (id: string) => {
-        subscribeOnce(AccountService.getById(id), (res: Accounts) => {
-            setDetailsInfo(res);
+    const handleClickItem = (id: string, appointmentId: string) => {
+        if (!id) return;
+        subscribeOnce(AccountService.getById(id), (res: any) => {
+            setDetailsInfo({
+                ...res,
+                appointmentId,
+            });
         });
     };
 
     return (
-        <div className="doctor-schedule mb-[30px]">
+        <div className="doctor-schedule h-[calc(100vh-52px-52px-30px-10px)] overflow-hidden">
             <div className="text-[24px]">Queues</div>
             <div className="text-[16px] mb-4">Manage which queues you will assign to your patients</div>
             <div className="uppercase bg-[#eee] mb-2 rounded px-2 py-4">Front Desk</div>
-            <div className="flex w-full justify-between">
-                <div className="w-[400px] h-fit border border-solid rounded-lg border-[#ddd] mr-5">
-                    <TabContext value={value}>
+            <div className="flex w-full justify-between h-[calc(100%-24px-30px-50px-30px)]">
+                <div className="w-[400px] h-fit border border-solid rounded-lg border-[#ddd] mr-5 max-h-[610px] overflow-auto">
+                    <TabContext value={currentTab}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <TabList onChange={handleChange} aria-label="lab API tabs example">
                                 {schedules.map((tab) => (
@@ -171,17 +184,17 @@ const DoctorSchedulePage = () => {
                             />
                         </TabPanel>
                         <TabPanel value={ScheduleTabs.CHECKEDIN}>
-                            <CheckedinTab patients={checkedinPatients} />
+                            <CheckedinTab handleClickItem={handleClickItem} patients={checkedinPatients} />
                         </TabPanel>
                     </TabContext>
                 </div>
                 <div className="flex-1">
                     {detailsInfo ? (
-                        <DetailsInfo dataSource={detailsInfo} clickedSave={handleClickSave} />
+                        <DetailsInfo currentTab={currentTab} dataSource={detailsInfo} clickedSave={handleClickSave} />
                     ) : (
                         <div className="empty-schedule overflow-hidden">
                             <img
-                                className="w-full object-cover grayscale max-h-[calc(100vh-200px)]"
+                                className="w-full object-cover grayscale max-h-[calc(100vh-52px-52px-30px-24px-30px-56px-20px)]"
                                 src={Images.PatientWaiting}
                                 alt=""
                             />

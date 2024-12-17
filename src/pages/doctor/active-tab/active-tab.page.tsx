@@ -12,11 +12,13 @@ const ActiveTab = ({ activePatients, handleClickPostpone, handleClickCancel, han
                     <div className="current-patient mb-3 pb-3">
                         <div className="text-[#4e4e4e]">Now Serving</div>
                         <BasePatientQueue
-                            key={activePatients[0].id}
+                            key={activePatients[0].appointmentId}
                             no={1}
                             patient={activePatients[0]}
                             scheduleTab={ScheduleTabs.ACTIVE}
-                            handleClickItem={handleClickItem}
+                            handleClickItem={($event: any) => {
+                                if (handleClickItem) handleClickItem($event, activePatients[0].appointmentId);
+                            }}
                             handleClickPositiveIcon={handleClickPostpone}
                             handleClickNegativeIcon={handleClickCancel}
                         />

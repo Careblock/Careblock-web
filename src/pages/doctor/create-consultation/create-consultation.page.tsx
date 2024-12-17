@@ -1,4 +1,3 @@
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
@@ -6,20 +5,28 @@ import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import { TextField } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
-import { CreateConsultationType, DiagnosticsFieldType } from './create-consultation.type';
-import { selectDiagnosticOptions, vitalsDynamicField } from './create-consultation.const';
-import BaseSelectBox from '@/components/base/select-box/select-box.component';
-import { addToast } from '@/components/base/toast/toast.service';
-import DiagnosticService from '@/services/diagnostic.service';
-import { DIAGNOSTIC_STATUS, DataType } from '@/enums/Common';
-import { SystemMessage } from '@/constants/message.const';
+import { CreateConsultationType } from './create-consultation.type';
 import useObservable from '@/hooks/use-observable.hook';
-import { Diagnostics } from '@/types/diagnostics.type';
-import { AuthContextType } from '@/types/auth.type';
-import { useAuth } from '@/contexts/auth.context';
 import { Images } from '@/assets/images';
+import DynamicResult from '@/components/others/dynamic-result/dynamic-result.component';
+import { FormType } from '@/enums/FormType';
+import { dynamicFieldData } from '@/mocks/dynamic-field';
+import { jsPDF } from 'jspdf';
+import { toPng } from 'html-to-image';
+import { useEffect, useState, useRef } from 'react';
+import { DynamicFieldType } from '@/types/dynamic-field.type';
+import AccountService from '@/services/account.service';
+import { DataDefaults } from '@/types/dataDefault.type';
+import { cloneDeep } from 'lodash';
+import { DynamicField } from '@/enums/DynamicField';
+import { addToast } from '@/components/base/toast/toast.service';
+import { SystemMessage } from '@/constants/message.const';
+import AppointmentDetailService from '@/services/appointmentDetail.service';
+import { Appointments } from '@/types/appointment.type';
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { ExaminationOptions } from '@/types/examinationOption.type';
+import ExaminationOptionService from '@/services/examinationOption.service';
+import { EMPTY_GUID } from '@/constants/common.const';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -30,97 +37,157 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const mockData = [
-    {
-        id: '1',
-        value: 'Khám bệnh',
-    },
-    {
-        id: '2',
-        value: 'Khám mắt',
-    },
-    {
-        id: '3',
-        value: 'Khám răng',
-    },
-];
-
-export default function CreateConsultation({ visible, setVisible, patientId, clickedSave }: CreateConsultationType) {
+export default function CreateConsultation({
+    visible,
+    setVisible,
+    clickedSave,
+    appointmentId,
+}: CreateConsultationType) {
+    const dynamicRef = useRef(null);
+    const dataRef = useRef(null);
+    const [formType, setFormType] = useState(FormType.Create);
     const { subscribeOnce } = useObservable();
-    const { userData } = useAuth() as AuthContextType;
-    const [isShowVitals, setIsShowVitals] = useState(false);
-    const [isShowAttachments, setIsShowAttachments] = useState(false);
-    const [diagnostics, setDiagnostics] = useState<Diagnostics>(getInitialValue());
-    const [file, setFile] = useState<File | null>(null);
+    const [dataSource, setDataSource] = useState<DynamicFieldType[]>(getInitialData());
+    const [appointment, setAppointment] = useState<Appointments>({});
+    const [examinationOption, setExaminationOption] = useState<string>('');
+    const [examinationOptions, setExaminationOptions] = useState<ExaminationOptions[]>([]);
+    const [patientId, setPatientId] = useState<string>('');
 
-    const VisuallyHiddenInput = styled('input')({
-        clip: 'rect(0 0 0 0)',
-        clipPath: 'inset(50%)',
-        height: 1,
-        overflow: 'hidden',
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        whiteSpace: 'nowrap',
-        width: 1,
-    });
+    useEffect(() => {
+        if (visible) {
+            getDefaultData();
+            getExaminationOptions();
+        } else {
+            setDataSource(getInitialData());
+        }
+    }, [visible]);
 
-    function getInitialValue(): Diagnostics {
-        return {
-            doctorId: userData?.id,
-            patientId: patientId,
-            id: '',
-            bodyTemperature: 0,
-            diastolicBloodPressure: 0,
-            disease: '',
-            heartRate: 0,
-            height: 0,
-            note: '',
-            systolicBloodPressure: 0,
-            weight: 0,
-            status: DIAGNOSTIC_STATUS.NORMAL,
-        };
+    const getExaminationOptions = () => {
+        if (!appointmentId) return;
+        subscribeOnce(ExaminationOptionService.getByPackage(appointmentId), (res: ExaminationOptions[]) => {
+            setExaminationOptions(res);
+        });
+    };
+
+    const getDefaultData = () => {
+        if (!appointmentId) return;
+        subscribeOnce(AccountService.getDefaultData(appointmentId), (res: DataDefaults) => {
+            setPatientId(res.patientId ?? '');
+            setAppointment({
+                id: res.id,
+                doctorId: res.doctorId,
+            });
+            let temp = cloneDeep(dataSource);
+            temp[DynamicField.Brand].images = [res.organizationThumbnail ?? ''];
+            temp[DynamicField.Organization].value = res.organizationName ? `${res.organizationName} hospital` : '';
+            temp[DynamicField.OrganizationAddress].value = res.organizationAddress ?? '';
+            temp[DynamicField.OrganizationTel].value = res.organizationTel ?? '';
+            temp[DynamicField.OrganizationFax].value = res.organizationFax ?? '';
+            temp[DynamicField.OrganizationWebsite].value = res.organizationUrl ?? '';
+            temp[DynamicField.Fullname].value = res.fullName ?? '';
+            temp[DynamicField.YearOfBirth].value = res.dateOfBirth ?? '';
+            temp[DynamicField.Gender].value = res.gender ?? '';
+            temp[DynamicField.Address].value = res.address ?? '';
+            temp[DynamicField.Datetime].value = Date.now();
+            temp[DynamicField.DoctorName].value = res.doctorId ?? '';
+            temp[DynamicField.DoctorName].displayValue = res.doctorName ?? '';
+            temp[DynamicField.DoctorDD].value = res.doctorId ?? '';
+            temp[DynamicField.DoctorDD].displayValue = res.doctorName ?? '';
+
+            setDataSource(temp);
+        });
+    };
+
+    function getInitialData() {
+        return cloneDeep(dynamicFieldData);
     }
 
     const handleClose = () => {
         setVisible(false);
-        setDiagnostics(getInitialValue());
-        setIsShowVitals(false);
-        setIsShowAttachments(false);
     };
 
-    const handleClickSave = () => {
-        subscribeOnce(DiagnosticService.insert(diagnostics), (_: string) => {
-            addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: 'top-right' });
-            clickedSave();
+    const getFilePDF = async () => {
+        let theFile;
+
+        await toPng(dynamicRef.current as unknown as HTMLElement)
+            .then(function (dataUrl: any) {
+                let img = new Image();
+                img.src = dataUrl;
+
+                const doc = new jsPDF();
+                const imgProps = doc.getImageProperties(img);
+                const pdfWidth = (doc.internal.pageSize.getWidth() * 90) / 100;
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                const pdfX = (doc.internal.pageSize.getWidth() - pdfWidth) / 2;
+
+                doc.addImage(img, 'PNG', pdfX, 20, pdfWidth, pdfHeight);
+
+                // Tạo Blob từ PDF
+                const pdfBlob = doc.output('blob');
+                // Tạo một đối tượng File từ Blob
+                const pdfFile = new File([pdfBlob], `result-${patientId}-${appointment.id}.pdf`, {
+                    type: 'application/pdf',
+                });
+                theFile = pdfFile;
+            })
+            .catch(function (error: any) {
+                console.error('Oops, something went wrong!', error);
+            });
+
+        return theFile;
+    };
+
+    const handleClickSave = async () => {
+        if (!examinationOption) {
+            addToast({ text: SystemMessage.EXAMINATION_REQUIRED, position: 'top-right', status: 'inValid' });
+            return;
+        }
+        setFormType(FormType.Detail);
+        const file = await getFilePDF();
+        const payload = {
+            examinationOptionId: examinationOption,
+            appointmentId: appointment.id ?? '',
+            doctorId: appointment.doctorId ?? '',
+            diagnostic: JSON.stringify(dataRef.current),
+            price: '0',
+            filePDF: file,
+        };
+
+        subscribeOnce(AppointmentDetailService.insert(payload), (id: string) => {
+            if (id !== EMPTY_GUID) {
+                setVisible(false);
+                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: 'top-right' });
+                clickedSave();
+            } else {
+                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_FAILED, position: 'top-right', status: 'inValid' });
+                setFormType(FormType.Create);
+            }
         });
         handleClose();
     };
 
-    const handleToggleVitals = () => {
-        setIsShowVitals(!isShowVitals);
-    };
+    const onClickConvertToImage = () => {
+        toPng(dynamicRef.current as unknown as HTMLElement)
+            .then(function (dataUrl: any) {
+                let img = new Image();
+                img.src = dataUrl;
 
-    const handleToggleAttachments = () => {
-        setIsShowAttachments(!isShowAttachments);
-    };
+                const doc = new jsPDF();
+                const imgProps = doc.getImageProperties(img);
+                const pdfWidth = (doc.internal.pageSize.getWidth() * 90) / 100;
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                const pdfX = (doc.internal.pageSize.getWidth() - pdfWidth) / 2;
 
-    const handleUploadFile = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files?.length) setFile(e.target.files[0]);
-    };
-
-    const handleChangeValue = (field: DiagnosticsFieldType, value: string, dataType: DataType) => {
-        let newValue = { ...diagnostics };
-        if (dataType === DataType.number && !Number.isNaN(+value)) {
-            newValue = { ...newValue, [field]: +value };
-        } else if (dataType === DataType.string) {
-            newValue = { ...newValue, [field]: value };
-        }
-        setDiagnostics(newValue);
+                doc.addImage(img, 'PNG', pdfX, 20, pdfWidth, pdfHeight);
+                doc.save(`result-${patientId}-${appointment.id}.pdf`);
+            })
+            .catch(function (error: any) {
+                console.error('Oops, something went wrong!', error);
+            });
     };
 
     return (
-        <StyledDialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={visible}>
+        <StyledDialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={visible} maxWidth="lg">
             {/* Header */}
             <DialogTitle className="text-[20px]" sx={{ m: 0, p: 2 }} id="customized-dialog-title">
                 Create Consultation Request
@@ -139,144 +206,48 @@ export default function CreateConsultation({ visible, setVisible, patientId, cli
             </IconButton>
 
             {/* Content */}
-            <DialogContent dividers className="w-[600px]">
-                <TextField
-                    id="note-field"
-                    className="w-full !mb-5"
-                    label="Note"
-                    multiline
-                    rows={3}
-                    value={diagnostics.note}
-                    onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-                        handleChangeValue('note', event.target.value, DataType.string)
-                    }
-                />
-                {/* <PeopleSelect
-                  width="100%"
-                  className="!mb-5"
-                  id="consultation-select-doctor"
-                  label='Doctor
-                  placeholder='Choose a doctor'
-                  isMultiple={false}
-                /> */}
-                <BaseSelectBox
-                    id="bill-select"
-                    modelValue=""
-                    updateModelValue={() => {}}
-                    inputId="input-bill-select"
-                    label="Bill"
-                    dataSource={mockData}
-                />
-                <div className="vitals my-5">
-                    <div className="flex items-center space-x-3 mb-5">
-                        <div className="">Vitals</div>
-                        {!isShowVitals ? (
-                            <Button
-                                variant="outlined"
-                                color="primary"
-                                onClick={handleToggleVitals}
-                                startIcon={<Images.AddIcon />}
-                            >
-                                Add
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="outlined"
-                                color="error"
-                                onClick={handleToggleVitals}
-                                startIcon={<Images.RemoveIcon />}
-                            >
-                                Remove
-                            </Button>
-                        )}
-                    </div>
-                    {isShowVitals && (
-                        <div className="flex items-center gap-x-3 gap-y-4 flex-wrap w-full !mb-5">
-                            {vitalsDynamicField.map((field) => (
-                                <div className={field.className} key={field.id}>
-                                    <TextField
-                                        id={field.id}
-                                        className="w-full"
-                                        label={field.label}
-                                        value={diagnostics[field.field]}
-                                        onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-                                            handleChangeValue(field.field, event.target.value, field.dataType)
-                                        }
-                                    />
-                                </div>
+            <DialogContent dividers>
+                {formType === FormType.Create && (
+                    <div className="flex items-center space-x-[16px] mb-[16px]">
+                        <p className="font-semibold text-[18px]">Choose an examination option: </p>
+                        <Select
+                            name="option"
+                            value={examinationOption}
+                            size="small"
+                            className="w-[200px]"
+                            onChange={(event: SelectChangeEvent<any>) => setExaminationOption(event.target.value)}
+                        >
+                            {examinationOptions?.map((item) => (
+                                <MenuItem key={item.id} value={item.id}>
+                                    {item.name}
+                                </MenuItem>
                             ))}
-                            <div className="w-[48%]">
-                                <BaseSelectBox
-                                    id="status-select"
-                                    modelValue={`${diagnostics.status}`}
-                                    updateModelValue={(newValue: number) =>
-                                        handleChangeValue('status', `${newValue}`, DataType.number)
-                                    }
-                                    inputId="input-status-select"
-                                    label="Status"
-                                    dataSource={selectDiagnosticOptions}
-                                />
-                            </div>
-                        </div>
-                    )}
-                </div>
-                <div className="attachments mt-5">
-                    <div className="flex items-center space-x-3 mb-5">
-                        <div className="">Attachments</div>
-                        {!isShowAttachments ? (
-                            <Button
-                                variant="outlined"
-                                color="primary"
-                                onClick={handleToggleAttachments}
-                                startIcon={<Images.AddIcon />}
-                            >
-                                Add
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="outlined"
-                                color="error"
-                                onClick={handleToggleAttachments}
-                                startIcon={<Images.RemoveIcon />}
-                            >
-                                Remove
-                            </Button>
-                        )}
+                        </Select>
                     </div>
-                    {isShowAttachments && (
-                        <div className="space-y-4">
-                            <Button
-                                component="label"
-                                role={undefined}
-                                variant="contained"
-                                tabIndex={-1}
-                                startIcon={<CloudUploadIcon />}
-                            >
-                                Upload file
-                                <VisuallyHiddenInput type="file" onChange={handleUploadFile} />
-                            </Button>
-                            <TextField
-                                label="File Name"
-                                value={file?.name ?? ''}
-                                variant="filled"
-                                className="w-full"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                            />
-                        </div>
-                    )}
-                </div>
+                )}
+                <DynamicResult
+                    ref={dynamicRef}
+                    type={formType}
+                    datasource={dataSource}
+                    setDataSubmit={(data: any) => (dataRef.current = data)}
+                />
             </DialogContent>
 
             {/* Footer */}
             <DialogActions>
-                <Button variant="contained" autoFocus onClick={handleClickSave}>
-                    Create
-                </Button>
-                <Button variant="text" color="error" autoFocus onClick={handleClose}>
-                    Cancel
-                </Button>
+                <div className="flex items-center justify-between w-full">
+                    <Button variant="contained" onClick={onClickConvertToImage}>
+                        Convert to pdf
+                    </Button>
+                    <div className="flex items-center gap-x-[10px]">
+                        <Button variant="contained" autoFocus onClick={handleClickSave}>
+                            Create
+                        </Button>
+                        <Button variant="text" color="error" autoFocus onClick={handleClose}>
+                            Cancel
+                        </Button>
+                    </div>
+                </div>
             </DialogActions>
         </StyledDialog>
     );

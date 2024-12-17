@@ -10,7 +10,7 @@ const PostponedTab = ({ patients, handleClickBringBack, handleClickCancel }: Pos
                 <div className="patients mb-3">
                     {patients.map((data, index) => (
                         <BasePatientQueue
-                            key={data.id}
+                            key={data.appointmentId}
                             no={index + 1}
                             patient={data}
                             handleClickItem={null}
