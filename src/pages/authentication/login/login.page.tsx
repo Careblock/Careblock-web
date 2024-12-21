@@ -32,49 +32,54 @@ export const Login = ({ handleClose }: any) => {
     }, []);
 
     const getAssets = async () => {
-        if (wallet) {
-            setLoading(true);
-            const _assets = await wallet.getAssets();
-            const stakeId = await wallet.getRewardAddresses();
-            await wallet.getUsedAddresses();
-            setCookie('stakeId', stakeId);
-            setAssets(_assets);
-            setLoading(false);
-            if (!stakeId) return;
-            subscribeOnce(AuthService.hasAccount(stakeId), (res: any) => {
-                if (res === false) {
-                    addToast({ text: SystemMessage.HAS_ACCOUNT, position: 'top-right', status: 'warn' });
-                    handleClose();
-                    navigate(PATHS.REGISTER);
-                } else {
-                    addToast({ text: SystemMessage.LOGIN_SUCCESS, position: 'top-right', status: 'valid' });
-                    subscribeOnce(AuthService.authenticate(stakeId[0]), (res: any) => {
-                        const { jwtToken, ...rest } = res;
-                        const roles = (jwtDecode<JwtPayload>(jwtToken) as any)?.roles?.split(',');
-                        startSession({ accessToken: res.jwtToken, user: { ...rest, roles } });
-                        dispatch(storeUser(res) as any);
-                        if (roles.includes(ROLE_NAMES.PATIENT)) {
-                            setTitle('Home | CareBlock');
-                            navigate(PATHS.DEFAULT);
-                        } else if (roles.includes(ROLE_NAMES.DOCTOR)) {
-                            setTitle('Doctor schedule | CareBlock');
-                            navigate(PATHS.DOCTOR_SCHEDULE);
-                        } else if (roles.includes(ROLE_NAMES.MANAGER)) {
-                            setTitle('Doctor Manager | CareBlock');
-                            navigate(PATHS.ORGANIZATION_INFOR);
-                        } else if (roles.includes(ROLE_NAMES.ADMIN)) {
-                            setTitle('Admin | CareBlock');
-                            navigate(PATHS.ORGANIZATION_ADMIN);
-                        } else {
-                            setTitle('Home | CareBlock');
-                            navigate(PATHS.HOME);
-                        }
+        try {
+            if (wallet) {
+                setLoading(true);
+                const _assets = await wallet.getAssets();
+                const stakeId = await wallet.getRewardAddresses();
+                await wallet.getUsedAddresses();
+                setCookie('stakeId', stakeId);
+                setAssets(_assets);
+                setLoading(false);
+                if (!stakeId) return;
+                subscribeOnce(AuthService.hasAccount(stakeId), (res: any) => {
+                    if (res === false) {
+                        addToast({ text: SystemMessage.HAS_ACCOUNT, position: 'top-right', status: 'warn' });
                         handleClose();
-                    });
-                }
-            });
+                        navigate(PATHS.REGISTER);
+                    } else {
+                        addToast({ text: SystemMessage.LOGIN_SUCCESS, position: 'top-right', status: 'valid' });
+                        subscribeOnce(AuthService.authenticate(stakeId[0]), (res: any) => {
+                            const { jwtToken, ...rest } = res;
+                            const roles = (jwtDecode<JwtPayload>(jwtToken) as any)?.roles?.split(',');
+                            startSession({ accessToken: res.jwtToken, user: { ...rest, roles } });
+                            dispatch(storeUser(res) as any);
+                            if (roles.includes(ROLE_NAMES.PATIENT)) {
+                                setTitle('Home | CareBlock');
+                                navigate(PATHS.DEFAULT);
+                            } else if (roles.includes(ROLE_NAMES.DOCTOR)) {
+                                setTitle('Doctor schedule | CareBlock');
+                                navigate(PATHS.DOCTOR_SCHEDULE);
+                            } else if (roles.includes(ROLE_NAMES.MANAGER)) {
+                                setTitle('Doctor Manager | CareBlock');
+                                navigate(PATHS.ORGANIZATION_INFOR);
+                            } else if (roles.includes(ROLE_NAMES.ADMIN)) {
+                                setTitle('Admin | CareBlock');
+                                navigate(PATHS.ORGANIZATION_ADMIN);
+                            } else {
+                                setTitle('Home | CareBlock');
+                                navigate(PATHS.HOME);
+                            }
+                            handleClose();
+                        });
+                    }
+                });
+            }
+        } catch (err) {
+            console.error(err);
         }
     };
+
     return (
         <Container maxWidth="lg" sx={{ textAlign: 'center' }}>
             <Grid justifyContent="center" alignItems="center" container>
