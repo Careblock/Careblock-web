@@ -6,3 +6,17 @@ export interface Results {
     createdDate: string;
     modifiedDate: string;
 }
+
+export interface Bill {
+    patientName: any;
+    gender: any;
+    phone: any;
+    address: any;
+    doctorName: any;
+    departmentName: any;
+    organizationName: any;
+    examinationPackageName: any;
+    examinationOptions: any;
+    totalPrice: any;
+    createdDate: any;
+}

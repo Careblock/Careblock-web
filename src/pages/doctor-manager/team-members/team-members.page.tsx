@@ -33,6 +33,7 @@ import { getStyles, MenuProps } from './team-members.const';
 import SpecialistService from '@/services/specialist.service';
 import { Specialists } from '@/types/specialist.type';
 import { EMPTY_GUID } from '@/constants/common.const';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 function TeamMembersPage() {
     const MAX_RECORE_PERPAGE = 9;
@@ -321,11 +322,8 @@ function TeamMembersPage() {
                             />
                         ))
                     ) : (
-                        <div className="mb-6 flex items-center flex-col justify-center w-full">
-                            <div className="image w-[300px] overflow-hidden">
-                                <img className="w-full object-cover" src={Images.BgNodata} alt="no data" />
-                            </div>
-                            <div className="text-[20px]">No data to display</div>
+                        <div className="w-[260px] mx-auto">
+                            <Nodata />
                         </div>
                     )}
                 </div>

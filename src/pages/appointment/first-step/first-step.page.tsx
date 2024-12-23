@@ -9,6 +9,7 @@ import { Images } from '@/assets/images';
 import { setTitle } from '@/utils/document';
 import { ExaminationTypes } from '@/types/examinationType.type';
 import ExaminationTypeService from '@/services/examinationType.service';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 const FirstStep = ({ examinationType, onClickAnExaminationType }: FirstStepProps) => {
     const navigate = useNavigate();
@@ -116,11 +117,8 @@ const FirstStep = ({ examinationType, onClickAnExaminationType }: FirstStepProps
                     ))}
                 </div>
             ) : (
-                <div className="mt-6 flex items-center flex-col justify-center w-full">
-                    <div className="image w-[300px] overflow-hidden">
-                        <img className="w-full object-cover" src={Images.BgNodata} alt="no data" />
-                    </div>
-                    <div className="text-[20px]">No data to display</div>
+                <div className="w-[340px] mx-auto">
+                    <Nodata />
                 </div>
             )}
         </div>

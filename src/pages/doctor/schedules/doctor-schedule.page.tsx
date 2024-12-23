@@ -159,7 +159,7 @@ const DoctorSchedulePage = () => {
             <div className="text-[16px] mb-4">Manage which queues you will assign to your patients</div>
             <div className="uppercase bg-[#eee] mb-2 rounded px-2 py-4">Front Desk</div>
             <div className="flex w-full justify-between h-[calc(100%-24px-30px-50px-30px)]">
-                <div className="w-[400px] h-fit border border-solid rounded-lg border-[#ddd] mr-5 max-h-[610px] overflow-auto">
+                <div className="w-[400px] overflow-y-auto max-h-[calc(100vh-52px-30px-36px-38px-56px-48px)] border border-solid rounded-lg border-[#ddd] mr-5 overflow-auto">
                     <TabContext value={currentTab}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <TabList onChange={handleChange} aria-label="lab API tabs example">

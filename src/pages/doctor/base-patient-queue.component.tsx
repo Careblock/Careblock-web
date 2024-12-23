@@ -6,6 +6,7 @@ import { Images } from '@/assets/images';
 const BasePatientQueue = ({
     patient,
     no,
+    className,
     handleClickPositiveIcon,
     handleClickNegativeIcon,
     scheduleTab,
@@ -27,7 +28,7 @@ const BasePatientQueue = ({
 
     return (
         <div
-            className={`base-patient-queue select-none hover:bg-gray p-2 rounded flex items-center justify-between first:mt-0 mt-2 group hover:bg-[#f5f5f5] ${handleClickItem !== null && handleClickItem !== undefined ? 'cursor-pointer' : ''}`}
+            className={`base-patient-queue select-none hover:bg-gray p-2 rounded flex items-center justify-between first:mt-0 mt-2 group hover:bg-[#f5f5f5] ${className} ${handleClickItem !== null && handleClickItem !== undefined ? 'cursor-pointer' : ''}`}
             onClick={handleClickWrapper}
             title={getTitle()}
         >

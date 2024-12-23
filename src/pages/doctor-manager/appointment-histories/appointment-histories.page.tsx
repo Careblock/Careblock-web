@@ -20,6 +20,7 @@ import AccountService from '@/services/account.service';
 import { Place } from '@/enums/Place';
 import { Doctors } from '@/types/doctor.type';
 import { EMPTY_GUID } from '@/constants/common.const';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 const AppointmentHistories = () => {
     const { subscribeOnce } = useObservable();
@@ -373,11 +374,8 @@ const AppointmentHistories = () => {
                         </div>
                     ))
                 ) : (
-                    <div className="mb-6 flex items-center flex-col justify-center w-full">
-                        <div className="image w-[300px] overflow-hidden">
-                            <img className="w-full object-cover" src={Images.BgNodata} alt="no data" />
-                        </div>
-                        <div className="text-[20px]">No data to display</div>
+                    <div className="w-[340px] mx-auto">
+                        <Nodata />
                     </div>
                 )}
             </div>

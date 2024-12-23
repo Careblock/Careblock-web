@@ -30,6 +30,7 @@ import * as signalR from '@microsoft/signalr';
 import { Environment } from '@/environment';
 import { useDispatch } from 'react-redux';
 import { connect } from '@/stores/notification/notification.action';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 const HeaderLayout = () => {
     const navigate = useNavigate();
@@ -441,11 +442,8 @@ const HeaderLayout = () => {
                                 </div>
                             ))
                         ) : (
-                            <div className="mb-6 flex items-center flex-col justify-center w-full">
-                                <div className="image w-full overflow-hidden">
-                                    <img className="w-full object-cover" src={Images.BgNodata} alt="no data" />
-                                </div>
-                                <div className="text-[18px]">No data to display</div>
+                            <div className="w-[200px] mx-auto">
+                                <Nodata />
                             </div>
                         )}
                     </div>

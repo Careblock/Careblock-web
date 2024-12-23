@@ -21,13 +21,16 @@ import { addToast } from '@/components/base/toast/toast.service';
 import { SystemMessage } from '@/constants/message.const';
 import AccountService from '@/services/account.service';
 import { DataDefaults } from '@/types/dataDefault.type';
+import TheBill from '../bill/bill.page';
+import { BillEnum } from './details-info.const';
 
 const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) => {
     const { subscribeOnce } = useObservable();
-    const [isShowCreatePopup, setIsShowCreatePopup] = useState(false);
+    const { userData } = useAuth() as AuthContextType;
     const [result, setResult] = useState<Results[]>([]);
     const [dataDefault, setDataDefault] = useState<DataDefaults>();
-    const { userData } = useAuth() as AuthContextType;
+    const [isShowCreatePopup, setIsShowCreatePopup] = useState(false);
+    const [isShowBillPopup, setIsShowBillPopup] = useState(false);
     const connection = useSelector((state: { notification: NotificationState }) => state.notification.connection);
 
     useEffect(() => {
@@ -43,16 +46,24 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
         }
     }, [dataSource]);
 
-    const pushNotification = (result: Results) => {
+    const pushNotification = (result: Results, type: BillEnum) => {
         let isError = false;
 
         if (connection.state === signalR.HubConnectionState.Connected) {
+            let notificationTypeId = NotificationType.Text;
+            let message = `${dataDefault?.doctorName} has sent you the results of your medical examination.`;
+            let link = result.diagnosticUrl;
+            if (type === BillEnum.BILL_VALUE) {
+                notificationTypeId = NotificationType.Bill;
+                message = `${dataDefault?.doctorName} has sent you the bill of your medical examination.`;
+                link = dataSource.appointmentId ?? '';
+            }
             connection
                 .invoke('SendNotification', {
                     accountId: dataSource.id,
-                    notificationTypeId: NotificationType.Text,
-                    message: `${dataDefault?.doctorName} has sent you the results of your medical examination.`,
-                    link: result.diagnosticUrl,
+                    notificationTypeId: notificationTypeId,
+                    message: message,
+                    link: link,
                     originId: userData?.id,
                     isRead: false,
                 } as Notifications)
@@ -64,21 +75,38 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
             connection
                 .start()
                 .then(() => {
-                    connection.invoke('SendNotification', {
-                        accountId: dataSource.id,
-                        notificationTypeId: NotificationType.Text,
-                        message: `${dataDefault?.doctorName} has sent you the results of your medical examination.`,
-                        link: result.diagnosticUrl,
-                        originId: userData?.id,
-                        isRead: false,
-                    } as Notifications);
+                    let notificationTypeId = NotificationType.Text;
+                    let message = `${dataDefault?.doctorName} has sent you the results of your medical examination.`;
+                    let link = result.diagnosticUrl;
+                    if (type === BillEnum.BILL_VALUE) {
+                        notificationTypeId = NotificationType.Bill;
+                        message = `${dataDefault?.doctorName} has sent you the bill of your medical examination.`;
+                        link = dataSource.appointmentId ?? '';
+                    }
+                    connection
+                        .invoke('SendNotification', {
+                            accountId: dataSource.id,
+                            notificationTypeId: notificationTypeId,
+                            message: message,
+                            link: link,
+                            originId: userData?.id,
+                            isRead: false,
+                        } as Notifications)
+                        .catch((error: any) => {
+                            isError = true;
+                            console.error('Lỗi khi gọi SignalR: ', error);
+                        });
                 })
                 .catch((error: any) => {
                     isError = true;
                     console.error('Lỗi khi kết nối SignalR: ', error);
                 });
         }
-        if (!isError) addToast({ text: SystemMessage.SEND_RESULT, position: 'top-right' });
+        if (!isError)
+            addToast({
+                text: type === BillEnum.RESULT_VALUE ? SystemMessage.SEND_RESULT : SystemMessage.SEND_BILL,
+                position: 'top-right',
+            });
     };
 
     const handleClickAccoummodate = () => {
@@ -87,6 +115,14 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
 
     const handleSetIsShowCreatePopup = (type: boolean) => {
         setIsShowCreatePopup(type);
+    };
+
+    const handleClickBill = () => {
+        setIsShowBillPopup(true);
+    };
+
+    const handleSetIsShowBillPopup = (type: boolean) => {
+        setIsShowBillPopup(type);
     };
 
     return (
@@ -146,19 +182,40 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                         </div>
                     ) : (
                         <ul>
-                            {result.map((item: Results, index: number) => (
-                                <li key={item.id} className="flex items-center text-[16px]">
-                                    <p className="size-[8px] bg-black rounded-full"></p>
-                                    <p className="ml-[8px] mr-[10px]">{`Result number ${index + 1}: `}</p>
-                                    <a
-                                        href={item.diagnosticUrl}
-                                        className="text-light-blue-800 hover:underline mr-[20px]"
-                                    >
-                                        File PDF
-                                    </a>
-                                    <Button variant="outlined" onClick={() => pushNotification(item)}>
-                                        Send result
-                                    </Button>
+                            {result.map((item: Results) => (
+                                <li key={item.id} className="text-[16px]">
+                                    <div className="flex items-center">
+                                        <p className="size-[8px] bg-black rounded-full"></p>
+                                        <p className="ml-[8px] mr-[10px]">Result:</p>
+                                        <a
+                                            href={item.diagnosticUrl}
+                                            className="text-light-blue-800 hover:underline mr-[20px]"
+                                        >
+                                            File PDF
+                                        </a>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => pushNotification(item, BillEnum.RESULT_VALUE)}
+                                        >
+                                            Send result
+                                        </Button>
+                                    </div>
+                                    <div className="flex items-center mt-[12px]">
+                                        <p className="size-[8px] bg-black rounded-full"></p>
+                                        <p className="ml-[8px] mr-[10px]">Bill:</p>
+                                        <p
+                                            className="cursor-pointer text-light-blue-800 hover:underline mr-[20px]"
+                                            onClick={handleClickBill}
+                                        >
+                                            File PDF
+                                        </p>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => pushNotification(item, BillEnum.BILL_VALUE)}
+                                        >
+                                            Send bill
+                                        </Button>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
@@ -171,6 +228,11 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                 visible={isShowCreatePopup}
                 setVisible={handleSetIsShowCreatePopup}
                 clickedSave={clickedSave}
+            />
+            <TheBill
+                appointmentId={dataSource.appointmentId!}
+                visible={isShowBillPopup}
+                setVisible={handleSetIsShowBillPopup}
             />
         </>
     );
