@@ -16,6 +16,7 @@ import { ExaminationPackagesResponse } from '@/types/examinationPackageResponse.
 import { cloneDeep } from 'lodash';
 import { Organizations } from '@/types/organization.type';
 import OrganizationService from '@/services/organization.service';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondStepProps) => {
     const { subscribeOnce } = useObservable();
@@ -271,11 +272,8 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                     ))}
                 </div>
             ) : (
-                <div className="mt-6 flex items-center flex-col justify-center w-full">
-                    <div className="image w-[300px] overflow-hidden">
-                        <img className="w-full object-cover" src={Images.BgNodata} alt="no data" />
-                    </div>
-                    <div className="text-[20px]">No data to display</div>
+                <div className="w-[340px] mx-auto">
+                    <Nodata />
                 </div>
             )}
         </div>

@@ -16,6 +16,7 @@ import { SystemMessage } from '@/constants/message.const';
 import { useSelector } from 'react-redux';
 import { NotificationState } from '@/stores/notification';
 import * as signalR from '@microsoft/signalr';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 function InviteMembersPage() {
     const MAX_RECORE_PERPAGE = 9;
@@ -172,11 +173,8 @@ function InviteMembersPage() {
                             />
                         ))
                     ) : (
-                        <div className="mb-6 flex items-center flex-col justify-center w-full">
-                            <div className="image w-[300px] overflow-hidden">
-                                <img className="w-full object-cover" src={Images.BgNodata} alt="no data" />
-                            </div>
-                            <div className="text-[20px]">No data to display</div>
+                        <div className="w-[260px] mx-auto">
+                            <Nodata />
                         </div>
                     )}
                 </div>

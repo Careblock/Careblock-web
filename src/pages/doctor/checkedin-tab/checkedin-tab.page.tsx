@@ -2,8 +2,16 @@ import { CheckedinTabType } from './checkedin-tab.type';
 import BasePatientQueue from '../base-patient-queue.component';
 import { ScheduleTabs } from '@/enums/Common';
 import { Images } from '@/assets/images';
+import { useState } from 'react';
 
 const CheckedinTab = ({ patients, handleClickItem }: CheckedinTabType) => {
+    const [activeAppointment, setActiveAppointment] = useState<string>();
+
+    const handleClickCheckedinItem = (id: string, appointmentId?: string) => {
+        setActiveAppointment(appointmentId);
+        if (handleClickItem && activeAppointment !== appointmentId) handleClickItem(id, appointmentId);
+    };
+
     return (
         <div>
             {patients?.length ? (
@@ -13,8 +21,9 @@ const CheckedinTab = ({ patients, handleClickItem }: CheckedinTabType) => {
                             key={data.appointmentId}
                             no={index + 1}
                             patient={data}
+                            className={`${activeAppointment === data.appointmentId ? 'bg-[#f5f5f5]' : ''}`}
                             handleClickItem={($event: any) => {
-                                if (handleClickItem) handleClickItem($event, data.appointmentId);
+                                handleClickCheckedinItem($event, data.appointmentId);
                             }}
                             scheduleTab={ScheduleTabs.CHECKEDIN}
                             handleClickPositiveIcon={() => {}}
