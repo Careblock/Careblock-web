@@ -28,6 +28,7 @@ import {
     FaSpinner,
     FaUser,
     FaHistory,
+    FaInfoCircle,
 } from 'react-icons/fa';
 import {
     MdArticle,
@@ -50,6 +51,7 @@ import {
     MdEdit,
     MdCancel,
     MdOutlinePayment,
+    MdOutlineHelp,
 } from 'react-icons/md';
 import {
     IoIosAttach,
@@ -115,6 +117,7 @@ import {
     RiTeamFill,
     RiAdminFill,
     RiMedicineBottleFill,
+    RiErrorWarningFill,
 } from 'react-icons/ri';
 import {
     FaAngleLeft,
@@ -130,8 +133,10 @@ import {
 } from 'react-icons/fa6';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { GiMedicines } from 'react-icons/gi';
+import { GoCheckCircleFill } from 'react-icons/go';
 
 export const Images = {
+    GoCheckCircleFill,
     GiMedicines,
     Logo,
     PageNotFound,
@@ -141,11 +146,13 @@ export const Images = {
     MdEdit,
     MdCancel,
     MdOutlinePayment,
+    MdOutlineHelp,
     MailOutlineIcon,
     IoLogOutOutline,
     IoMdHelp,
     FaUser,
     FaHistory,
+    FaInfoCircle,
     MdOutlineNotifications,
     PiChatsBold,
     FaHouseUser,
@@ -230,6 +237,7 @@ export const Images = {
     RiTeamFill,
     RiAdminFill,
     RiMedicineBottleFill,
+    RiErrorWarningFill,
     MdDelete,
     FaBold,
     FaItalic,

@@ -26,7 +26,7 @@ const NotificationItem = ({
         switch (type) {
             case NotificationType.Invite:
                 return (
-                    <div className="w-full border border-[#ccc] rounded-md py-[6px] px-[8px] select-none">
+                    <div className="text-[#212121] w-full border border-[#ccc] rounded-md py-[6px] px-[8px] select-none">
                         <div
                             className={`w-full ${isRead ? '' : 'font-bold text-primary flex items-center justify-between cursor-pointer'}`}
                         >
@@ -54,7 +54,7 @@ const NotificationItem = ({
                 return (
                     <>
                         <div
-                            className={`w-full border border-[#ccc] rounded-md py-[6px] px-[8px] select-none ${isRead ? '' : 'font-bold text-primary flex items-center justify-between hover:bg-[#ededed] cursor-pointer'}`}
+                            className={`text-[#212121] w-full border border-[#ccc] rounded-md py-[6px] px-[8px] select-none ${isRead ? '' : 'font-bold text-primary flex items-center justify-between hover:bg-[#ededed] cursor-pointer'}`}
                             onClick={() => onClickRead && onClickRead()}
                         >
                             {!link ? (
@@ -62,7 +62,10 @@ const NotificationItem = ({
                             ) : (
                                 <div className="flex-1 mb-[10px]">
                                     <div className="mb-[6px]">{message}</div>
-                                    <div className="text-light-blue-800 underline mr-[20px]" onClick={handleClickBill}>
+                                    <div
+                                        className="text-light-blue-800 underline mr-[20px] cursor-pointer"
+                                        onClick={handleClickBill}
+                                    >
                                         Click to open the Link
                                     </div>
                                 </div>

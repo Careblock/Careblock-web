@@ -9,16 +9,14 @@ import HeaderLayout from '../header/header.layout';
 const DefaultLayout = () => {
     const { userData } = useAuth() as AuthContextType;
 
+    const isDoctorOrManager = () => {
+        return userData?.roles?.includes(ROLE_NAMES.DOCTOR) || userData?.roles?.includes(ROLE_NAMES.MANAGER);
+    };
+
     return (
         <main className="min-h-screen flex flex-col">
-            {userData?.roles?.includes(ROLE_NAMES.PATIENT) ||
-            userData?.roles?.includes(ROLE_NAMES.DOCTOR) ||
-            userData?.roles?.includes(ROLE_NAMES.MANAGER) ? (
-                <HeaderLayout />
-            ) : (
-                <Navbar />
-            )}
-            <div className="flex-1">
+            {isDoctorOrManager() ? <HeaderLayout /> : <Navbar />}
+            <div className={`flex-1 ${isDoctorOrManager() ? '' : 'mt-[40px]'}`}>
                 <div className="pt-[10px] pb-[20px] px-[24px]">
                     <Outlet />
                 </div>

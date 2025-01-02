@@ -15,7 +15,6 @@ export enum PATHS {
     // Doctor
     DOCTOR_SCHEDULE = '/doctor/schedule',
     // Patient
-    PATIENT_PAGE = '/patient',
     APPOINTMENT = '/appointment/:step',
     APPOINTMENT_STEP1 = '/appointment/1',
     APPOINTMENT_STEP2 = '/appointment/2',

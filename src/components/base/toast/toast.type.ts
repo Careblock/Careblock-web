@@ -1,6 +1,20 @@
-export type ToastStatus = 'valid' | 'inValid' | 'warn';
+export type ToastStatus = 'valid' | 'inValid' | 'warn' | 'info';
+
+export enum ToastStatusEnum {
+    Valid = 'valid',
+    InValid = 'inValid',
+    Warn = 'warn',
+    Info = 'info',
+}
 
 export type ToastPosition = 'top-right' | 'top-left' | 'bottom-left' | 'bottom-right';
+
+export enum ToastPositionEnum {
+    TopRight = 'top-right',
+    TopLeft = 'top-left',
+    BottomLeft = 'bottom-left',
+    BottomRight = 'bottom-right',
+}
 
 export interface ToastItemProps {
     status: ToastStatus;
@@ -19,7 +33,7 @@ export interface ToastData {
     /**
      * Default: 'valid'
      */
-    status: ToastStatus;
+    status: ToastStatusEnum;
     /**
      * This flag will help you keep displaying toast of previous page.
      * - true: automatically remove toast when route changed.
@@ -33,7 +47,7 @@ export interface ToastOpts {
     /**
      * Default: 'valid'
      */
-    status?: ToastStatus;
+    status?: ToastStatusEnum;
     /**
      * Default: 'bottom-right'
      */

@@ -31,6 +31,7 @@ import { Environment } from '@/environment';
 import { useDispatch } from 'react-redux';
 import { connect } from '@/stores/notification/notification.action';
 import Nodata from '@/components/base/no-data/nodata.component';
+import { ToastStatusEnum } from '@/components/base/toast/toast.type';
 
 const HeaderLayout = () => {
     const navigate = useNavigate();
@@ -187,14 +188,14 @@ const HeaderLayout = () => {
                     addToast({
                         text: SystemMessage.JOIN_ORG,
                         position: 'top-right',
-                        status: 'valid',
+                        status: ToastStatusEnum.Valid,
                     });
                 } else {
                     setIsVisiblePopupDepartment(false);
                     addToast({
                         text: SystemMessage.JOIN_ORG_FAILED,
                         position: 'top-right',
-                        status: 'warn',
+                        status: ToastStatusEnum.Warn,
                     });
                 }
             }
@@ -330,18 +331,6 @@ const HeaderLayout = () => {
                         </div>
                         <Box sx={{ flexGrow: 1 }} />
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }} className="gap-x-2">
-                            {userData?.roles?.includes(ROLE_NAMES.PATIENT) && (
-                                <IconButton
-                                    size="medium"
-                                    aria-label="show 4 new mails"
-                                    color="inherit"
-                                    className="mr-1"
-                                    title="Go to the management"
-                                    onClick={() => handleMoveToPage(PATHS.PATIENT_PAGE)}
-                                >
-                                    <Images.ManageAccountsIcon sx={{ fontSize: 26 }} />
-                                </IconButton>
-                            )}
                             {userData?.roles?.includes(ROLE_NAMES.DOCTOR) && (
                                 <IconButton
                                     size="medium"
