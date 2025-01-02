@@ -29,6 +29,7 @@ import {
     FaUser,
     FaHistory,
     FaInfoCircle,
+    FaHospital,
 } from 'react-icons/fa';
 import {
     MdArticle,
@@ -107,7 +108,15 @@ import { BiSolidLogOut, BiSolidMedal } from 'react-icons/bi';
 import { BsSendFill, BsThreeDotsVertical, BsPersonVcardFill } from 'react-icons/bs';
 import { CiCirclePlus, CiHeart, CiShoppingCart } from 'react-icons/ci';
 import { GrClose, GrDocumentPerformance, GrOrganization, GrPowerReset } from 'react-icons/gr';
-import { IoCartOutline, IoFilterOutline, IoLogOutOutline, IoPeople, IoReorderThree, IoSettings } from 'react-icons/io5';
+import {
+    IoCartOutline,
+    IoFilterOutline,
+    IoLogOutOutline,
+    IoPeople,
+    IoReorderThree,
+    IoSettings,
+    IoLocation,
+} from 'react-icons/io5';
 import {
     RiCloseLine,
     RiDeleteBin6Line,
@@ -130,6 +139,7 @@ import {
     FaBriefcaseMedical,
     FaClipboardUser,
     FaLocationDot,
+    FaMoneyBillWave,
 } from 'react-icons/fa6';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { GiMedicines } from 'react-icons/gi';
@@ -153,6 +163,7 @@ export const Images = {
     FaUser,
     FaHistory,
     FaInfoCircle,
+    FaHospital,
     MdOutlineNotifications,
     PiChatsBold,
     FaHouseUser,
@@ -191,6 +202,7 @@ export const Images = {
     FaBriefcaseMedical,
     FaClipboardUser,
     FaLocationDot,
+    FaMoneyBillWave,
     AiOutlineSearch,
     TfiWorld,
     MdOutlineShoppingCart,
@@ -246,6 +258,7 @@ export const Images = {
     FaCode,
     MdKeyboardArrowLeft,
     IoSettings,
+    IoLocation,
     IoReorderThree,
     MdError,
     MdArticle,

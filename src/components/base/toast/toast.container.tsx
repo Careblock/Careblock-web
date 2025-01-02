@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { removeToast, toast$ } from './toast.service';
 import { ToastData, ToastPositionEnum, ToastStatusEnum } from './toast.type';
 import { Images } from '@/assets/images';
+import { ColorValue } from '@/enums/Color';
 
 export default function ToastContainer() {
     const [toasts, setToast] = useState<ToastData[]>([]);
@@ -53,13 +54,13 @@ export default function ToastContainer() {
     const getIconToast = (status: ToastStatusEnum) => {
         switch (status) {
             case ToastStatusEnum.InValid:
-                return <Images.MdCancel className="ml-[14px]" color="#e23636" size={36} />;
+                return <Images.MdCancel className="ml-[14px]" color={ColorValue.error} size={36} />;
             case ToastStatusEnum.Valid:
-                return <Images.GoCheckCircleFill className="ml-[14px]" color="#50b41e" size={36} />;
+                return <Images.GoCheckCircleFill className="ml-[14px]" color={ColorValue.success} size={36} />;
             case ToastStatusEnum.Warn:
-                return <Images.RiErrorWarningFill className="ml-[14px]" color="#edb95e" size={36} />;
+                return <Images.RiErrorWarningFill className="ml-[14px]" color={ColorValue.warning} size={36} />;
             case ToastStatusEnum.Info:
-                return <Images.FaInfoCircle className="ml-[14px]" color="#30aafc" size={36} />;
+                return <Images.FaInfoCircle className="ml-[14px]" color={ColorValue.info} size={36} />;
         }
     };
 

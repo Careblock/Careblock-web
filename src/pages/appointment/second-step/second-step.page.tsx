@@ -151,19 +151,19 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                 <TextField
                     variant="outlined"
                     label="Search"
-                    helperText="Enter examination package's name"
-                    className="w-[280px]"
+                    helperText="Enter examination package"
+                    className="w-[300px]"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Images.SearchIcon className="text-[24px]" />
+                                <Images.SearchIcon className="!text-[28px]" />
                             </InputAdornment>
                         ),
                     }}
                 />
-                <div className="flex flex-col ml-[20px] w-[280px]">
+                <div className="flex flex-col ml-[20px] w-[300px]">
                     <Select
                         className="w-full"
                         size="medium"
@@ -188,12 +188,12 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                 <div className="second-step__content">
                     {examinationPackagesDisplay.map((examPackage, i: number) => (
                         <div
-                            className={`second-step-content__package select-none flex border border-solid border-[#ddd] rounded-lg p-5 first:mt-0 mt-4 ${examPackage.id === scheduleData.examinationPackage?.id ? 'selected' : ''}`}
+                            className={`second-step-content__package select-none flex border border-solid border-[#ddd] rounded-lg py-[16px] px-[18px] first:mt-0 mt-4 shadow-md ${examPackage.id === scheduleData.examinationPackage?.id ? 'selected' : ''}`}
                             key={examPackage.id}
                         >
-                            <div className="second-step-wrapper__left flex flex-col justify-center space-y-[16px] w-[40%] pr-[50px] border-r border-solid border-[#ccc] max-h-[256px]">
+                            <div className="second-step-wrapper__left flex flex-col justify-center space-y-[16px] w-[40%] pr-[30px] border-r border-solid border-[#ccc] max-h-[256px]">
                                 <div className="wrapper-left__information">
-                                    <div className="left-information__name font-bold text-[20px] text-primary mb-2">
+                                    <div className="left-information__name font-bold text-[18px] text-primary mb-2">
                                         {examPackage.name}
                                     </div>
                                     <div className="left-information__seniority text-[16px]">
@@ -208,13 +208,13 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                                     />
                                 </div>
                             </div>
-                            <div className="second-step-wrapper__right w-[60%] pl-10">
+                            <div className="second-step-wrapper__right w-[60%] pl-[30px]">
                                 <div className="wrapper-right__schedule">
                                     <div className="right-schedule__date">
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <DatePicker
                                                 disablePast
-                                                className="w-[360px]"
+                                                className="w-[320px]"
                                                 value={scheduleData.date}
                                                 slotProps={{ textField: { size: 'small' } }}
                                                 onChange={(newValue) => handleDateChange(newValue)}
@@ -224,7 +224,7 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                                     <div className="right-schedule__time mt-2">
                                         <div className="schedule-time__heading flex items-center mb-2">
                                             <Images.CalendarMonthIcon className="text-[20px]" />
-                                            <div className="schedule-time-heading__text text-[16px] ml-[6px] mt-[1px] uppercase">
+                                            <div className="schedule-time-heading__text text-[16px] ml-[6px] mt-[2px] uppercase">
                                                 Schedule
                                             </div>
                                         </div>
@@ -232,7 +232,7 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                                             {timeRanges[i].length > 0 ? (
                                                 timeRanges[i].map((time: any, index: number) => (
                                                     <div
-                                                        className={`time-selection__item cursor-pointer text-center w-[110px] bg-[#eee] rounded py-[6px] px-2 mr-[10px] mb-2 text-[13px] ${isSelectedTime(examPackage, time) ? 'selected' : ''} ${isDisabledDateTime(examPackage, time) ? '!cursor-not-allowed bg-[#bbb] opacity-50' : ''}`}
+                                                        className={`time-selection__item cursor-pointer text-center w-[110px] bg-[#eee] rounded py-[8px] px-2 mr-[10px] mb-2 text-[14px] ${isSelectedTime(examPackage, time) ? 'selected' : ''} ${isDisabledDateTime(examPackage, time) ? '!cursor-not-allowed bg-[#bbb] opacity-50' : ''}`}
                                                         key={index}
                                                         onClick={() => handleChoosePackage(examPackage, time)}
                                                     >
@@ -255,7 +255,7 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                                 <div className="wrapper-right__location mt-2 pt-2 border-t border-solid border-[#ddd]">
                                     <div className="right-location__heading flex items-center text-[16px] uppercase mb-2">
                                         <Images.FaLocationDot className="text-[20px]" />
-                                        <p className="text-[16px] ml-[6px] mt-[1px] uppercase">
+                                        <p className="text-[16px] ml-[6px] mt-[2px] uppercase">
                                             Medical examination address
                                         </p>
                                     </div>
@@ -265,7 +265,7 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                                 </div>
                                 <div className="wrapper-right__price mt-2 pt-2 border-t border-solid border-[#ddd] flex items-center">
                                     <Images.IoMdPricetags className="text-[20px]" />
-                                    <div className="ml-[6px] mt-[1px] right-price-text mr-[6px] uppercase text-[16px]">{`Price: $${examPackage.price}`}</div>
+                                    <div className="ml-[6px] mt-[2px] right-price-text mr-[6px] uppercase text-[16px]">{`Price: $${examPackage.price}`}</div>
                                 </div>
                             </div>
                         </div>
