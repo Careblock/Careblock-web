@@ -1,4 +1,5 @@
 import { addToast } from '@/components/base/toast/toast.service';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 import { SystemMessage } from '@/constants/message.const';
 import { useAuth } from '@/contexts/auth.context';
 import { ROLE_NAMES } from '@/enums/Common';
@@ -44,11 +45,19 @@ export const Login = ({ handleClose }: any) => {
                 if (!stakeId) return;
                 subscribeOnce(AuthService.hasAccount(stakeId), (res: any) => {
                     if (res === false) {
-                        addToast({ text: SystemMessage.HAS_ACCOUNT, position: 'top-right', status: 'warn' });
+                        addToast({
+                            text: SystemMessage.HAS_ACCOUNT,
+                            position: ToastPositionEnum.TopRight,
+                            status: ToastStatusEnum.Warn,
+                        });
                         handleClose();
                         navigate(PATHS.REGISTER);
                     } else {
-                        addToast({ text: SystemMessage.LOGIN_SUCCESS, position: 'top-right', status: 'valid' });
+                        addToast({
+                            text: SystemMessage.LOGIN_SUCCESS,
+                            position: ToastPositionEnum.TopRight,
+                            status: ToastStatusEnum.Valid,
+                        });
                         subscribeOnce(AuthService.authenticate(stakeId[0]), (res: any) => {
                             const { jwtToken, ...rest } = res;
                             const roles = (jwtDecode<JwtPayload>(jwtToken) as any)?.roles?.split(',');

@@ -9,7 +9,6 @@ import { ProtectedRoute } from './auth.guard';
 import { PATHS } from '../enums/RoutePath';
 import { ROLE_NAMES } from '@/enums/Common';
 import { Login } from '@/pages/authentication/login/login.page';
-import PatientPage from '@/pages/patient/patient.page';
 import TeamMembersPage from '@/pages/doctor-manager/team-members/team-members.page';
 import OrganizationInfoPage from '@/pages/doctor-manager/organization-info/organization-info.page';
 import DepartmentManagement from '@/pages/doctor-manager/department-management/department-management.page';
@@ -54,10 +53,7 @@ export const routesForPatient = [
     {
         path: PATHS.DEFAULT,
         element: <ProtectedRoute allowedRoles={[ROLE_NAMES.PATIENT]} />,
-        children: [
-            { path: PATHS.PATIENT_PAGE, element: <PatientPage /> },
-            { path: PATHS.PATIENT_APPOINTMENT_HISTORY, element: <AppointmentHistory /> },
-        ],
+        children: [{ path: PATHS.PATIENT_APPOINTMENT_HISTORY, element: <AppointmentHistory /> }],
     },
 ];
 

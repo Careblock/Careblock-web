@@ -15,6 +15,8 @@ import { ExaminationTypes } from '@/types/examinationType.type';
 import { Organizations } from '@/types/organization.type';
 import useObservable from '@/hooks/use-observable.hook';
 import AccountService from '@/services/account.service';
+import { Images } from '@/assets/images';
+import { ColorValue } from '@/enums/Color';
 
 const AppointmentPage = () => {
     const finalStepRef = useRef<any>(null);
@@ -68,7 +70,6 @@ const AppointmentPage = () => {
 
     const handleCancelPopup = () => {
         toggleIsShowConfirm(false);
-        setActiveStep(activeStep - 1);
     };
 
     const handleChoseExaminationType = (type: ExaminationTypes) => {
@@ -126,7 +127,7 @@ const AppointmentPage = () => {
 
     return (
         <>
-            <div className="appointment-container pt-[10px] pb-[20px] text-sm">
+            <div className="appointment-container pb-[20px] text-sm">
                 <div className="appointment-first__heading">
                     <Steps
                         steps={steps}
@@ -174,17 +175,20 @@ const AppointmentPage = () => {
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Warning
+                        <div className="flex items-center justify-center gap-[10px]">
+                            <Images.RiErrorWarningFill color={ColorValue.warning} size={30} />
+                            <p className="text-[#edb95e] text-[24px]">Warning</p>
+                        </div>
                     </Typography>
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        Login as a patient to make a reservation!
+                        <div className="text-center text-[16px]">Login as a patient to make a reservation!</div>
                     </Typography>
-                    <div className="flex items-center justify-end space-x-5 mt-7">
+                    <div className="flex items-center justify-center space-x-5 mt-7">
                         <Button variant="contained" color="inherit" onClick={() => handleCancelPopup()}>
                             Cancel
                         </Button>
                         <Button variant="contained" color="primary" onClick={() => setIsShowLoginPopup(true)}>
-                            Move to login
+                            Login
                         </Button>
                     </div>
                 </Box>

@@ -182,11 +182,11 @@ export default function TheBill({ visible, setVisible, appointmentId }: BillProp
             <DialogActions>
                 <div className="flex items-center justify-end w-full">
                     <div className="flex items-center gap-x-[10px]">
+                        <Button variant="text" color="inherit" autoFocus onClick={handleClose}>
+                            Cancel
+                        </Button>
                         <Button variant="contained" autoFocus onClick={onClickConvertToImage}>
                             Save as pdf
-                        </Button>
-                        <Button variant="text" color="error" autoFocus onClick={handleClose}>
-                            Cancel
                         </Button>
                     </div>
                 </div>

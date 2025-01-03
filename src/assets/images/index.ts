@@ -28,6 +28,8 @@ import {
     FaSpinner,
     FaUser,
     FaHistory,
+    FaInfoCircle,
+    FaHospital,
 } from 'react-icons/fa';
 import {
     MdArticle,
@@ -50,6 +52,7 @@ import {
     MdEdit,
     MdCancel,
     MdOutlinePayment,
+    MdOutlineHelp,
 } from 'react-icons/md';
 import {
     IoIosAttach,
@@ -92,7 +95,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import SearchIcon from '@mui/icons-material/Search';
 import UndoIcon from '@mui/icons-material/Undo';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
-import { AiOutlineSearch } from 'react-icons/ai';
+import { AiOutlineSearch, AiFillWarning } from 'react-icons/ai';
 import { FcGoogle, FcInvite } from 'react-icons/fc';
 import { LuClock } from 'react-icons/lu';
 import { RxUpdate, RxLapTimer } from 'react-icons/rx';
@@ -105,7 +108,15 @@ import { BiSolidLogOut, BiSolidMedal } from 'react-icons/bi';
 import { BsSendFill, BsThreeDotsVertical, BsPersonVcardFill } from 'react-icons/bs';
 import { CiCirclePlus, CiHeart, CiShoppingCart } from 'react-icons/ci';
 import { GrClose, GrDocumentPerformance, GrOrganization, GrPowerReset } from 'react-icons/gr';
-import { IoCartOutline, IoFilterOutline, IoLogOutOutline, IoPeople, IoReorderThree, IoSettings } from 'react-icons/io5';
+import {
+    IoCartOutline,
+    IoFilterOutline,
+    IoLogOutOutline,
+    IoPeople,
+    IoReorderThree,
+    IoSettings,
+    IoLocation,
+} from 'react-icons/io5';
 import {
     RiCloseLine,
     RiDeleteBin6Line,
@@ -115,6 +126,7 @@ import {
     RiTeamFill,
     RiAdminFill,
     RiMedicineBottleFill,
+    RiErrorWarningFill,
 } from 'react-icons/ri';
 import {
     FaAngleLeft,
@@ -127,11 +139,14 @@ import {
     FaBriefcaseMedical,
     FaClipboardUser,
     FaLocationDot,
+    FaMoneyBillWave,
 } from 'react-icons/fa6';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { GiMedicines } from 'react-icons/gi';
+import { GoCheckCircleFill } from 'react-icons/go';
 
 export const Images = {
+    GoCheckCircleFill,
     GiMedicines,
     Logo,
     PageNotFound,
@@ -141,11 +156,14 @@ export const Images = {
     MdEdit,
     MdCancel,
     MdOutlinePayment,
+    MdOutlineHelp,
     MailOutlineIcon,
     IoLogOutOutline,
     IoMdHelp,
     FaUser,
     FaHistory,
+    FaInfoCircle,
+    FaHospital,
     MdOutlineNotifications,
     PiChatsBold,
     FaHouseUser,
@@ -184,7 +202,9 @@ export const Images = {
     FaBriefcaseMedical,
     FaClipboardUser,
     FaLocationDot,
+    FaMoneyBillWave,
     AiOutlineSearch,
+    AiFillWarning,
     TfiWorld,
     MdOutlineShoppingCart,
     BsThreeDotsVertical,
@@ -230,6 +250,7 @@ export const Images = {
     RiTeamFill,
     RiAdminFill,
     RiMedicineBottleFill,
+    RiErrorWarningFill,
     MdDelete,
     FaBold,
     FaItalic,
@@ -238,6 +259,7 @@ export const Images = {
     FaCode,
     MdKeyboardArrowLeft,
     IoSettings,
+    IoLocation,
     IoReorderThree,
     MdError,
     MdArticle,

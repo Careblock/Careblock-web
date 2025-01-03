@@ -3,7 +3,7 @@ import { CarouselItemProps } from './carousel.type';
 const CarouselItem = ({ id, title, avatar, onClickItem }: CarouselItemProps) => {
     return (
         <div
-            className="carousel__item select-none rounded-lg border border-solid border-[#ddd] w-[18%] h-[180px] overflow-hidden flex items-center justify-center flex-col p-[10px] cursor-pointer"
+            className="carousel__item select-none rounded-lg border border-solid border-[#ddd] w-[18%] h-[180px] overflow-hidden flex items-center justify-center flex-col p-[10px] cursor-pointer shadow-md bg-white"
             onClick={() => onClickItem(id)}
         >
             <div className="carousel-item__avatar w-[80px] h-[80px] mb-[10px] overflow-hidden">

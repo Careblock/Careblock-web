@@ -36,6 +36,7 @@ import MedicineService from '@/services/medicine.service';
 import MedicineTypeService from '@/services/medicineType.service';
 import { MedicineTypes } from '@/types/medicineType.type';
 import { UnitPrice } from '@/enums/UnitPrice';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 
 function Medicines() {
     const { subscribeOnce } = useObservable();
@@ -169,7 +170,7 @@ function Medicines() {
                 setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_MEDICINE, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_MEDICINE, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -182,7 +183,11 @@ function Medicines() {
     const handleSubmit = (values: Medicines) => {
         if (mode === FormMode.Add) {
             if (!values.medicineTypeId) {
-                addToast({ text: SystemMessage.MEDICINE_TYPE_REQUIRED, position: 'top-right', status: 'inValid' });
+                addToast({
+                    text: SystemMessage.MEDICINE_TYPE_REQUIRED,
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.InValid,
+                });
                 return;
             }
             if (!userData?.id) return;
@@ -200,7 +205,7 @@ function Medicines() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_MEDICINE, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_MEDICINE, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -217,7 +222,7 @@ function Medicines() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_MEDICINE, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_MEDICINE, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -234,22 +239,24 @@ function Medicines() {
     };
 
     return (
-        <div className="h-full">
-            <div className="text-[24px]">Manage Medicines</div>
-            <div className="text-[16px] mb-4">Set up all medicines that your organization conduct business from.</div>
+        <div className="h-full w-[calc(100vw-270px-40px)]">
+            <div className="text-[20px] leading-[20px] font-bold">Manage Medicines</div>
+            <div className="text-[16px] mb-[10px]">
+                Set up all medicines that your organization conduct business from.
+            </div>
             <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
                 <TextField
                     variant="outlined"
                     label="Search"
-                    size="small"
+                    size="medium"
                     placeholder="Enter name or description"
-                    className="w-[260px]"
+                    className="w-[300px]"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Images.SearchIcon className="text-[24px]" />
+                                <Images.SearchIcon className="!text-[28px]" />
                             </InputAdornment>
                         ),
                     }}
@@ -259,7 +266,7 @@ function Medicines() {
                 </Button>
             </div>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer className="max-h-[calc(100vh-52px-52px-30px-24px-30px-72px-52px-26px)]">
+                <TableContainer className="max-h-[calc(100vh-52px-44px-30px-20px-34px-88px-52px)]">
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
@@ -335,7 +342,7 @@ function Medicines() {
             <Dialog open={isVisiblePopupAdd} onClose={handleClosePopupAdd}>
                 <DialogTitle>
                     <div className="flex items-center justify-between">
-                        <p>Add new medicine</p>
+                        <p>{mode === FormMode.Add ? 'Add new medicine' : 'Update medicine'}</p>
                         <Images.MdCancel
                             className="cursor-pointer hover:text-[red] text-[26px]"
                             onClick={() => handleClosePopupAdd()}
@@ -450,7 +457,7 @@ function Medicines() {
                             </Select>
                         </div>
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
-                            <Button variant="text" onClick={handleClosePopupAdd}>
+                            <Button variant="text" color="inherit" onClick={handleClosePopupAdd}>
                                 Cancel
                             </Button>
                             <Button variant="contained" type="submit">

@@ -13,6 +13,7 @@ html {
     font-weight: normal;
     font-family: 'Roboto';
     scroll-behavior: smooth;
+    color: #212121;
 }
 
 ::-webkit-scrollbar {

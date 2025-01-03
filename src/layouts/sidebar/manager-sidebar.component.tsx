@@ -17,83 +17,70 @@ const ManagerSidebar = () => {
         <ProSidebar
             collapsed={collapsed}
             collapsedWidth={'70px'}
-            className="bg-white shadow-xl min-h-[calc(100vh-104px)] select-none"
+            width={260}
+            className="bg-white shadow-xl min-h-[calc(100vh-96px)] select-none"
         >
             <SidebarHeader style={{ backgroundColor: 'white' }}>
-                <div className="py-1 px-5 flex justify-between items-center text-uppercase font-bold text-lg space-beetween">
-                    {!collapsed && (
-                        <span
-                            className="text-2xl cursor-pointer text-blue-gray-500"
-                            onClick={() => navigate('/patient')}
-                        >
-                            MENU
-                        </span>
-                    )}
+                <div className="py-1 px-[24px] flex justify-between items-center uppercase font-bold">
+                    {!collapsed && <span className="text-[20px] text-blue-gray-500">MENU</span>}
                     <span
-                        className="items-center text-4xl p-3"
+                        className="items-center py-[10px] px-[2px] cursor-pointer"
                         onClick={() => {
                             setCollapsed(!collapsed);
                         }}
                     >
-                        <Images.FaBars className="cursor-pointer text-5xl text-black" size={20} />
+                        <Images.FaBars className="cursor-pointer text-blue-gray-500" size={20} />
                     </span>
                 </div>
             </SidebarHeader>
-
             <SidebarContent style={{ backgroundColor: 'white' }}>
                 {!userData?.roles.includes(ROLE_NAMES.ADMIN) && (
                     <>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
-                            <MenuItem icon={<Images.MdDashboard />}>
-                                <span className="text-black text-xl">Dashboard</span>
-                                <Link to={PATHS.ORGANIZATION_INFOR} />
-                            </MenuItem>
-                        </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.GrOrganization />}>
-                                <span className="text-black text-xl">Organization Infor</span>
+                                <span className="text-black text-[16px]">Organization Infor</span>
                                 <Link to={PATHS.ORGANIZATION_INFOR} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.MdMeetingRoom />}>
-                                <span className="text-black text-xl">Departments</span>
+                                <span className="text-black text-[16px]">Departments</span>
                                 <Link to={PATHS.DEPARTMENT_MANAGEMENT} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.RiTeamFill />}>
-                                <span className="text-black text-xl">Team members</span>
+                                <span className="text-black text-[16px]">Team members</span>
                                 <Link to={PATHS.TEAM_MEMBERS} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.TiUserAdd />}>
-                                <span className="text-black text-xl">Invitation</span>
+                                <span className="text-black text-[16px]">Invitation</span>
                                 <Link to={PATHS.INVITE_MEMBERS} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.BsPersonVcardFill />}>
-                                <span className="text-black text-xl">Specialist</span>
+                                <span className="text-black text-[16px]">Specialist</span>
                                 <Link to={PATHS.SPECIALIST} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.FaBriefcaseMedical />}>
-                                <span className="text-black text-xl">Examination Package</span>
+                                <span className="text-black text-[16px]">Examination Package</span>
                                 <Link to={PATHS.EXAMINATION_PACKAGE} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.GiMedicines />}>
-                                <span className="text-black text-xl">Medicines</span>
+                                <span className="text-black text-[16px]">Medicines</span>
                                 <Link to={PATHS.MEDICINES} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.FaHistory />}>
-                                <span className="text-black text-xl">Appoinment histories</span>
+                                <span className="text-black text-[16px]">Appoinment histories</span>
                                 <Link to={PATHS.APPOINTMENT_HISTORIES} />
                             </MenuItem>
                         </Menu>
@@ -101,63 +88,63 @@ const ManagerSidebar = () => {
                 )}
                 {userData?.roles.includes(ROLE_NAMES.ADMIN) && (
                     <>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.GrOrganization />}>
-                                <span className="text-black text-xl">Organizations</span>
+                                <span className="text-black text-[16px]">Organizations</span>
                                 <Link to={PATHS.ORGANIZATION_ADMIN} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.MdMeetingRoom />}>
-                                <span className="text-black text-xl">Departments</span>
+                                <span className="text-black text-[16px]">Departments</span>
                                 <Link to={PATHS.DEPARTMENT_ADMIN} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.BsPersonVcardFill />}>
-                                <span className="text-black text-xl">Specialist</span>
+                                <span className="text-black text-[16px]">Specialist</span>
                                 <Link to={PATHS.SPECIALIST_ADMIN} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.FiPackage />}>
-                                <span className="text-black text-xl">Examination Type</span>
+                                <span className="text-black text-[16px]">Examination Type</span>
                                 <Link to={PATHS.EXAMINATION_TYPE} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.FaBriefcaseMedical />}>
-                                <span className="text-black text-xl">Examination Package</span>
+                                <span className="text-black text-[16px]">Examination Package</span>
                                 <Link to={PATHS.EXAMINATION_PACKAGE_ADMIN} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.TbTableOptions />}>
-                                <span className="text-black text-xl">Examination Options</span>
+                                <span className="text-black text-[16px]">Examination Options</span>
                                 <Link to={PATHS.EXAMINATION_OPTIONS_ADMIN} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.RxLapTimer />}>
-                                <span className="text-black text-xl">Time slot</span>
+                                <span className="text-black text-[16px]">Time slot</span>
                                 <Link to={PATHS.TIME_SLOT_ADMIN} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.RiMedicineBottleFill />}>
-                                <span className="text-black text-xl">Medicine Type</span>
+                                <span className="text-black text-[16px]">Medicine Type</span>
                                 <Link to={PATHS.MEDICINE_TYPE_ADMIN} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.GiMedicines />}>
-                                <span className="text-black text-xl">Medicines</span>
+                                <span className="text-black text-[16px]">Medicines</span>
                                 <Link to={PATHS.MEDICINES_ADMIN} />
                             </MenuItem>
                         </Menu>
-                        <Menu iconShape="circle" className="!p-0 hover:bg-gray">
+                        <Menu iconShape="circle" className="!p-0">
                             <MenuItem icon={<Images.MdOutlinePayment />}>
-                                <span className="text-black text-xl">Payment Method</span>
+                                <span className="text-black text-[16px]">Payment Method</span>
                                 <Link to={PATHS.PAYMENT_METHOD_ADMIN} />
                             </MenuItem>
                         </Menu>

@@ -1,17 +1,13 @@
 import { Outlet } from 'react-router-dom';
 import Footer from '../footer/footer.layout';
-import PatientSidebar from '../sidebar/patient-sidebar.component';
-import HeaderLayout from '../header/header.layout';
+import Navbar from '../navbar/navbar.layout';
 
 function PatientLayout() {
     return (
         <main className="min-h-screen flex flex-col h-fit">
-            <HeaderLayout />
+            <Navbar />
             <div className="flex flex-1 w-full overflow-hidden">
-                <div>
-                    <PatientSidebar />
-                </div>
-                <div className="flex-1 pt-[10px] pb-[20px] px-[24px]">
+                <div className="flex-1 py-[10px] px-[24px]">
                     <Outlet />
                 </div>
             </div>

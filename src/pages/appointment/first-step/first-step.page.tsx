@@ -65,14 +65,14 @@ const FirstStep = ({ examinationType, onClickAnExaminationType }: FirstStepProps
                     variant="outlined"
                     size="medium"
                     label="Search"
-                    placeholder="Enter service's name"
-                    className="w-[280px]"
+                    placeholder="Enter examination type"
+                    className="w-[300px]"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Images.SearchIcon className="text-[24px]" />
+                                <Images.SearchIcon className="!text-[28px]" />
                             </InputAdornment>
                         ),
                     }}
@@ -82,7 +82,7 @@ const FirstStep = ({ examinationType, onClickAnExaminationType }: FirstStepProps
                         <div className="toolbar-choose__text font-bold text-[16px]">{`Your choice:`}</div>
                         <div
                             title={examinationType.name}
-                            className="first-steps-content__item ml-[10px] w-[220px] relative select-none rounded-lg border border-solid border-[#ddd] bg-white h-[110px] flex items-center justify-center flex-col p-[10px] cursor-pointer"
+                            className="first-steps-content__item ml-[10px] w-[180px] relative select-none rounded-lg border border-solid border-[#ddd] bg-white h-[100px] flex items-center justify-center flex-col p-[8px] cursor-pointer"
                         >
                             <div className="steps-content-item__avatar w-full h-[60px] mt-1 overflow-hidden">
                                 <img
@@ -91,7 +91,7 @@ const FirstStep = ({ examinationType, onClickAnExaminationType }: FirstStepProps
                                     src={examinationType.thumbnail}
                                 />
                             </div>
-                            <div className="steps-content-item__name font-bold text-[13px] w-full h-[34px] overflow-hidden text-ellipsis text-center line-clamp-2">
+                            <div className="steps-content-item__name font-bold text-[13px] w-full h-[44px] overflow-hidden text-ellipsis text-center line-clamp-2">
                                 {examinationType.name}
                             </div>
                         </div>
@@ -104,7 +104,7 @@ const FirstStep = ({ examinationType, onClickAnExaminationType }: FirstStepProps
                         <div
                             key={type.id}
                             title={type.name}
-                            className={`first-steps-content__item relative select-none rounded-lg border border-solid border-[#ddd] bg-white h-[180px] flex items-center justify-center flex-col p-4 cursor-pointer ${type.id === examinationType?.id ? '!bg-[#eee]' : ''}`}
+                            className={`first-steps-content__item shadow-md relative select-none rounded-lg border border-solid border-[#ddd] bg-white h-[180px] flex items-center justify-center flex-col p-4 cursor-pointer ${type.id === examinationType?.id ? '!bg-[#eee]' : ''}`}
                             onClick={() => handleClickChooseType(type)}
                         >
                             <div className="steps-content-item__avatar w-[80px] h-[80px] mb-[10px] overflow-hidden">

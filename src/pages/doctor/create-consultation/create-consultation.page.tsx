@@ -27,6 +27,7 @@ import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { ExaminationOptions } from '@/types/examinationOption.type';
 import ExaminationOptionService from '@/services/examinationOption.service';
 import { EMPTY_GUID } from '@/constants/common.const';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -139,7 +140,11 @@ export default function CreateConsultation({
 
     const handleClickSave = async () => {
         if (!examinationOption) {
-            addToast({ text: SystemMessage.EXAMINATION_REQUIRED, position: 'top-right', status: 'inValid' });
+            addToast({
+                text: SystemMessage.EXAMINATION_REQUIRED,
+                position: ToastPositionEnum.TopRight,
+                status: ToastStatusEnum.InValid,
+            });
             return;
         }
         setFormType(FormType.Detail);
@@ -156,10 +161,14 @@ export default function CreateConsultation({
         subscribeOnce(AppointmentDetailService.insert(payload), (id: string) => {
             if (id !== EMPTY_GUID) {
                 setVisible(false);
-                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: 'top-right' });
+                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: ToastPositionEnum.TopRight });
                 clickedSave();
             } else {
-                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_FAILED, position: 'top-right', status: 'inValid' });
+                addToast({
+                    text: SystemMessage.INSERT_DIAGNOSTIC_FAILED,
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.InValid,
+                });
                 setFormType(FormType.Create);
             }
         });
@@ -197,24 +206,24 @@ export default function CreateConsultation({
                 onClick={handleClose}
                 sx={{
                     position: 'absolute',
-                    right: 8,
-                    top: 8,
+                    right: 10,
+                    top: 10,
                     color: (theme) => theme.palette.grey[500],
                 }}
             >
-                <Images.CloseIcon className="text-[24px]" />
+                <Images.CloseIcon className="!text-[28px]" />
             </IconButton>
 
             {/* Content */}
             <DialogContent dividers>
                 {formType === FormType.Create && (
-                    <div className="flex items-center space-x-[16px] mb-[16px]">
-                        <p className="font-semibold text-[18px]">Choose an examination option: </p>
+                    <div className="flex items-center space-x-[12px] mb-[16px]">
+                        <p className="font-semibold text-[16px]">Choose an option: </p>
                         <Select
                             name="option"
                             value={examinationOption}
                             size="small"
-                            className="w-[200px]"
+                            className="w-[300px]"
                             onChange={(event: SelectChangeEvent<any>) => setExaminationOption(event.target.value)}
                         >
                             {examinationOptions?.map((item) => (
@@ -240,11 +249,11 @@ export default function CreateConsultation({
                         Convert to pdf
                     </Button>
                     <div className="flex items-center gap-x-[10px]">
+                        <Button variant="text" color="inherit" autoFocus onClick={handleClose}>
+                            Cancel
+                        </Button>
                         <Button variant="contained" autoFocus onClick={handleClickSave}>
                             Create
-                        </Button>
-                        <Button variant="text" color="error" autoFocus onClick={handleClose}>
-                            Cancel
                         </Button>
                     </div>
                 </div>

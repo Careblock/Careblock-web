@@ -1,17 +1,17 @@
 import { BehaviorSubject } from 'rxjs';
-import { ToastData, ToastOpts, ToastSubject } from './toast.type';
+import { ToastData, ToastOpts, ToastPositionEnum, ToastStatusEnum, ToastSubject } from './toast.type';
 
 let toastId = 0;
 
 export const toast$ = new BehaviorSubject<ToastSubject>({
-    position: 'bottom-left',
+    position: ToastPositionEnum.TopRight,
     toasts: [],
 });
 
 export function addToast({
     text,
-    status = 'valid',
-    position = 'bottom-left',
+    status = ToastStatusEnum.Valid,
+    position = ToastPositionEnum.TopRight,
     removeOnNextNavigating = true,
 }: ToastOpts) {
     toastId++;
@@ -44,5 +44,5 @@ export function removeToast(toastId: number) {
 }
 
 export function clearAllToast() {
-    toast$.next({ position: 'bottom-left', toasts: [] });
+    toast$.next({ position: ToastPositionEnum.TopRight, toasts: [] });
 }

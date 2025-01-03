@@ -35,6 +35,7 @@ import ExaminationPackageService from '@/services/examinationPackage.service';
 import { ExaminationPackages } from '@/types/examinationPackage.type';
 import { TimePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function TimeSlot() {
     const { subscribeOnce } = useObservable();
@@ -153,7 +154,7 @@ function TimeSlot() {
                 setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_TIME_SLOT, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_TIME_SLOT, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -173,7 +174,7 @@ function TimeSlot() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_TIME_SLOT, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_TIME_SLOT, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -188,7 +189,7 @@ function TimeSlot() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_TIME_SLOT, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_TIME_SLOT, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -222,22 +223,24 @@ function TimeSlot() {
     };
 
     return (
-        <div className="h-full">
-            <div className="text-[24px]">Manage Time Slots</div>
-            <div className="text-[16px] mb-4">Set up all time slots that the organization conduct business from.</div>
+        <div className="h-full w-[calc(100vw-270px-40px)]">
+            <div className="text-[20px] leading-[20px] font-bold">Manage Time Slots</div>
+            <div className="text-[16px] mb-[10px]">
+                Set up all time slots that the organization conduct business from.
+            </div>
             <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
                 <TextField
                     variant="outlined"
                     label="Search"
-                    size="small"
+                    size="medium"
                     placeholder="Enter examination package"
-                    className="w-[260px]"
+                    className="w-[300px]"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Images.SearchIcon className="text-[24px]" />
+                                <Images.SearchIcon className="!text-[28px]" />
                             </InputAdornment>
                         ),
                     }}
@@ -247,7 +250,7 @@ function TimeSlot() {
                 </Button>
             </div>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer className="max-h-[calc(100vh-52px-52px-30px-24px-30px-72px-52px-26px)]">
+                <TableContainer className="max-h-[calc(100vh-52px-44px-30px-20px-34px-88px-52px)]">
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
@@ -315,7 +318,7 @@ function TimeSlot() {
             <Dialog open={isVisiblePopupAdd} onClose={handleClosePopupAdd}>
                 <DialogTitle>
                     <div className="flex items-center justify-between">
-                        <p>Add new time slot</p>
+                        <p>{mode === FormMode.Add ? 'Add new time slot' : 'Update time slot'}</p>
                         <Images.MdCancel
                             className="cursor-pointer hover:text-[red] text-[26px]"
                             onClick={() => handleClosePopupAdd()}
@@ -383,7 +386,7 @@ function TimeSlot() {
                             </FormHelperText>
                         </div>
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
-                            <Button variant="text" onClick={handleClosePopupAdd}>
+                            <Button variant="text" color="inherit" onClick={handleClosePopupAdd}>
                                 Cancel
                             </Button>
                             <Button variant="contained" type="submit">

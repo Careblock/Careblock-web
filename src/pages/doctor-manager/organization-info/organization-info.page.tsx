@@ -12,6 +12,7 @@ import { setTitle } from '@/utils/document';
 import DefaultThumbnail from '@/assets/images/common/organization.png';
 import OrganizationService from '@/services/organization.service';
 import { Organizations } from '@/types/organization.type';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function OrganizationInfoPage() {
     const { subscribeOnce } = useObservable();
@@ -64,7 +65,7 @@ function OrganizationInfoPage() {
                 try {
                     if (res) {
                         setOrganizationInfo(res);
-                        addToast({ text: SystemMessage.EDIT_ORGANIZATION, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_ORGANIZATION, position: ToastPositionEnum.TopRight });
                     }
                 } catch (err) {
                     console.error(err);
@@ -84,12 +85,12 @@ function OrganizationInfoPage() {
 
     return (
         <div className="w-[740px] mx-auto text-center rounded-gray-300">
-            <form onSubmit={formik.handleSubmit} className="w-full py-[12px] px-[20px] bg-white">
-                <h2 className="text-[26px] font-bold text-center mb-4">Organization Information</h2>
+            <form onSubmit={formik.handleSubmit} className="w-full bg-white">
+                <h2 className="text-[20px] font-bold text-center uppercase mb-[10px]">Organization Information</h2>
                 <div>
                     <div className="flex flex-col items-center mb-2">
                         <img
-                            className="p-[4px] w-[120px] h-[120px] object-cover rounded-[175px] border shadow-xl"
+                            className="w-[100px] h-[100px] object-cover rounded-full border shadow-xl"
                             alt="thumbnail"
                             src={
                                 imageSrc

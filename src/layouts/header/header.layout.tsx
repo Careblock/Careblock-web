@@ -31,6 +31,7 @@ import { Environment } from '@/environment';
 import { useDispatch } from 'react-redux';
 import { connect } from '@/stores/notification/notification.action';
 import Nodata from '@/components/base/no-data/nodata.component';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 
 const HeaderLayout = () => {
     const navigate = useNavigate();
@@ -186,15 +187,15 @@ const HeaderLayout = () => {
                     getNotificationDatas();
                     addToast({
                         text: SystemMessage.JOIN_ORG,
-                        position: 'top-right',
-                        status: 'valid',
+                        position: ToastPositionEnum.TopRight,
+                        status: ToastStatusEnum.Valid,
                     });
                 } else {
                     setIsVisiblePopupDepartment(false);
                     addToast({
                         text: SystemMessage.JOIN_ORG_FAILED,
-                        position: 'top-right',
-                        status: 'warn',
+                        position: ToastPositionEnum.TopRight,
+                        status: ToastStatusEnum.Warn,
                     });
                 }
             }
@@ -210,7 +211,7 @@ const HeaderLayout = () => {
     const renderMenu = (
         <Menu
             keepMounted
-            className="mt-15"
+            className="mt-[32px]"
             id={menuId}
             open={isMenuOpen}
             anchorEl={anchorEl}
@@ -224,32 +225,32 @@ const HeaderLayout = () => {
             }}
             onClose={handleMenuClose}
         >
-            <MenuItem className="!p-0 min-w-[160px]">
-                <div className="flex flex-col w-full">
-                    <div className="flex flex-col items-center justify-center pt-1 mb-1  px-[12px]">
+            <MenuItem className="!p-0 min-w-[180px]">
+                <div className="flex flex-col w-full text-[#212121]">
+                    <div className="flex flex-col items-center justify-center pt-1 mb-2 px-[12px]">
                         <img
-                            alt="avatar"
                             className="w-10 h-10 object-cover rounded-full mb-2"
+                            alt="avatar"
                             src={userInfo?.avatar ? userInfo?.avatar : avatarDefault}
                         />
-                        <div className="flex flex-col justify-center items-center">
-                            <Typography className="text-xl !font-bold">{fullName}</Typography>
+                        <div className="text-center">
+                            <Typography className="!text-[16px] leading-[16px] !font-bold">{fullName}</Typography>
                         </div>
-                        <div className="flex flex-col justify-center items-center">
-                            <Typography className="text-xl !font-bold">{email}</Typography>
+                        <div className="text-center">
+                            <Typography className="!text-[14px] leading-[14px] text-[#333333]">{email}</Typography>
                         </div>
                     </div>
-                    <div className="flex items-center  hover:bg-gray" onClick={() => navigate('/user/info')}>
+                    <div className="flex items-center" onClick={() => navigate('/user/info')}>
                         <Images.FaUser size={18} className="ml-5" />
-                        <Typography className="text-lg p-3 ml-8">My Account</Typography>
+                        <Typography className="text-[14px] p-2 ml-8">My Account</Typography>
                     </div>
-                    <div className="flex items-center  hover:bg-gray ">
-                        <Images.IoMdHelp size={18} className="ml-5" />
-                        <Typography className="text-lg p-3 ml-8">Help</Typography>
+                    <div className="flex items-center">
+                        <Images.MdOutlineHelp size={18} className="ml-5" />
+                        <Typography className="text-[14px] p-2 ml-8">Help</Typography>
                     </div>
-                    <div className="flex items-center hover:bg-gray " onClick={() => handleLogout()}>
+                    <div className="flex items-center border-t" onClick={() => handleLogout()}>
                         <Images.IoLogOutOutline size={18} color="red" className="ml-5" />
-                        <Typography className="text-lg p-3 ml-8 text-red">Log Out</Typography>
+                        <Typography className="text-[14px] px-2 pb-2 pt-4 ml-8 text-[red]">Log Out</Typography>
                     </div>
                 </div>
             </MenuItem>
@@ -324,29 +325,17 @@ const HeaderLayout = () => {
                                 alt="Selected Avatar"
                                 className="w-10 h-10 object-cover rounded-full mr-3"
                             />
-                            <div className="header-brand__text select-none font-bold text-xl uppercase  text-white">
+                            <div className="header-brand__text select-none font-bold text-xl uppercase tracking-wider text-white">
                                 Careblock
                             </div>
                         </div>
                         <Box sx={{ flexGrow: 1 }} />
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }} className="gap-x-2">
-                            {userData?.roles?.includes(ROLE_NAMES.PATIENT) && (
-                                <IconButton
-                                    size="medium"
-                                    aria-label="show 4 new mails"
-                                    color="inherit"
-                                    className="mr-1"
-                                    title="Go to the management"
-                                    onClick={() => handleMoveToPage(PATHS.PATIENT_PAGE)}
-                                >
-                                    <Images.ManageAccountsIcon sx={{ fontSize: 26 }} />
-                                </IconButton>
-                            )}
                             {userData?.roles?.includes(ROLE_NAMES.DOCTOR) && (
                                 <IconButton
                                     size="medium"
                                     color="inherit"
-                                    title="Doctor"
+                                    title="Scheduled"
                                     onClick={() => handleMoveToPage(PATHS.DOCTOR_SCHEDULE)}
                                 >
                                     <Images.CalendarMonthIcon className="text-[26px]" />

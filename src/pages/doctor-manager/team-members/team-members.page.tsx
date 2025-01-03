@@ -34,6 +34,7 @@ import SpecialistService from '@/services/specialist.service';
 import { Specialists } from '@/types/specialist.type';
 import { EMPTY_GUID } from '@/constants/common.const';
 import Nodata from '@/components/base/no-data/nodata.component';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 
 function TeamMembersPage() {
     const MAX_RECORE_PERPAGE = 9;
@@ -180,8 +181,8 @@ function TeamMembersPage() {
                 setIsVisiblePopupConfirm(false);
                 addToast({
                     text: SystemMessage.DELETE_DEPARTMENT,
-                    position: 'top-right',
-                    status: 'valid',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Valid,
                 });
                 getDoctorDatas();
 
@@ -194,8 +195,8 @@ function TeamMembersPage() {
                 setIsVisiblePopupConfirm(false);
                 addToast({
                     text: SystemMessage.DELETE_DEPARTMENT_FAILED,
-                    position: 'top-right',
-                    status: 'warn',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Warn,
                 });
             }
         });
@@ -208,8 +209,8 @@ function TeamMembersPage() {
             if (newValue.every((checkItem: boolean) => !checkItem)) {
                 addToast({
                     text: SystemMessage.AT_LEAST_ONE_ROLE,
-                    position: 'top-right',
-                    status: 'warn',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Warn,
                 });
                 return [...oldValue];
             }
@@ -233,8 +234,8 @@ function TeamMembersPage() {
                 setIsVisiblePopupGrant(false);
                 addToast({
                     text: SystemMessage.GRANT_SUCCESS,
-                    position: 'top-right',
-                    status: 'valid',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Valid,
                 });
                 getDoctorDatas();
 
@@ -247,8 +248,8 @@ function TeamMembersPage() {
                 setIsVisiblePopupGrant(false);
                 addToast({
                     text: SystemMessage.GRANT_FAILED,
-                    position: 'top-right',
-                    status: 'warn',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Warn,
                 });
             }
         });
@@ -270,39 +271,41 @@ function TeamMembersPage() {
                 setIsVisiblePopupEdit(false);
                 addToast({
                     text: SystemMessage.EDIT_SPECIALIST,
-                    position: 'top-right',
-                    status: 'valid',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Valid,
                 });
                 getDoctorDatas();
             } else {
                 setIsVisiblePopupEdit(false);
                 addToast({
                     text: SystemMessage.EDIT_SPECIALIST_FAILED,
-                    position: 'top-right',
-                    status: 'warn',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Warn,
                 });
             }
         });
     };
 
     return (
-        <div className="mb-[30px]">
+        <div>
             {/* Header */}
-            <div className="text-[24px]">Manage Team Members</div>
-            <div className="text-[16px] mb-4">Add your team members and manage their details & user permissions.</div>
-            <div className="w-full h-full overflow-hidden rounded-md shadow-lg bg-white">
-                <div className="border border-[#d7d7d7] w-full pt-[20px] pb-[16px] px-[16px] flex items-center justify-between rounded-t-xl">
+            <div className="text-[20px] leading-[20px] font-bold">Manage Team Members</div>
+            <div className="text-[16px] mb-[10px]">
+                Add your team members and manage their details & user permissions.
+            </div>
+            <div className="w-full h-full overflow-hidden rounded-md shadow-lg">
+                <div className="toolbar bg-[#f4f4f4] rounded-t-md border w-full p-[16px] flex items-center justify-between">
                     <TextField
                         variant="outlined"
                         label="Search"
-                        helperText="Enter name, phone number or email"
-                        className="w-[260px]"
+                        placeholder="Enter name, phone number or email"
+                        className="w-[300px]"
                         value={searchValue}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <Images.SearchIcon className="text-[24px]" />
+                                    <Images.SearchIcon className="!text-[28px]" />
                                 </InputAdornment>
                             ),
                         }}
@@ -328,21 +331,21 @@ function TeamMembersPage() {
                     )}
                 </div>
                 {/* Footer */}
-                <div className="border border-[#d7d7d7] w-full p-[16px] flex items-center justify-center rounded-b-xl gap-x-[8px] select-none">
+                <div className="border bg-[#f4f4f4] border-[#d7d7d7] w-full p-[14px] flex items-center justify-center rounded-b-xl gap-x-[8px] select-none">
                     <div
-                        className="flex items-center justify-center cursor-pointer rounded-full size-[30px] hover:bg-[#eee]"
+                        className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
                         onClick={handleClickPrevious}
                     >
-                        <Images.ArrowBackIosNewIcon />
+                        <Images.ArrowBackIosNewIcon fontSize="small" />
                     </div>
                     <p className="text-[16px]">
                         {pageIndex}/{totalPage}
                     </p>
                     <div
-                        className="flex items-center justify-center cursor-pointer rounded-full size-[30px] hover:bg-[#eee]"
+                        className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
                         onClick={handleClickNext}
                     >
-                        <Images.ArrowForwardIosIcon />
+                        <Images.ArrowForwardIosIcon fontSize="small" />
                     </div>
                 </div>
             </div>
@@ -399,7 +402,7 @@ function TeamMembersPage() {
                         <label className="flex items-center cursor-pointer">
                             <Checkbox
                                 id="policy"
-                                size="small"
+                                size="medium"
                                 checked={permissionCheckedList[0]}
                                 onChange={($event: any) => handleCheckboxChange($event, 0)}
                             />
@@ -408,7 +411,7 @@ function TeamMembersPage() {
                         <label className="flex items-center cursor-pointer">
                             <Checkbox
                                 id="policy"
-                                size="small"
+                                size="medium"
                                 checked={permissionCheckedList[1]}
                                 onChange={($event: any) => handleCheckboxChange($event, 1)}
                             />
