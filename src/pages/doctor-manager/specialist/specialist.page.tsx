@@ -205,7 +205,7 @@ function SpecialistPage() {
     };
 
     return (
-        <div className="h-full">
+        <div className="h-full w-[calc(100vw-270px-40px)]">
             <div className="text-[20px] leading-[20px] font-bold">Manage Specialists</div>
             <div className="text-[16px] mb-[10px]">
                 Set up all specialists that your organization conduct business from.
