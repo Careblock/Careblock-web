@@ -206,24 +206,24 @@ export default function CreateConsultation({
                 onClick={handleClose}
                 sx={{
                     position: 'absolute',
-                    right: 8,
-                    top: 8,
+                    right: 10,
+                    top: 10,
                     color: (theme) => theme.palette.grey[500],
                 }}
             >
-                <Images.CloseIcon className="text-[24px]" />
+                <Images.CloseIcon className="!text-[28px]" />
             </IconButton>
 
             {/* Content */}
             <DialogContent dividers>
                 {formType === FormType.Create && (
-                    <div className="flex items-center space-x-[16px] mb-[16px]">
-                        <p className="font-semibold text-[18px]">Choose an examination option: </p>
+                    <div className="flex items-center space-x-[12px] mb-[16px]">
+                        <p className="font-semibold text-[16px]">Choose an option: </p>
                         <Select
                             name="option"
                             value={examinationOption}
                             size="small"
-                            className="w-[200px]"
+                            className="w-[300px]"
                             onChange={(event: SelectChangeEvent<any>) => setExaminationOption(event.target.value)}
                         >
                             {examinationOptions?.map((item) => (
