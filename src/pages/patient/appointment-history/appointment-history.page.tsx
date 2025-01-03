@@ -95,7 +95,7 @@ const AppointmentHistory = () => {
                                     {appointment.examinationPackageName}
                                 </p>
                                 <div className="flex justify-between h-full">
-                                    <div className="flex flex-col items-center w-[40%] gap-2 pr-[20px] h-full justify-between">
+                                    <div className="min-w-[130px] flex flex-col items-center w-[40%] gap-2 pr-[20px] h-full justify-between">
                                         <div className="flex flex-col items-center gap-[4px]">
                                             <img
                                                 alt="avatar"
@@ -131,7 +131,7 @@ const AppointmentHistory = () => {
                                             </Button>
                                         </div>
                                     </div>
-                                    <div className="flex flex-col gap-y-1 flex-1">
+                                    <div className="flex flex-col gap-y-1 flex-1 min-w-[200px]">
                                         <div className="flex gap-x-2">
                                             <p className="font-bold">Hospital:</p>
                                             <p>{appointment.organizationName}</p>
@@ -148,20 +148,20 @@ const AppointmentHistory = () => {
                                             <p className="font-bold">Phone:</p>
                                             <p>{appointment.phone}</p>
                                         </div>
-                                        <div className="flex gap-x-2">
+                                        <div className="flex gap-x-2 w-full pr-[10px]">
                                             <p className="font-bold">Email:</p>
-                                            <p>{appointment.email}</p>
+                                            <p className="flex-1 truncate">{appointment.email}</p>
                                         </div>
                                         {appointment.address && (
-                                            <div className="flex gap-x-2">
+                                            <div className="flex gap-x-2 w-full pr-[10px]">
                                                 <p className="font-bold">Address:</p>
-                                                <p>{appointment.address}</p>
+                                                <p className="flex-1 truncate">{appointment.address}</p>
                                             </div>
                                         )}
                                         {appointment.reason && (
-                                            <div className="flex gap-x-2">
+                                            <div className="flex gap-x-2 w-full pr-[10px]">
                                                 <p className="font-bold">Reason:</p>
-                                                <p>{appointment.reason}</p>
+                                                <p className="flex-1 truncate">{appointment.reason}</p>
                                             </div>
                                         )}
                                     </div>

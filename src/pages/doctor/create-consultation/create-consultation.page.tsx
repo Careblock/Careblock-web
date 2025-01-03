@@ -249,11 +249,11 @@ export default function CreateConsultation({
                         Convert to pdf
                     </Button>
                     <div className="flex items-center gap-x-[10px]">
+                        <Button variant="text" color="inherit" autoFocus onClick={handleClose}>
+                            Cancel
+                        </Button>
                         <Button variant="contained" autoFocus onClick={handleClickSave}>
                             Create
-                        </Button>
-                        <Button variant="text" color="error" autoFocus onClick={handleClose}>
-                            Cancel
                         </Button>
                     </div>
                 </div>

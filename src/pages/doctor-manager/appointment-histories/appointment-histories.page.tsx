@@ -187,17 +187,33 @@ const AppointmentHistories = () => {
 
     return (
         <div className="h-full overflow-hidden bg-gray">
-            <div className="text-center text-[20px] font-bold mb-3">Appointment Histories</div>
-            <div className="flex items-center justify-between w-full bg-[#e6e6e6] rounded-lg p-[16px] mb-[10px]">
-                <div className="flex items-center gap-x-[10xp]">
-                    <div className="flex flex-col w-[200px]">
+            <div className="text-center text-[20px] font-bold">Appointment Histories</div>
+            <div className="flex items-center justify-center gap-x-[8px] select-none mb-[10px]">
+                <div
+                    className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
+                    onClick={handleClickPrevious}
+                >
+                    <Images.ArrowBackIosNewIcon fontSize="small" />
+                </div>
+                <p className="text-[16px]">
+                    {pageIndex}/{totalPage}
+                </p>
+                <div
+                    className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
+                    onClick={handleClickNext}
+                >
+                    <Images.ArrowForwardIosIcon fontSize="small" />
+                </div>
+            </div>
+            <div className="flex items-center justify-between w-full bg-[#f4f4f4] rounded-lg p-[16px] mb-[10px]">
+                <div className="flex items-center w-full justify-around gap-x-[10xp]">
+                    <div className="flex flex-col w-full">
                         <div>Search:</div>
                         <TextField
                             variant="outlined"
                             size="medium"
                             label=""
                             placeholder="Enter keyword"
-                            className="w-[200px]"
                             value={searchValue}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                             InputProps={{
@@ -209,7 +225,7 @@ const AppointmentHistories = () => {
                             }}
                         />
                     </div>
-                    <div className="flex flex-col ml-[20px] w-[200px]">
+                    <div className="flex flex-col ml-[20px] w-full">
                         <div>Doctor:</div>
                         <Select
                             className="w-full"
@@ -228,7 +244,7 @@ const AppointmentHistories = () => {
                             ))}
                         </Select>
                     </div>
-                    <div className="flex flex-col ml-[20px] w-[200px]">
+                    <div className="flex flex-col ml-[20px] w-full">
                         <div>Examination type:</div>
                         <Select
                             className="w-full"
@@ -247,39 +263,21 @@ const AppointmentHistories = () => {
                             ))}
                         </Select>
                     </div>
-                    <div className="flex flex-col ml-[20px] w-[200px]">
+                    <div className="flex flex-col ml-[20px] w-full">
                         <div>Date:</div>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
-                                className="w-[200px]"
                                 value={dateFilterData}
                                 onChange={(newValue) => handleChangeDateFilter(newValue)}
                             />
                         </LocalizationProvider>
                     </div>
                     <div
-                        className="flex items-center mt-auto justify-center ml-[20px] size-[54px] border border-[#a8a8a8] rounded-md p-[6px] cursor-pointer hover:bg-[#d5d5d5]"
+                        className="flex items-center mt-auto justify-center ml-[20px] w-[200px] border border-[#a8a8a8] rounded-md p-[6px] cursor-pointer hover:bg-[#d5d5d5]"
                         title="Reset filter data"
                         onClick={handleClickResetFilter}
                     >
                         <Images.GrPowerReset className="!w-full !h-full text-[#a8a8a8]" />
-                    </div>
-                </div>
-                <div className="flex items-center gap-x-[8px] select-none">
-                    <div
-                        className="flex items-center justify-center cursor-pointer rounded-full size-[20px] hover:bg-[#eee]"
-                        onClick={handleClickPrevious}
-                    >
-                        <Images.ArrowBackIosNewIcon className="!w-full !h-full" />
-                    </div>
-                    <p className="text-[16px]">
-                        {pageIndex}/{totalPage}
-                    </p>
-                    <div
-                        className="flex items-center justify-center cursor-pointer rounded-full size-[20px] hover:bg-[#eee]"
-                        onClick={handleClickNext}
-                    >
-                        <Images.ArrowForwardIosIcon className="!w-full !h-full" />
                     </div>
                 </div>
             </div>
@@ -288,7 +286,7 @@ const AppointmentHistories = () => {
                     appointmentData.map((appointment: any) => (
                         <div className="w-[30%] bg-white" key={appointment.id}>
                             <Card>
-                                <div className="flex flex-col p-4 border border-[#ccc] border-solid h-[258px]">
+                                <div className="flex flex-col p-4 border border-[#ccc] border-solid rounded-md h-[258px]">
                                     <p
                                         className="text-center mb-[14px] font-bold text-[16px] border-b border-[#ccc] pb-[10px] truncate"
                                         title={appointment.examinationPackageName}
@@ -296,11 +294,11 @@ const AppointmentHistories = () => {
                                         {appointment.examinationPackageName}
                                     </p>
                                     <div className="flex justify-between h-full">
-                                        <div className="flex flex-col items-center w-[40%] gap-2 pr-2 h-full justify-between">
-                                            <div className="flex flex-col items-center gap-2 pr-2">
+                                        <div className="min-w-[130px] flex flex-col items-center w-[40%] gap-2 pr-[20px] h-full justify-between">
+                                            <div className="flex flex-col items-center gap-[4px]">
                                                 <img
                                                     alt="avatar"
-                                                    className="w-[60px] h-[60px] object-cover rounded-[175px] border mb-1"
+                                                    className="w-[60px] h-[60px] object-cover rounded-full border mb-1"
                                                     src={
                                                         appointment.doctorAvatar
                                                             ? appointment.doctorAvatar
@@ -334,17 +332,11 @@ const AppointmentHistories = () => {
                                                 </Button>
                                             </div>
                                         </div>
-                                        <div className="flex flex-col gap-y-1 flex-1">
+                                        <div className="flex flex-col gap-y-1 flex-1 min-w-[200px]">
                                             <div className="flex gap-x-2">
                                                 <p className="font-bold">Hospital:</p>
                                                 <p>{appointment.organizationName}</p>
                                             </div>
-                                            {appointment.reason && (
-                                                <div className="flex gap-x-2">
-                                                    <p className="font-bold">Reason:</p>
-                                                    <p>{appointment.reason}</p>
-                                                </div>
-                                            )}
                                             <div className="flex gap-x-2">
                                                 <p className="font-bold">Patient:</p>
                                                 <p>{appointment.name}</p>
@@ -357,14 +349,20 @@ const AppointmentHistories = () => {
                                                 <p className="font-bold">Phone:</p>
                                                 <p>{appointment.phone}</p>
                                             </div>
-                                            <div className="flex gap-x-2">
+                                            <div className="flex gap-x-2 w-full pr-[10px]">
                                                 <p className="font-bold">Email:</p>
-                                                <p>{appointment.email}</p>
+                                                <p className="flex-1 truncate">{appointment.email}</p>
                                             </div>
                                             {appointment.address && (
-                                                <div className="flex gap-x-2">
+                                                <div className="flex gap-x-2 w-full pr-[10px]">
                                                     <p className="font-bold">Address:</p>
-                                                    <p>{appointment.address}</p>
+                                                    <p className="flex-1 truncate">{appointment.address}</p>
+                                                </div>
+                                            )}
+                                            {appointment.reason && (
+                                                <div className="flex gap-x-2 w-full pr-[10px]">
+                                                    <p className="font-bold">Reason:</p>
+                                                    <p className="flex-1 truncate">{appointment.reason}</p>
                                                 </div>
                                             )}
                                         </div>

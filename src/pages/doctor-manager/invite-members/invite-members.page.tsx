@@ -135,25 +135,25 @@ function InviteMembersPage() {
     };
 
     return (
-        <div className="mb-[30px]">
+        <div>
             {/* Header */}
-            <div className="text-[24px]">Invite to join the Organization</div>
-            <div className="text-[16px] mb-4">
+            <div className="text-[20px] leading-[20px] font-bold">Invite to join the Organization</div>
+            <div className="text-[16px] mb-[10px]">
                 Add to your team members and manage their details & user permissions.
             </div>
-            <div className="w-full h-full overflow-hidden rounded-md shadow-lg bg-white">
-                <div className="border border-[#d7d7d7] w-full pt-[20px] pb-[16px] px-[16px] flex items-center justify-between rounded-t-xl">
+            <div className="w-full h-full overflow-hidden rounded-md shadow-lg">
+                <div className="toolbar bg-[#f4f4f4] rounded-t-md border w-full p-[16px] flex items-center justify-between">
                     <TextField
                         variant="outlined"
                         label="Search"
-                        helperText="Enter name, phone number or email"
-                        className="w-[260px]"
+                        placeholder="Enter name, phone number or email"
+                        className="w-[300px]"
                         value={searchValue}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <Images.SearchIcon className="text-[24px]" />
+                                    <Images.SearchIcon className="!text-[28px]" />
                                 </InputAdornment>
                             ),
                         }}
@@ -180,9 +180,9 @@ function InviteMembersPage() {
                     )}
                 </div>
                 {/* Footer */}
-                <div className="border border-[#d7d7d7] w-full p-[16px] flex items-center justify-center rounded-b-xl gap-x-[8px] select-none">
+                <div className="border bg-[#f4f4f4] border-[#d7d7d7] w-full p-[14px] flex items-center justify-center rounded-b-xl gap-x-[8px] select-none">
                     <div
-                        className="flex items-center justify-center cursor-pointer rounded-full size-[30px] hover:bg-[#eee]"
+                        className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
                         onClick={handleClickPrevious}
                     >
                         <Images.ArrowBackIosNewIcon />
@@ -191,10 +191,10 @@ function InviteMembersPage() {
                         {pageIndex}/{totalPage}
                     </p>
                     <div
-                        className="flex items-center justify-center cursor-pointer rounded-full size-[30px] hover:bg-[#eee]"
+                        className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
                         onClick={handleClickNext}
                     >
-                        <Images.ArrowForwardIosIcon />
+                        <Images.ArrowForwardIosIcon fontSize="small" />
                     </div>
                 </div>
             </div>

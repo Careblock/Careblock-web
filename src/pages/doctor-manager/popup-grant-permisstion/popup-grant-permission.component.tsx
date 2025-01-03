@@ -25,7 +25,9 @@ const PopupGrantPermission = ({
             <DialogTitle id="alert-dialog-title">{theTitle}</DialogTitle>
             <DialogContent>{children}</DialogContent>
             <DialogActions>
-                <Button onClick={() => onClickCancel()}>{theCancelText}</Button>
+                <Button color="inherit" onClick={() => onClickCancel()}>
+                    {theCancelText}
+                </Button>
                 <Button onClick={() => onClickConfirm()}>{theConfirmText}</Button>
             </DialogActions>
         </Dialog>

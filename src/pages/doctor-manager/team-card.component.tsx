@@ -14,7 +14,7 @@ const BaseTeamCard = ({
 }: BaseCardProps) => {
     return (
         <div
-            className={`shadow-md rounded-lg w-[280px] ${isInOrganization ? 'h-[284px]' : 'h-[224px] relative'} overflow-hidden flex flex-col items-center justify-between py-[16px] pt-[20px] cursor-pointer hover:bg-[#f2f2f2] select-none`}
+            className={`shadow-md rounded-lg ${isInOrganization ? 'w-[240px] h-[240px]' : 'w-[220px] h-[210px] relative'} overflow-hidden flex flex-col items-center justify-between py-[16px] pt-[20px] cursor-pointer hover:bg-[#00000005] select-none`}
         >
             {!isInOrganization && (
                 <Images.FcInvite
@@ -25,7 +25,7 @@ const BaseTeamCard = ({
                     }}
                 />
             )}
-            <div className="rounded-full size-[80px] overflow-hidden select-none">
+            <div className="rounded-full size-[60px] overflow-hidden select-none">
                 <img
                     src={dataSource.avatar ? dataSource.avatar : DefaultAvatar}
                     alt="Avatar default"
@@ -52,17 +52,17 @@ const BaseTeamCard = ({
                 <div className="flex items-center justify-center gap-x-[16px] pt-[10px] border-t border-[#d6d6d6] w-full">
                     <Images.FaClipboardUser
                         title="Edit information"
-                        className="text-[26px] cursor-pointer hover:text-[#bc8c39]"
+                        className="text-[24px] cursor-pointer hover:text-[#bc8c39]"
                         onClick={() => onClickEdit()}
                     />
                     <Images.RiAdminFill
                         title="Grant permissions"
-                        className="text-[26px] cursor-pointer hover:text-[#3986bc]"
+                        className="text-[24px] cursor-pointer hover:text-[#3986bc]"
                         onClick={() => onClickGrant()}
                     />
                     <Images.MdDelete
                         title="Remove from team"
-                        className="text-[26px] cursor-pointer hover:text-[red]"
+                        className="text-[24px] cursor-pointer hover:text-[red]"
                         onClick={($event) => onClickRemove($event)}
                     />
                 </div>

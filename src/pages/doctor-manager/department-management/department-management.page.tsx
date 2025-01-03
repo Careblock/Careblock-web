@@ -178,21 +178,23 @@ function DepartmentManagement() {
 
     return (
         <div className="h-full">
-            <div className="text-[24px]">Manage Departments</div>
-            <div className="text-[16px] mb-4">Set up all departments that your organization conduct business from.</div>
+            <div className="text-[20px] leading-[20px] font-bold">Manage Departments</div>
+            <div className="text-[16px] mb-[10px]">
+                Set up all departments that your organization conduct business from.
+            </div>
             <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
                 <TextField
                     variant="outlined"
                     label="Search"
-                    size="small"
+                    size="medium"
                     placeholder="Enter name or location"
-                    className="w-[260px]"
+                    className="w-[300px]"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Images.SearchIcon className="text-[24px]" />
+                                <Images.SearchIcon className="!text-[28px]" />
                             </InputAdornment>
                         ),
                     }}
@@ -202,7 +204,7 @@ function DepartmentManagement() {
                 </Button>
             </div>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer className="max-h-[calc(100vh-52px-52px-30px-24px-30px-72px-52px-26px)]">
+                <TableContainer className="max-h-[calc(100vh-52px-44px-30px-20px-34px-88px-52px)]">
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
@@ -270,7 +272,7 @@ function DepartmentManagement() {
             <Dialog open={isVisiblePopupAdd} onClose={handleClosePopupAdd}>
                 <DialogTitle>
                     <div className="flex items-center justify-between">
-                        <p>Add new department</p>
+                        <p>{mode === FormMode.Add ? 'Add new department' : 'Update department'}</p>
                         <Images.MdCancel
                             className="cursor-pointer hover:text-[red] text-[26px]"
                             onClick={() => handleClosePopupAdd()}
@@ -306,7 +308,7 @@ function DepartmentManagement() {
                             helperText={formik.touched.location && formik.errors.location}
                         />
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
-                            <Button variant="text" onClick={handleClosePopupAdd}>
+                            <Button variant="text" color="inherit" onClick={handleClosePopupAdd}>
                                 Cancel
                             </Button>
                             <Button variant="contained" type="submit">

@@ -95,7 +95,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import SearchIcon from '@mui/icons-material/Search';
 import UndoIcon from '@mui/icons-material/Undo';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
-import { AiOutlineSearch } from 'react-icons/ai';
+import { AiOutlineSearch, AiFillWarning } from 'react-icons/ai';
 import { FcGoogle, FcInvite } from 'react-icons/fc';
 import { LuClock } from 'react-icons/lu';
 import { RxUpdate, RxLapTimer } from 'react-icons/rx';
@@ -204,6 +204,7 @@ export const Images = {
     FaLocationDot,
     FaMoneyBillWave,
     AiOutlineSearch,
+    AiFillWarning,
     TfiWorld,
     MdOutlineShoppingCart,
     BsThreeDotsVertical,
