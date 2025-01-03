@@ -130,7 +130,7 @@ function Register() {
     };
 
     return (
-        <div className="flex h-[calc(100vh-52px-52px-40px)] overflow-hidden bg-center bg-cover rounded-xl mt-[10px] mx-[-4px]">
+        <div className="flex h-[calc(100vh-48px-44px-28px-16px-30px)] overflow-hidden bg-center bg-cover rounded-xl mx-[-4px]">
             <div className="w-full flex items-center rounded-[10px] bg-blue-100 shadow-2xl">
                 <div className="flex flex-col justify-center items-center w-2/5 h-full select-none">
                     <img src={avatarRegister} alt="Register logo" className="w-full h-full object-contain rounded" />
