@@ -312,7 +312,7 @@ const AppointmentHistories = () => {
                                                     <div className="flex gap-2 items-center">
                                                         <Images.LuClock size={18} />
                                                         <span>
-                                                            {appointment.startDateExpectation} -{' '}
+                                                            {appointment.startDateExpectation} -
                                                             {appointment.endDateExpectation}
                                                         </span>
                                                     </div>
