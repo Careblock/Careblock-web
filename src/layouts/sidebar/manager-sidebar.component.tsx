@@ -1,5 +1,5 @@
 import { Menu, MenuItem, ProSidebar, SidebarContent, SidebarHeader } from 'react-pro-sidebar';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { Images } from '@/assets/images';
@@ -9,7 +9,6 @@ import { AuthContextType } from '@/types/auth.type';
 import { ROLE_NAMES } from '@/enums/Common';
 
 const ManagerSidebar = () => {
-    const navigate = useNavigate();
     const { userData } = useAuth() as AuthContextType;
     const [collapsed, setCollapsed] = useState(false);
 
