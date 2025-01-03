@@ -35,6 +35,7 @@ import MedicineService from '@/services/medicine.service';
 import MedicineTypeService from '@/services/medicineType.service';
 import { MedicineTypes } from '@/types/medicineType.type';
 import { UnitPrice, UnitPriceName } from '@/enums/UnitPrice';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 
 function Medicines() {
     const { subscribeOnce } = useObservable();
@@ -172,7 +173,7 @@ function Medicines() {
                 setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_MEDICINE, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_MEDICINE, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -185,7 +186,11 @@ function Medicines() {
     const handleSubmit = (values: Medicines) => {
         if (mode === FormMode.Add) {
             if (!values.medicineTypeId) {
-                addToast({ text: SystemMessage.MEDICINE_TYPE_REQUIRED, position: 'top-right', status: 'inValid' });
+                addToast({
+                    text: SystemMessage.MEDICINE_TYPE_REQUIRED,
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.InValid,
+                });
                 return;
             }
             subscribeOnce(
@@ -199,7 +204,7 @@ function Medicines() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_MEDICINE, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_MEDICINE, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -216,7 +221,7 @@ function Medicines() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_MEDICINE, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_MEDICINE, position: ToastPositionEnum.TopRight });
                     }
                 }
             );

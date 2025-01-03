@@ -28,6 +28,7 @@ import { INITIAL_PAYMENT_METHOD_VALUES } from '@/constants/payment.const';
 import { paymentMethodSchema } from '@/validations/payment.validation';
 import { PaymentMethods } from '@/types/paymentMethods.type';
 import PaymentMethodService from '@/services/paymentMethod.service';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function PaymentMethodPage() {
     const { subscribeOnce } = useObservable();
@@ -124,7 +125,7 @@ function PaymentMethodPage() {
             if (!res.isError) {
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_PAYMENT_METHOD, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_PAYMENT_METHOD, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -144,7 +145,7 @@ function PaymentMethodPage() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_PAYMENT_METHOD, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_PAYMENT_METHOD, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -159,7 +160,7 @@ function PaymentMethodPage() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_PAYMENT_METHOD, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_PAYMENT_METHOD, position: ToastPositionEnum.TopRight });
                     }
                 }
             );

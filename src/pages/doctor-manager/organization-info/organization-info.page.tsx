@@ -12,6 +12,7 @@ import { setTitle } from '@/utils/document';
 import DefaultThumbnail from '@/assets/images/common/organization.png';
 import OrganizationService from '@/services/organization.service';
 import { Organizations } from '@/types/organization.type';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function OrganizationInfoPage() {
     const { subscribeOnce } = useObservable();
@@ -64,7 +65,7 @@ function OrganizationInfoPage() {
                 try {
                     if (res) {
                         setOrganizationInfo(res);
-                        addToast({ text: SystemMessage.EDIT_ORGANIZATION, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_ORGANIZATION, position: ToastPositionEnum.TopRight });
                     }
                 } catch (err) {
                     console.error(err);

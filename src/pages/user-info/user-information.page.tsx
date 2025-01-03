@@ -15,6 +15,7 @@ import { Button, MenuItem, Select, TextField } from '@mui/material';
 import { setTitle } from '@/utils/document';
 import { AccountRequest } from '@/types/accountRequest.type';
 import DefaultAvatar from '@/assets/images/auth/avatarDefault.png';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function UserInfo() {
     const { subscribeOnce } = useObservable();
@@ -68,7 +69,7 @@ function UserInfo() {
                         if (res) {
                             setUser(res);
                             StorageService.setObject(localStorageKeys.USER_INFO, res);
-                            addToast({ text: SystemMessage.EDIT_PROFILE, position: 'top-right' });
+                            addToast({ text: SystemMessage.EDIT_PROFILE, position: ToastPositionEnum.TopRight });
                         }
                     } catch (err) {
                         console.error(err);

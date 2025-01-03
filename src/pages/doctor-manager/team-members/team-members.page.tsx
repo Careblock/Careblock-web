@@ -34,6 +34,7 @@ import SpecialistService from '@/services/specialist.service';
 import { Specialists } from '@/types/specialist.type';
 import { EMPTY_GUID } from '@/constants/common.const';
 import Nodata from '@/components/base/no-data/nodata.component';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 
 function TeamMembersPage() {
     const MAX_RECORE_PERPAGE = 9;
@@ -180,8 +181,8 @@ function TeamMembersPage() {
                 setIsVisiblePopupConfirm(false);
                 addToast({
                     text: SystemMessage.DELETE_DEPARTMENT,
-                    position: 'top-right',
-                    status: 'valid',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Valid,
                 });
                 getDoctorDatas();
 
@@ -194,8 +195,8 @@ function TeamMembersPage() {
                 setIsVisiblePopupConfirm(false);
                 addToast({
                     text: SystemMessage.DELETE_DEPARTMENT_FAILED,
-                    position: 'top-right',
-                    status: 'warn',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Warn,
                 });
             }
         });
@@ -208,8 +209,8 @@ function TeamMembersPage() {
             if (newValue.every((checkItem: boolean) => !checkItem)) {
                 addToast({
                     text: SystemMessage.AT_LEAST_ONE_ROLE,
-                    position: 'top-right',
-                    status: 'warn',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Warn,
                 });
                 return [...oldValue];
             }
@@ -233,8 +234,8 @@ function TeamMembersPage() {
                 setIsVisiblePopupGrant(false);
                 addToast({
                     text: SystemMessage.GRANT_SUCCESS,
-                    position: 'top-right',
-                    status: 'valid',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Valid,
                 });
                 getDoctorDatas();
 
@@ -247,8 +248,8 @@ function TeamMembersPage() {
                 setIsVisiblePopupGrant(false);
                 addToast({
                     text: SystemMessage.GRANT_FAILED,
-                    position: 'top-right',
-                    status: 'warn',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Warn,
                 });
             }
         });
@@ -270,16 +271,16 @@ function TeamMembersPage() {
                 setIsVisiblePopupEdit(false);
                 addToast({
                     text: SystemMessage.EDIT_SPECIALIST,
-                    position: 'top-right',
-                    status: 'valid',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Valid,
                 });
                 getDoctorDatas();
             } else {
                 setIsVisiblePopupEdit(false);
                 addToast({
                     text: SystemMessage.EDIT_SPECIALIST_FAILED,
-                    position: 'top-right',
-                    status: 'warn',
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Warn,
                 });
             }
         });

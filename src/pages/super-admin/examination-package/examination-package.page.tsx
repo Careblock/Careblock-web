@@ -36,6 +36,7 @@ import ExaminationTypeService from '@/services/examinationType.service';
 import { ExaminationTypes } from '@/types/examinationType.type';
 import OrganizationService from '@/services/organization.service';
 import { Organizations } from '@/types/organization.type';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function ExaminationPackage() {
     const { subscribeOnce } = useObservable();
@@ -171,7 +172,7 @@ function ExaminationPackage() {
                 setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_EXAMINATION_PACKAGE, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_EXAMINATION_PACKAGE, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -194,7 +195,7 @@ function ExaminationPackage() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_EXAMINATION_PACKAGE, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_EXAMINATION_PACKAGE, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -211,7 +212,10 @@ function ExaminationPackage() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_EXAMINATION_PACKAGE, position: 'top-right' });
+                        addToast({
+                            text: SystemMessage.EDIT_EXAMINATION_PACKAGE,
+                            position: ToastPositionEnum.TopRight,
+                        });
                     }
                 }
             );

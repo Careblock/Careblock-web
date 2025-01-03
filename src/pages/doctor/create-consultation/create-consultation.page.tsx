@@ -27,6 +27,7 @@ import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { ExaminationOptions } from '@/types/examinationOption.type';
 import ExaminationOptionService from '@/services/examinationOption.service';
 import { EMPTY_GUID } from '@/constants/common.const';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -139,7 +140,11 @@ export default function CreateConsultation({
 
     const handleClickSave = async () => {
         if (!examinationOption) {
-            addToast({ text: SystemMessage.EXAMINATION_REQUIRED, position: 'top-right', status: 'inValid' });
+            addToast({
+                text: SystemMessage.EXAMINATION_REQUIRED,
+                position: ToastPositionEnum.TopRight,
+                status: ToastStatusEnum.InValid,
+            });
             return;
         }
         setFormType(FormType.Detail);
@@ -156,10 +161,14 @@ export default function CreateConsultation({
         subscribeOnce(AppointmentDetailService.insert(payload), (id: string) => {
             if (id !== EMPTY_GUID) {
                 setVisible(false);
-                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: 'top-right' });
+                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: ToastPositionEnum.TopRight });
                 clickedSave();
             } else {
-                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_FAILED, position: 'top-right', status: 'inValid' });
+                addToast({
+                    text: SystemMessage.INSERT_DIAGNOSTIC_FAILED,
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.InValid,
+                });
                 setFormType(FormType.Create);
             }
         });

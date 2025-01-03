@@ -154,12 +154,11 @@ const DoctorSchedulePage = () => {
     };
 
     return (
-        <div className="doctor-schedule h-[calc(100vh-52px-52px-30px-10px)] overflow-hidden">
-            <div className="text-[24px]">Queues</div>
-            <div className="text-[16px] mb-4">Manage which queues you will assign to your patients</div>
-            <div className="uppercase bg-[#eee] mb-2 rounded px-2 py-4">Front Desk</div>
-            <div className="flex w-full justify-between h-[calc(100%-24px-30px-50px-30px)]">
-                <div className="w-[400px] overflow-y-auto max-h-[calc(100vh-52px-30px-36px-38px-56px-48px)] border border-solid rounded-lg border-[#ddd] mr-5 overflow-auto">
+        <div className="doctor-schedule h-[calc(100vh-52px-44px-30px)] overflow-hidden">
+            <div className="text-[20px] leading-[20px] font-bold">Queues</div>
+            <div className="text-[14px] mb-[10px]">Manage which queues you will assign to your patients</div>
+            <div className="flex w-full justify-between h-[calc(100%-20px-31px)]">
+                <div className="w-[400px] overflow-y-auto max-h-full border border-solid rounded-lg border-[#ddd] mr-5 overflow-auto">
                     <TabContext value={currentTab}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <TabList onChange={handleChange} aria-label="lab API tabs example">
@@ -188,16 +187,12 @@ const DoctorSchedulePage = () => {
                         </TabPanel>
                     </TabContext>
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 h-full">
                     {detailsInfo ? (
                         <DetailsInfo currentTab={currentTab} dataSource={detailsInfo} clickedSave={handleClickSave} />
                     ) : (
-                        <div className="empty-schedule overflow-hidden">
-                            <img
-                                className="w-full object-cover grayscale max-h-[calc(100vh-52px-52px-30px-24px-30px-56px-20px)]"
-                                src={Images.PatientWaiting}
-                                alt=""
-                            />
+                        <div className="empty-schedule overflow-hidden h-full">
+                            <img className="w-full object-cover grayscale h-full" src={Images.PatientWaiting} alt="" />
                         </div>
                     )}
                 </div>

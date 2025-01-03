@@ -35,6 +35,7 @@ import ExaminationPackageService from '@/services/examinationPackage.service';
 import DefaultThumbnail from '@/assets/images/common/package.jpg';
 import ExaminationTypeService from '@/services/examinationType.service';
 import { ExaminationTypes } from '@/types/examinationType.type';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 
 function ExaminationPackage() {
     const { subscribeOnce } = useObservable();
@@ -160,7 +161,7 @@ function ExaminationPackage() {
                 setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_EXAMINATION_PACKAGE, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_EXAMINATION_PACKAGE, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -173,7 +174,11 @@ function ExaminationPackage() {
     const handleSubmit = (values: ExaminationPackages) => {
         if (mode === FormMode.Add) {
             if (!values.examinationTypeId) {
-                addToast({ text: SystemMessage.EXAMINATION_TYPE_REQUIRED, position: 'top-right', status: 'inValid' });
+                addToast({
+                    text: SystemMessage.EXAMINATION_TYPE_REQUIRED,
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.InValid,
+                });
                 return;
             }
             if (!userData?.id) return;
@@ -192,7 +197,7 @@ function ExaminationPackage() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_EXAMINATION_PACKAGE, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_EXAMINATION_PACKAGE, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -210,7 +215,10 @@ function ExaminationPackage() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_EXAMINATION_PACKAGE, position: 'top-right' });
+                        addToast({
+                            text: SystemMessage.EDIT_EXAMINATION_PACKAGE,
+                            position: ToastPositionEnum.TopRight,
+                        });
                     }
                 }
             );

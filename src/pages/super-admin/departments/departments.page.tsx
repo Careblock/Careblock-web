@@ -33,6 +33,7 @@ import { FormMode } from '@/enums/FormMode';
 import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
 import OrganizationService from '@/services/organization.service';
 import { Organizations } from '@/types/organization.type';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function DepartmentManagement() {
     const { subscribeOnce } = useObservable();
@@ -150,7 +151,7 @@ function DepartmentManagement() {
                 setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_DEPARTMENT, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_DEPARTMENT, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -165,7 +166,7 @@ function DepartmentManagement() {
                     if (!res.isError) {
                         getDatasource();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_DEPARTMENT, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_DEPARTMENT, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -179,7 +180,7 @@ function DepartmentManagement() {
                     if (!res.isError) {
                         getDatasource();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_DEPARTMENT, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_DEPARTMENT, position: ToastPositionEnum.TopRight });
                     }
                 }
             );

@@ -33,6 +33,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { setTitle } from '@/utils/document';
 import DepartmentService from '@/services/department.service';
 import { getNotNullString } from '@/utils/string.helper';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 
 function Register() {
     const navigate = useNavigate();
@@ -89,7 +90,11 @@ function Register() {
 
     const handleSubmit = (values: SignUpInitialValues) => {
         if (stakeId === '') {
-            addToast({ text: SystemMessage.LOGIN_AGAIN, position: 'top-right', status: 'warn' });
+            addToast({
+                text: SystemMessage.LOGIN_AGAIN,
+                position: ToastPositionEnum.TopRight,
+                status: ToastStatusEnum.Warn,
+            });
             return;
         }
         if (values.role === ROLES.PATIENT) {
@@ -101,9 +106,17 @@ function Register() {
         }
         subscribeOnce(AuthService.register({ ...values, stakeId: stakeId, avatar: selectedFile }), (res: any) => {
             if (res === EMPTY_GUID) {
-                addToast({ text: SystemMessage.ACCOUNT_EXISTED, position: 'top-right', status: 'warn' });
+                addToast({
+                    text: SystemMessage.ACCOUNT_EXISTED,
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Warn,
+                });
             } else {
-                addToast({ text: SystemMessage.REGISTER_SUCCESS, position: 'top-right', status: 'valid' });
+                addToast({
+                    text: SystemMessage.REGISTER_SUCCESS,
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Valid,
+                });
                 navigate('/');
             }
         });

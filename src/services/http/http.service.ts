@@ -8,6 +8,7 @@ import { SystemMessage } from '../../constants/message.const';
 import { isStringEmpty } from '../../utils/string.helper';
 import { getCookieHelper } from '../../utils/cookie.helper';
 import StorageService from '../storage.service';
+import { ToastStatusEnum } from '@/components/base/toast/toast.type';
 
 class _HttpService {
     public isRequesting$ = new Subject<boolean>();
@@ -133,7 +134,7 @@ class _HttpService {
                 this.onError$.next(error);
                 const message = (error?.response?.errors || error?.response?.message) ?? SystemMessage.UNKNOWN_ERROR;
 
-                addToast({ text: message, status: 'inValid' });
+                addToast({ text: message, status: ToastStatusEnum.InValid });
 
                 if (process.env.NODE_ENV === 'development') {
                     isLoading && this.isRequesting$.next(false);

@@ -30,6 +30,7 @@ import { INITIAL_ORGANIZATIONS_VALUES } from '@/constants/organizations.const';
 import { organizationsSchema } from '@/validations/organizations.validation';
 import { Organizations } from '@/types/organization.type';
 import OrganizationService from '@/services/organization.service';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function OrganizationPage() {
     const { subscribeOnce } = useObservable();
@@ -152,7 +153,7 @@ function OrganizationPage() {
                 setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_ORGANIZATION, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_ORGANIZATION, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -174,7 +175,7 @@ function OrganizationPage() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_ORGANIZATION, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_ORGANIZATION, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -190,7 +191,7 @@ function OrganizationPage() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_ORGANIZATIONS, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_ORGANIZATIONS, position: ToastPositionEnum.TopRight });
                     }
                 }
             );

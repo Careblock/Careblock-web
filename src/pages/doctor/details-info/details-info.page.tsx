@@ -23,6 +23,7 @@ import AccountService from '@/services/account.service';
 import { DataDefaults } from '@/types/dataDefault.type';
 import TheBill from '../bill/bill.page';
 import { BillEnum } from './details-info.const';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) => {
     const { subscribeOnce } = useObservable();
@@ -105,7 +106,7 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
         if (!isError)
             addToast({
                 text: type === BillEnum.RESULT_VALUE ? SystemMessage.SEND_RESULT : SystemMessage.SEND_BILL,
-                position: 'top-right',
+                position: ToastPositionEnum.TopRight,
             });
     };
 
@@ -127,21 +128,23 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
 
     return (
         <>
-            <div className="details__wrapper w-full overflow-hidden bg-white p-4">
-                <div className="details__top flex items-center justify-between">
-                    <div className="details-top__left flex items-center">
-                        <div className="top-left__avatar overflow-hidden rounded-full w-[64px] h-[64px]">
+            <div className="details__wrapper w-full overflow-hidden bg-white p-4 shadow-md rounded-lg">
+                <div className="details__top flex flex-col items-center justify-between">
+                    <div className="details-top__left flex flex-col items-center justify-center">
+                        <div className="top-left__avatar overflow-hidden rounded-full w-[60px] h-[60px]">
                             <img
                                 src={dataSource?.avatar ? dataSource?.avatar : avatarDefault}
                                 alt="avatar"
                                 className="w-full h-full object-cover"
                             />
                         </div>
-                        <div className="top-left__name ml-3 text-[18px]">{getFullName(dataSource)}</div>
+                        <div className="top-left__name mt-1 mb-3 text-[18px] font-semibold">
+                            {getFullName(dataSource)}
+                        </div>
                     </div>
-                    <div className="details-top__right columns-3 space-y-2 w-[400px] select-none">
+                    <div className="details-top__right space-y-2 select-none">
                         {dataSource.gender && (
-                            <div className="gender flex items-center">
+                            <div className="gender flex items-center justify-center">
                                 {dataSource.gender === GENDER.FEMALE ? (
                                     <Images.FemaleIcon className="text-[18px] text-[#4e4e4e]" />
                                 ) : (
@@ -151,7 +154,7 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                             </div>
                         )}
                         {dataSource.dateOfBirth && (
-                            <div className="date-of-birth flex items-center">
+                            <div className="date-of-birth flex items-center justify-center">
                                 <Images.CakeIcon className="text-[18px] text-[#4e4e4e]" />
                                 <div className="text text-[#4e4e4e] ml-1">
                                     {formatStandardDate(new Date(dataSource.dateOfBirth))}
@@ -159,23 +162,23 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                             </div>
                         )}
                         {dataSource.phone && (
-                            <div className="phone flex items-center">
+                            <div className="phone flex items-center justify-center">
                                 <Images.PhoneAndroidIcon className="text-[18px] text-[#4e4e4e]" />
                                 <div className="text text-[#4e4e4e] ml-1">{dataSource.phone}</div>
                             </div>
                         )}
                         {dataSource.email && (
-                            <div className="email flex items-center">
+                            <div className="email flex items-center justify-center">
                                 <Images.MailOutlineIcon className="text-[18px] text-[#4e4e4e]" />
                                 <div className="text text-[#4e4e4e] ml-1">{dataSource.email}</div>
                             </div>
                         )}
                     </div>
                 </div>
-                <div className="details__content shadow-3 w-full px-4 mt-4 py-8">
+                <div className="details__content shadow-3 w-full px-4 mt-3 py-8">
                     {result?.length <= 0 ? (
                         <div className="details-content__nodata flex items-center flex-col justify-center">
-                            <div className="text-[16px] mb-2">Would you like to begin serving this patient?</div>
+                            <div className="text-[16px] mb-3">Would you like to begin serving this patient?</div>
                             <Button variant="contained" onClick={handleClickAccoummodate}>
                                 Create Consultation
                             </Button>
@@ -184,8 +187,7 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                         <ul>
                             {result.map((item: Results) => (
                                 <li key={item.id} className="text-[16px]">
-                                    <div className="flex items-center">
-                                        <p className="size-[8px] bg-black rounded-full"></p>
+                                    <div className="flex items-center justify-center">
                                         <p className="ml-[8px] mr-[10px]">Result:</p>
                                         <a
                                             href={item.diagnosticUrl}
@@ -200,8 +202,7 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                                             Send result
                                         </Button>
                                     </div>
-                                    <div className="flex items-center mt-[12px]">
-                                        <p className="size-[8px] bg-black rounded-full"></p>
+                                    <div className="flex items-center mt-[12px] justify-center">
                                         <p className="ml-[8px] mr-[10px]">Bill:</p>
                                         <p
                                             className="cursor-pointer text-light-blue-800 hover:underline mr-[20px]"

@@ -28,6 +28,7 @@ import { MedicineTypes } from '@/types/medicineType.type';
 import MedicineTypeService from '@/services/medicineType.service';
 import { medicineTypesSchema } from '@/validations/medicine.validation';
 import { INITIAL_MEDICINE_TYPES_VALUES } from '@/constants/medicines.const';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function MedicineType() {
     const { subscribeOnce } = useObservable();
@@ -124,7 +125,7 @@ function MedicineType() {
             if (!res.isError) {
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_MEDICINE_TYPE, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_MEDICINE_TYPE, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -144,7 +145,7 @@ function MedicineType() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_MEDICINE_TYPE, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_MEDICINE_TYPE, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -159,7 +160,7 @@ function MedicineType() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_MEDICINE_TYPE, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_MEDICINE_TYPE, position: ToastPositionEnum.TopRight });
                     }
                 }
             );

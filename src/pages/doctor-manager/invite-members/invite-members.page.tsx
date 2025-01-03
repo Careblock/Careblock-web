@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux';
 import { NotificationState } from '@/stores/notification';
 import * as signalR from '@microsoft/signalr';
 import Nodata from '@/components/base/no-data/nodata.component';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function InviteMembersPage() {
     const MAX_RECORE_PERPAGE = 9;
@@ -130,7 +131,7 @@ function InviteMembersPage() {
                     console.error('Lỗi khi kết nối SignalR: ', error);
                 });
         }
-        if (!isError) addToast({ text: SystemMessage.INVITE_MEMBER, position: 'top-right' });
+        if (!isError) addToast({ text: SystemMessage.INVITE_MEMBER, position: ToastPositionEnum.TopRight });
     };
 
     return (

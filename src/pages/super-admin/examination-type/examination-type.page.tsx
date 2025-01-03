@@ -29,6 +29,7 @@ import DefaultThumbnail from '@/assets/images/common/package.jpg';
 import ExaminationTypeService from '@/services/examinationType.service';
 import { ExaminationTypes } from '@/types/examinationType.type';
 import { columns } from './examination-type.const';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function ExaminationType() {
     const { subscribeOnce } = useObservable();
@@ -133,7 +134,7 @@ function ExaminationType() {
                 setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_EXAMINATION_TYPE, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_EXAMINATION_TYPE, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -155,7 +156,7 @@ function ExaminationType() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_EXAMINATION_TYPE, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_EXAMINATION_TYPE, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -171,7 +172,7 @@ function ExaminationType() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_EXAMINATION_TYPE, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_EXAMINATION_TYPE, position: ToastPositionEnum.TopRight });
                     }
                 }
             );

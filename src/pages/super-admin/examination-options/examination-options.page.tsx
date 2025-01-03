@@ -33,6 +33,7 @@ import { ExaminationOptions } from '@/types/examinationOption.type';
 import ExaminationOptionService from '@/services/examinationOption.service';
 import SpecialistService from '@/services/specialist.service';
 import { Specialists } from '@/types/specialist.type';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function ExaminationOption() {
     const { subscribeOnce } = useObservable();
@@ -152,7 +153,7 @@ function ExaminationOption() {
                 setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_EXAMINATION_OPTION, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_EXAMINATION_OPTION, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -172,7 +173,7 @@ function ExaminationOption() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_EXAMINATION_OPTION, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_EXAMINATION_OPTION, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -187,7 +188,7 @@ function ExaminationOption() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_EXAMINATION_OPTION, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_EXAMINATION_OPTION, position: ToastPositionEnum.TopRight });
                     }
                 }
             );

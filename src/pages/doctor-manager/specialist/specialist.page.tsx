@@ -32,6 +32,7 @@ import { editSpecialistsSchema, specialistsSchema } from '@/validations/speciali
 import { Specialists } from '@/types/specialist.type';
 import SpecialistService from '@/services/specialist.service';
 import { getNotNullString } from '@/utils/string.helper';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function SpecialistPage() {
     const { subscribeOnce } = useObservable();
@@ -145,7 +146,7 @@ function SpecialistPage() {
                 setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_SPECIALIST, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_SPECIALIST, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -169,7 +170,7 @@ function SpecialistPage() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_SPECIALIST, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_SPECIALIST, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -187,7 +188,7 @@ function SpecialistPage() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_SPECIALIST, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_SPECIALIST, position: ToastPositionEnum.TopRight });
                     }
                 }
             );

@@ -35,6 +35,7 @@ import ExaminationPackageService from '@/services/examinationPackage.service';
 import { ExaminationPackages } from '@/types/examinationPackage.type';
 import { TimePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 
 function TimeSlot() {
     const { subscribeOnce } = useObservable();
@@ -153,7 +154,7 @@ function TimeSlot() {
                 setPage(0);
                 getDatasource();
                 setIsVisiblePopupConfirm(false);
-                addToast({ text: SystemMessage.DELETE_TIME_SLOT, position: 'top-right' });
+                addToast({ text: SystemMessage.DELETE_TIME_SLOT, position: ToastPositionEnum.TopRight });
             }
         });
     };
@@ -173,7 +174,7 @@ function TimeSlot() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.ADD_TIME_SLOT, position: 'top-right' });
+                        addToast({ text: SystemMessage.ADD_TIME_SLOT, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
@@ -188,7 +189,7 @@ function TimeSlot() {
                         getDatasource();
                         resetForm();
                         setIsVisiblePopupAdd(false);
-                        addToast({ text: SystemMessage.EDIT_TIME_SLOT, position: 'top-right' });
+                        addToast({ text: SystemMessage.EDIT_TIME_SLOT, position: ToastPositionEnum.TopRight });
                     }
                 }
             );
