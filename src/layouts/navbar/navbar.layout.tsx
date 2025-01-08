@@ -62,16 +62,18 @@ export default function Navbar() {
     const [openDrawer, setOpenDrawer] = useState(false);
 
     useEffect(() => {
-        const connection: signalR.HubConnection = new signalR.HubConnectionBuilder()
-            .withUrl(`${Environment.BASE_API}/notificationHub?userID=${userData?.id}`)
-            .configureLogging(signalR.LogLevel.Error)
-            .build();
+        if (userData?.id) {
+            const connection: signalR.HubConnection = new signalR.HubConnectionBuilder()
+                .withUrl(`${Environment.BASE_API}/notificationHub?userID=${userData?.id}`)
+                .configureLogging(signalR.LogLevel.Error)
+                .build();
 
-        dispatch(connect(connection) as any);
+            dispatch(connect(connection) as any);
 
-        getUserInfor();
-        getNotificationDatas();
-        connectHub(connection);
+            getUserInfor();
+            getNotificationDatas();
+            connectHub(connection);
+        }
     }, [userData]);
 
     const connectHub = (connection: any) => {
