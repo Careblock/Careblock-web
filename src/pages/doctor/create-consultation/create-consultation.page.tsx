@@ -109,19 +109,29 @@ export default function CreateConsultation({
 
     const getFilePDF = async () => {
         let theFile;
+        let theImage;
 
         await toPng(dynamicRef.current as unknown as HTMLElement)
-            .then(function (dataUrl: any) {
+            .then(async function (dataUrl: any) {
                 let img = new Image();
                 img.src = dataUrl;
 
+                await fetch(dataUrl)
+                    .then((res) => res.blob())
+                    .then((blob) => {
+                        theImage = new File([blob], `result-${patientId}-${appointment.id}.jpg`, {
+                            type: 'image/jpg',
+                        });
+                    });
+
                 const doc = new jsPDF();
                 const imgProps = doc.getImageProperties(img);
-                const pdfWidth = (doc.internal.pageSize.getWidth() * 90) / 100;
+                const pdfWidth = doc.internal.pageSize.getWidth();
                 const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                const pdfX = (doc.internal.pageSize.getWidth() - pdfWidth) / 2;
+                const pdfX = 0;
+                const pdfY = 0;
 
-                doc.addImage(img, 'PNG', pdfX, 20, pdfWidth, pdfHeight);
+                doc.addImage(img, 'PNG', pdfX, pdfY, pdfWidth, pdfHeight);
 
                 // Tạo Blob từ PDF
                 const pdfBlob = doc.output('blob');
@@ -138,7 +148,7 @@ export default function CreateConsultation({
         return theFile;
     };
 
-    const handleClickSave = async () => {
+    const handleClickSave = () => {
         if (!examinationOption) {
             addToast({
                 text: SystemMessage.EXAMINATION_REQUIRED,
@@ -148,31 +158,33 @@ export default function CreateConsultation({
             return;
         }
         setFormType(FormType.Detail);
-        const file = await getFilePDF();
-        const payload = {
-            examinationOptionId: examinationOption,
-            appointmentId: appointment.id ?? '',
-            doctorId: appointment.doctorId ?? '',
-            diagnostic: JSON.stringify(dataRef.current),
-            price: '0',
-            filePDF: file,
-        };
+        setTimeout(async () => {
+            const file = await getFilePDF();
+            const payload = {
+                examinationOptionId: examinationOption,
+                appointmentId: appointment.id ?? '',
+                doctorId: appointment.doctorId ?? '',
+                diagnostic: JSON.stringify(dataRef.current),
+                price: '0',
+                filePDF: file,
+            };
 
-        subscribeOnce(AppointmentDetailService.insert(payload), (id: string) => {
-            if (id !== EMPTY_GUID) {
-                setVisible(false);
-                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: ToastPositionEnum.TopRight });
-                clickedSave();
-            } else {
-                addToast({
-                    text: SystemMessage.INSERT_DIAGNOSTIC_FAILED,
-                    position: ToastPositionEnum.TopRight,
-                    status: ToastStatusEnum.InValid,
-                });
-                setFormType(FormType.Create);
-            }
-        });
-        handleClose();
+            subscribeOnce(AppointmentDetailService.insert(payload), (id: string) => {
+                if (id !== EMPTY_GUID) {
+                    setVisible(false);
+                    addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: ToastPositionEnum.TopRight });
+                    clickedSave();
+                } else {
+                    addToast({
+                        text: SystemMessage.INSERT_DIAGNOSTIC_FAILED,
+                        position: ToastPositionEnum.TopRight,
+                        status: ToastStatusEnum.InValid,
+                    });
+                    setFormType(FormType.Create);
+                }
+            });
+            handleClose();
+        }, 100);
     };
 
     const onClickConvertToImage = () => {
@@ -183,11 +195,12 @@ export default function CreateConsultation({
 
                 const doc = new jsPDF();
                 const imgProps = doc.getImageProperties(img);
-                const pdfWidth = (doc.internal.pageSize.getWidth() * 90) / 100;
+                const pdfWidth = doc.internal.pageSize.getWidth();
                 const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                const pdfX = (doc.internal.pageSize.getWidth() - pdfWidth) / 2;
+                const pdfX = 0;
+                const pdfY = 0;
 
-                doc.addImage(img, 'PNG', pdfX, 20, pdfWidth, pdfHeight);
+                doc.addImage(img, 'PNG', pdfX, pdfY, pdfWidth, pdfHeight);
                 doc.save(`result-${patientId}-${appointment.id}.pdf`);
             })
             .catch(function (error: any) {
