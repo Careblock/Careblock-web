@@ -10,6 +10,7 @@ export enum SystemMessage {
     MAKE_AN_APPOINTMENT_SUCCESS = 'Successfully scheduled an appointment',
     INSERT_DIAGNOSTIC_SUCCESS = 'Successfully inserted a dianostic',
     INSERT_DIAGNOSTIC_FAILED = 'Insert the dianostic failed',
+    UPLOAD_FILE_FAILED = 'Uploaded failed!',
     EDIT_PROFILE = 'Edit profile successfully!',
     EDIT_ORGANIZATION = 'Edit organization successfully!',
     ADD_DEPARTMENT = 'Add new department successfully!',

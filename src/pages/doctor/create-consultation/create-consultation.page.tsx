@@ -28,6 +28,7 @@ import { ExaminationOptions } from '@/types/examinationOption.type';
 import ExaminationOptionService from '@/services/examinationOption.service';
 import { EMPTY_GUID } from '@/constants/common.const';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
+import { Environment } from '@/environment';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -109,7 +110,6 @@ export default function CreateConsultation({
 
     const getFilePDF = async () => {
         let theFile;
-        let theImage;
 
         await toPng(dynamicRef.current as unknown as HTMLElement)
             .then(async function (dataUrl: any) {
@@ -118,10 +118,33 @@ export default function CreateConsultation({
 
                 await fetch(dataUrl)
                     .then((res) => res.blob())
-                    .then((blob) => {
-                        theImage = new File([blob], `result-${patientId}-${appointment.id}.jpg`, {
+                    .then(async (blob) => {
+                        const theImage = new File([blob], `result-${patientId}-${appointment.id}.jpg`, {
                             type: 'image/jpg',
                         });
+                        let formData = new FormData();
+                        formData.append('file', theImage);
+
+                        try {
+                            const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
+                                method: 'POST',
+                                body: formData,
+                                headers: {
+                                    pinata_api_key: Environment.PINATA_API_KEY,
+                                    pinata_secret_api_key: Environment.PINATA_API_SECRET,
+                                },
+                            });
+                            if (!response.ok) {
+                                console.error('Uploaded failed!');
+                                addToast({
+                                    text: SystemMessage.UPLOAD_FILE_FAILED,
+                                    position: ToastPositionEnum.TopRight,
+                                    status: ToastStatusEnum.InValid,
+                                });
+                            }
+                        } catch (error) {
+                            console.error('Error uploading file:', error);
+                        }
                     });
 
                 const doc = new jsPDF();
