@@ -18,6 +18,8 @@ export interface Accounts {
     modifiedDate?: string;
     IsDisable: boolean;
     address?: string;
+    walletAddress?: string;
+    assetToken?: string;
 }
 
 export interface AccountSimple {
