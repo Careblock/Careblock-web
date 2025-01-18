@@ -7,7 +7,7 @@ import { PATHS } from '@/enums/RoutePath';
 import useObservable from '@/hooks/use-observable.hook';
 import AuthService from '@/services/auth.service';
 import { storeUser } from '@/stores/auth/auth.action';
-import { AuthContextType } from '@/types/auth.type';
+import { AuthContextType, AuthenticationRequest } from '@/types/auth.type';
 import { CookieManager } from '@/utils/cookie';
 import { setTitle } from '@/utils/document';
 import { CardanoWallet, useWallet } from '@meshsdk/react';
@@ -43,7 +43,7 @@ export const Login = ({ handleClose }: any) => {
                 setAssets(_assets);
                 setLoading(false);
                 if (!stakeId) return;
-                subscribeOnce(AuthService.hasAccount(stakeId), (res: any) => {
+                subscribeOnce(AuthService.hasAccount(stakeId), async (res: any) => {
                     if (res === false) {
                         addToast({
                             text: SystemMessage.HAS_ACCOUNT,
@@ -58,7 +58,12 @@ export const Login = ({ handleClose }: any) => {
                             position: ToastPositionEnum.TopRight,
                             status: ToastStatusEnum.Valid,
                         });
-                        subscribeOnce(AuthService.authenticate(stakeId[0]), (res: any) => {
+                        const unusedAddresses = await wallet.getUnusedAddresses();
+                        const request: AuthenticationRequest = {
+                            stakeId: stakeId[0],
+                            walletAdress: unusedAddresses[0],
+                        };
+                        subscribeOnce(AuthService.authenticate(request), (res: any) => {
                             const { jwtToken, ...rest } = res;
                             const roles = (jwtDecode<JwtPayload>(jwtToken) as any)?.roles?.split(',');
                             startSession({ accessToken: res.jwtToken, user: { ...rest, roles } });

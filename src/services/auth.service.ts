@@ -1,5 +1,5 @@
 import HttpService from './http/http.service';
-import { LoginResponse, RegisterResponse, SignUpRequest } from '../types/auth.type';
+import { AuthenticationRequest, LoginResponse, RegisterResponse, SignUpRequest } from '../types/auth.type';
 import { ConfirmResponse } from '../types/response.type';
 import { RequestContentType } from './http/http.type';
 
@@ -24,9 +24,9 @@ class _AuthService {
         return HttpService.post<ConfirmResponse>(`/Account/has-account?stakeId=${stakeId}`);
     }
 
-    public authenticate(stakeId: any) {
+    public authenticate(request: AuthenticationRequest) {
         return HttpService.post<any>(`/Account/authenticate`, {
-            body: stakeId,
+            body: { ...request },
             headers: {
                 credentials: 'include',
             },

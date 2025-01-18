@@ -20,6 +20,11 @@ export interface SignUpInitialValues {
 
 export interface SignUpRequest extends SignUpInitialValues {}
 
+export interface AuthenticationRequest {
+    stakeId: string;
+    walletAdress: string;
+}
+
 export interface RegisterResponse {
     status: boolean;
 }
