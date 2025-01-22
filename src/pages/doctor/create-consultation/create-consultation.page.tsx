@@ -29,6 +29,8 @@ import ExaminationOptionService from '@/services/examinationOption.service';
 import { EMPTY_GUID } from '@/constants/common.const';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 import { Environment } from '@/environment';
+import { useAuth } from '@/contexts/auth.context';
+import { AuthContextType } from '@/types/auth.type';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -45,10 +47,11 @@ export default function CreateConsultation({
     clickedSave,
     appointmentId,
 }: CreateConsultationType) {
+    const { userData } = useAuth() as AuthContextType;
+    const { subscribeOnce } = useObservable();
     const dynamicRef = useRef(null);
     const dataRef = useRef(null);
     const [formType, setFormType] = useState(FormType.Create);
-    const { subscribeOnce } = useObservable();
     const [dataSource, setDataSource] = useState<DynamicFieldType[]>(getInitialData());
     const [appointment, setAppointment] = useState<Appointments>({});
     const [examinationOption, setExaminationOption] = useState<string>('');
@@ -74,10 +77,14 @@ export default function CreateConsultation({
     const getDefaultData = () => {
         if (!appointmentId) return;
         subscribeOnce(AccountService.getDefaultData(appointmentId), (res: DataDefaults) => {
+            let doctorId = res.doctorId;
+            if (res.doctorId === EMPTY_GUID) {
+                doctorId = userData?.id;
+            }
             setPatientId(res.patientId ?? '');
             setAppointment({
                 id: res.id,
-                doctorId: res.doctorId,
+                doctorId: doctorId,
             });
             let temp = cloneDeep(dataSource);
             temp[DynamicField.Brand].images = [res.organizationThumbnail ?? ''];
@@ -91,9 +98,9 @@ export default function CreateConsultation({
             temp[DynamicField.Gender].value = res.gender ?? '';
             temp[DynamicField.Address].value = res.address ?? '';
             temp[DynamicField.Datetime].value = Date.now();
-            temp[DynamicField.DoctorName].value = res.doctorId ?? '';
+            temp[DynamicField.DoctorName].value = doctorId ?? '';
             temp[DynamicField.DoctorName].displayValue = res.doctorName ?? '';
-            temp[DynamicField.DoctorDD].value = res.doctorId ?? '';
+            temp[DynamicField.DoctorDD].value = doctorId ?? '';
             temp[DynamicField.DoctorDD].displayValue = res.doctorName ?? '';
 
             setDataSource(temp);

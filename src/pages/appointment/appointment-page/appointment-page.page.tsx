@@ -49,7 +49,8 @@ const AppointmentPage = () => {
     }, [activeStep]);
 
     useEffect(() => {
-        if (scheduleData.examinationPackage && scheduleData.date) setIsNext(true);
+        if (scheduleData.examinationPackage && scheduleData.date && scheduleData.time) setIsNext(true);
+        else setIsNext(false);
     }, [scheduleData]);
 
     useEffect(() => {

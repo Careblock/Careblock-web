@@ -4,7 +4,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { FormHelperText, InputAdornment, MenuItem, Select, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Dayjs } from 'dayjs';
-import { formatStandardDateTime } from '@/utils/datetime.helper';
+import { formatHyphenDate, formatStandardDateTime } from '@/utils/datetime.helper';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
 import { getStandardNumber } from '@/utils/number.helper';
 import useObservable from '@/hooks/use-observable.hook';
@@ -105,6 +105,7 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
         setScheduleData({
             ...scheduleData,
             date: date,
+            time: null,
         });
     };
 
@@ -117,11 +118,14 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                 const startTime = getStandardNumber(startDate.getHours());
                 const endTime = getStandardNumber(endDate.getHours());
                 const timeRange = `${startTime}:00 - ${endTime}:00`;
-                if (timeRange === time && tempDate === formatStandardDateTime(startDate).split(' ')[0]) {
+                if (
+                    (timeRange === time && tempDate === formatStandardDateTime(startDate).split(' ')[0]) ||
+                    (tempDate === formatHyphenDate(new Date()) && +startTime <= new Date().getHours())
+                ) {
                     return true;
                 }
             }
-        }
+        } else if (!scheduleData.date) return true;
         return false;
     };
 

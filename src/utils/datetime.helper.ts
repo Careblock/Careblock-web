@@ -13,6 +13,10 @@ export const formatStandardDate = (date: Date) => {
     return `${getStandardNumber(date.getMonth() + 1)}/${getStandardNumber(date.getDate())}/${date.getFullYear()}`;
 };
 
+export const formatHyphenDate = (date: Date) => {
+    return `${date.getFullYear()}-${getStandardNumber(date.getMonth() + 1)}-${getStandardNumber(date.getDate())}`;
+};
+
 export const formattedDate = (date: any) => {
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
