@@ -1,3 +1,4 @@
+import { AppointmentDetails } from '@/types/appointmentDetail.type';
 import HttpService from './http/http.service';
 import { RequestContentType } from './http/http.type';
 
@@ -7,6 +8,10 @@ class _AppointmentDetailService {
             body: { ...payload },
             requestContentType: RequestContentType.MULTIPART,
         });
+    }
+
+    public getByAppointmentId(appointmentId: string) {
+        return HttpService.get<AppointmentDetails>(`/AppointmentDetail/get-by-appointment/${appointmentId}`);
     }
 }
 
