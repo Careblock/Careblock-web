@@ -1,4 +1,16 @@
-import {Button, TextField, InputAdornment, Select, MenuItem, Chip } from '@mui/material';
+import {
+    Button,
+    TextField,
+    InputAdornment,
+    Select,
+    MenuItem,
+    Chip,
+    DialogContent,
+    styled,
+    DialogTitle,
+    IconButton,
+    DialogActions,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import AppointmentService from '@/services/appointment.service';
@@ -21,16 +33,30 @@ import { Place } from '@/enums/Place';
 import { Doctors } from '@/types/doctor.type';
 import { EMPTY_GUID } from '@/constants/common.const';
 import Nodata from '@/components/base/no-data/nodata.component';
-import {
-    BrowserWallet,
-  } from '@meshsdk/core';
+import { BrowserWallet } from '@meshsdk/core';
 import ResultService from '@/services/result.service';
 import { SystemMessage } from '@/constants/message.const';
 import { addToast } from '@/components/base/toast/toast.service';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 import { RESULT_ACTION_NAME, RESULT_STATUS } from '@/enums/Result';
-import { NotificationState } from '@/stores/notification';
-import { useSelector } from 'react-redux';
+import DynamicResult from '@/components/others/dynamic-result/dynamic-result.component';
+import { FormType } from '@/enums/FormType';
+import { cloneDeep } from 'lodash';
+import { dynamicFieldData } from '@/mocks/dynamic-field';
+import { DynamicFieldType } from '@/types/dynamic-field.type';
+import Dialog from '@mui/material/Dialog';
+import { Appointments } from '@/types/appointment.type';
+import AppointmentDetailService from '@/services/appointmentDetail.service';
+import { AppointmentDetails } from '@/types/appointmentDetail.type';
+
+const StyledDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialogContent-root': {
+        padding: theme.spacing(2),
+    },
+    '& .MuiDialogActions-root': {
+        padding: theme.spacing(1),
+    },
+}));
 
 const AppointmentHistories = () => {
     const { subscribeOnce } = useObservable();
@@ -47,27 +73,30 @@ const AppointmentHistories = () => {
     const [totalPage, setTotalPage] = useState<number>(1);
     const [isResetFilter, setIsResetFilter] = useState<boolean>(false);
     const [walletAddress, setWalletAddress] = useState<string>();
-    const connection = useSelector((state: { notification: NotificationState }) => state.notification.connection);
+    const [isShowDetailsPopup, setIsShowDetailsPopup] = useState(false);
+    const [dataSource, setDataSource] = useState<DynamicFieldType[]>(getInitialData());
+
     const PAGE_NUMBER = 6;
 
     useEffect(() => {
         const getWalletAddress = async () => {
-          let address = '';
-          const wallet = await BrowserWallet.enable('eternl');
-          const lstUsedAddress = await wallet.getUsedAddresses();
-          if (lstUsedAddress?.length > 0) {
-            address = lstUsedAddress[0];
-          }
-          if (!address) {
-            const lstUnUsedAddress = await wallet.getUnusedAddresses();
-            if (lstUnUsedAddress?.length > 0) {
-              address = lstUnUsedAddress[0];
+            let address = '';
+            const wallet = await BrowserWallet.enable('eternl');
+            const lstUsedAddress = await wallet.getUsedAddresses();
+            if (lstUsedAddress?.length > 0) {
+                address = lstUsedAddress[0];
             }
-          }
-          setWalletAddress(address);
+            if (!address) {
+                const lstUnUsedAddress = await wallet.getUnusedAddresses();
+                if (lstUnUsedAddress?.length > 0) {
+                    address = lstUnUsedAddress[0];
+                }
+            }
+            setWalletAddress(address);
         };
+
         getWalletAddress();
-      }, []);
+    }, []);
 
     useEffect(() => {
         setTitle('Appointments history | CareBlock');
@@ -101,6 +130,18 @@ const AppointmentHistories = () => {
         setIsResetFilter(false);
     }, [isResetFilter]);
 
+    const handleSetIsShowCreatePopup = (type: boolean) => {
+        setIsShowDetailsPopup(type);
+    };
+
+    const handleClickSign = () => {
+        console.log('Sign');
+    };
+
+    function getInitialData() {
+        return cloneDeep(dynamicFieldData);
+    }
+
     const getDoctorDatas = () => {
         if (!userData?.id) return;
         subscribeOnce(AccountService.getDoctorsOrg(Place.Inclusive, userData.id), (res: Doctors[]) => {
@@ -120,7 +161,6 @@ const AppointmentHistories = () => {
         };
 
         subscribeOnce(AppointmentService.getOrgAppointmentHistories(request), (res: PagingResponse) => {
-            console.log(res);
             const theData = res.pageData.map((appointment: any) => ({
                 id: appointment.id,
                 doctorName: appointment.doctorName?.trim(),
@@ -224,42 +264,42 @@ const AppointmentHistories = () => {
             return RESULT_ACTION_NAME.SIGN;
         }
 
-        return "";
-    }
+        return '';
+    };
 
     const getResultActionComp = (appointment: any) => {
         const action: string = getResultActionText(appointment.results[0]); // Currently, defaults to the first result
         if (action) {
             return (
-                <div className='flex justify-end mt-12'>
+                <div className="flex justify-end mt-12">
                     <Button
-                        className="p-4 w-[120px] font-bold "
+                        className="p-4 w-[120px] font-bold"
                         variant="contained"
                         onClick={() => handleSignResult(appointment)}
                     >
                         {action}
                     </Button>
                 </div>
-            )
+            );
         }
 
-        return <></>
-    }
+        return <></>;
+    };
 
     const handleSignResult = async (appointment: any) => {
         try {
-            const result = appointment.results[0]; 
+            const result = appointment.results[0];
             const wallet = await BrowserWallet.enable('eternl');
             let unsignedTx = result.signHash;
             const signedTx = await wallet.signTx(unsignedTx, true);
             await wallet.submitTx(signedTx);
-    
+
             const payload = {
-                resultId: result.id, 
+                resultId: result.id,
                 signHash: signedTx,
-                signerAddress: walletAddress
-            }
-    
+                signerAddress: walletAddress,
+            };
+
             subscribeOnce(ResultService.sign(payload), () => {
                 addToast({
                     text: SystemMessage.SIGN_RESULT,
@@ -268,16 +308,24 @@ const AppointmentHistories = () => {
                 });
                 setIsResetFilter(true);
             });
-        } catch(err) {
-            console.error(err); 
+        } catch (err) {
+            console.error(err);
             addToast({
                 text: SystemMessage.SIGN_RESULT_FAILED,
                 position: ToastPositionEnum.TopRight,
                 status: ToastStatusEnum.InValid,
             });
         }
-    }
-    
+    };
+
+    const onClickViewDetails = (appointment: Appointments) => {
+        if (!appointment.id) return;
+        subscribeOnce(AppointmentDetailService.getByAppointmentId(appointment.id), (res: AppointmentDetails) => {
+            setDataSource(cloneDeep(JSON.parse(res.diagnostic)));
+        });
+        handleSetIsShowCreatePopup(true);
+    };
+
     return (
         <div className="h-full overflow-hidden bg-gray">
             <div className="text-center text-[20px] font-bold">Appointment Histories</div>
@@ -377,7 +425,10 @@ const AppointmentHistories = () => {
             <div className="flex justify-start items-center flex-wrap gap-[20px]">
                 {appointmentData.length ? (
                     appointmentData.map((appointment: any) => (
-                        <div className="w-[calc(33.33%-20px)] p-4 bg-white border border-[#ccc] border-solid rounded-md  min-h-[320px]" key={appointment.id}>
+                        <div
+                            className="flex flex-col justify-between w-[calc(33.33%-20px)] p-4 bg-white border border-[#ccc] border-solid rounded-md  min-h-[320px]"
+                            key={appointment.id}
+                        >
                             <div className="flex flex-col min-h-[240px]">
                                 <p
                                     className="text-center mb-[14px] font-bold text-[16px] border-b border-[#ccc] pb-[10px] truncate"
@@ -392,9 +443,7 @@ const AppointmentHistories = () => {
                                                 alt="avatar"
                                                 className="w-[60px] h-[60px] object-cover rounded-full border mb-1"
                                                 src={
-                                                    appointment.doctorAvatar
-                                                        ? appointment.doctorAvatar
-                                                        : avatarDefault
+                                                    appointment.doctorAvatar ? appointment.doctorAvatar : avatarDefault
                                                 }
                                             />
                                             {appointment.doctorName && <p>{appointment.doctorName}</p>}
@@ -411,6 +460,16 @@ const AppointmentHistories = () => {
                                                 <div className="flex gap-2 items-center">
                                                     <Images.FaRegCalendarAlt size={18} />
                                                     <span>{appointment.dateExpectation}</span>
+                                                </div>
+                                            </div>
+                                            <div className="flex w-full items-center mt-1">
+                                                <div className="flex-1 truncate w-full">
+                                                    <Chip
+                                                        className="w-full"
+                                                        variant="outlined"
+                                                        label={getStatusText(appointment.status)}
+                                                        color={getStatusColor(appointment.status)}
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
@@ -448,22 +507,19 @@ const AppointmentHistories = () => {
                                                 <p className="flex-1 truncate">{appointment.reason}</p>
                                             </div>
                                         )}
-                                        <div className="flex gap-x-2 w-full pr-[10px] items-center mt-1">
-                                            <p className="font-bold">Status:</p>
-                                            <p className="flex-1 truncate">
-                                                <Chip
-                                                    variant='outlined'
-                                                    label={getStatusText(appointment.status)}
-                                                    color={getStatusColor(appointment.status)}
-                                                />
-                                            </p>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            {appointment.results?.length > 0
-                                && getResultActionComp(appointment)
-                            }
+                            {appointment.status === APPOINTMENT_STATUS_NAME.CHECKEDIN && (
+                                <Button
+                                    className="w-full"
+                                    variant="contained"
+                                    onClick={() => onClickViewDetails(appointment)}
+                                >
+                                    View details
+                                </Button>
+                            )}
+                            {appointment.results?.length > 0 && getResultActionComp(appointment)}
                         </div>
                     ))
                 ) : (
@@ -472,6 +528,55 @@ const AppointmentHistories = () => {
                     </div>
                 )}
             </div>
+
+            <StyledDialog
+                onClose={() => handleSetIsShowCreatePopup(false)}
+                aria-labelledby="customized-dialog-title"
+                open={isShowDetailsPopup}
+                maxWidth="lg"
+            >
+                {/* Header */}
+                <DialogTitle className="text-[20px]" sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+                    Create Consultation Request
+                </DialogTitle>
+                <IconButton
+                    aria-label="close"
+                    onClick={() => handleSetIsShowCreatePopup(false)}
+                    sx={{
+                        position: 'absolute',
+                        right: 10,
+                        top: 10,
+                        color: (theme) => theme.palette.grey[500],
+                    }}
+                >
+                    <Images.CloseIcon className="!text-[28px]" />
+                </IconButton>
+
+                {/* Content */}
+                <DialogContent dividers>
+                    <DynamicResult type={FormType.Detail} datasource={dataSource} setDataSubmit={(data: any) => {}} />
+                </DialogContent>
+
+                {/* Footer */}
+                <DialogActions>
+                    <div className="flex items-center justify-between w-full">
+                        <div></div>
+                        <div className="flex items-center gap-x-[10px]">
+                            <Button
+                                variant="text"
+                                color="inherit"
+                                autoFocus
+                                onClick={() => handleSetIsShowCreatePopup(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button variant="contained" autoFocus onClick={handleClickSign}>
+                                Sign
+                            </Button>
+                        </div>
+                    </div>
+                </DialogActions>
+            </StyledDialog>
         </div>
     );
 };
