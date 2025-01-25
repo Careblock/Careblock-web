@@ -53,10 +53,13 @@ export enum SystemMessage {
     EDIT_SPECIALIST_FAILED = 'Update specialist failed!',
     INVITE_MEMBER = 'Invitation sent successfully!',
     SEND_RESULT = 'Send result successfully!',
+    SEND_RESULT_FAILED = 'Failed to send result, please try again later!',
     SEND_BILL = 'Send bill successfully!',
     JOIN_ORG = 'Participate in organization successfully!',
     JOIN_ORG_FAILED = 'Participate in organization failed!',
     EXAMINATION_REQUIRED = 'Examination Option is required!',
     EXAMINATION_TYPE_REQUIRED = 'Examination Type is required!',
     MEDICINE_TYPE_REQUIRED = 'Medicine Type is required!',
+    SIGN_RESULT = "Sign result successfully!",
+    SIGN_RESULT_FAILED = 'Update specialist failed!',
 }

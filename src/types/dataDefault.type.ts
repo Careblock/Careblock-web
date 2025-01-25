@@ -16,4 +16,5 @@ export interface DataDefaults {
     doctorId?: string;
     doctorName?: string;
     createdDate?: string;
+    walletAddress: string;
 }

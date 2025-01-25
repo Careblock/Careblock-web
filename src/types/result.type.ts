@@ -5,6 +5,11 @@ export interface Results {
     message?: string;
     createdDate: string;
     modifiedDate: string;
+    mulSignJson: string; 
+    signHash?: string; 
+    status: number; 
+    signedDate?: Date,
+    hashName?: string, 
 }
 
 export interface Bill {

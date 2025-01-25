@@ -1,4 +1,4 @@
-import { Card, Button, TextField, InputAdornment, Select, MenuItem } from '@mui/material';
+import {Button, TextField, InputAdornment, Select, MenuItem, Chip } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import AppointmentService from '@/services/appointment.service';
@@ -21,6 +21,16 @@ import { Place } from '@/enums/Place';
 import { Doctors } from '@/types/doctor.type';
 import { EMPTY_GUID } from '@/constants/common.const';
 import Nodata from '@/components/base/no-data/nodata.component';
+import {
+    BrowserWallet,
+  } from '@meshsdk/core';
+import ResultService from '@/services/result.service';
+import { SystemMessage } from '@/constants/message.const';
+import { addToast } from '@/components/base/toast/toast.service';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
+import { RESULT_ACTION_NAME, RESULT_STATUS } from '@/enums/Result';
+import { NotificationState } from '@/stores/notification';
+import { useSelector } from 'react-redux';
 
 const AppointmentHistories = () => {
     const { subscribeOnce } = useObservable();
@@ -36,7 +46,28 @@ const AppointmentHistories = () => {
     const [pageIndex, setPageIndex] = useState<number>(1);
     const [totalPage, setTotalPage] = useState<number>(1);
     const [isResetFilter, setIsResetFilter] = useState<boolean>(false);
+    const [walletAddress, setWalletAddress] = useState<string>();
+    const connection = useSelector((state: { notification: NotificationState }) => state.notification.connection);
     const PAGE_NUMBER = 6;
+
+    useEffect(() => {
+        const getWalletAddress = async () => {
+          let address = '';
+          const wallet = await BrowserWallet.enable('eternl');
+          const lstUsedAddress = await wallet.getUsedAddresses();
+          if (lstUsedAddress?.length > 0) {
+            address = lstUsedAddress[0];
+          }
+          if (!address) {
+            const lstUnUsedAddress = await wallet.getUnusedAddresses();
+            if (lstUnUsedAddress?.length > 0) {
+              address = lstUnUsedAddress[0];
+            }
+          }
+          setWalletAddress(address);
+        };
+        getWalletAddress();
+      }, []);
 
     useEffect(() => {
         setTitle('Appointments history | CareBlock');
@@ -89,6 +120,7 @@ const AppointmentHistories = () => {
         };
 
         subscribeOnce(AppointmentService.getOrgAppointmentHistories(request), (res: PagingResponse) => {
+            console.log(res);
             const theData = res.pageData.map((appointment: any) => ({
                 id: appointment.id,
                 doctorName: appointment.doctorName?.trim(),
@@ -105,7 +137,7 @@ const AppointmentHistories = () => {
                 startDateExpectation: format(new Date(appointment.startDateExpectation), 'HH:mm'),
                 dateExpectation: format(new Date(appointment.startDateExpectation), 'dd/MM/yyyy'),
                 patientId: appointment.patientId,
-                doctorId: appointment.doctorAvatar,
+                doctorId: appointment.doctorId,
                 symptom: appointment.symptom?.trim(),
                 note: appointment.note?.trim(),
                 status: appointment.status,
@@ -113,6 +145,8 @@ const AppointmentHistories = () => {
                 endDateReality: format(new Date(appointment.endDateReality), 'HH:mm'),
                 startDateReality: format(new Date(appointment.startDateReality), 'HH:mm'),
                 dateReality: format(new Date(appointment.startDateReality), 'dd/MM/yyyy'),
+                results: appointment.results,
+                patientWalletAddress: appointment.patientWalletAddress,
             }));
             setAppointmentData(theData);
             setTotalPage(Math.ceil(res.total / PAGE_NUMBER));
@@ -185,6 +219,65 @@ const AppointmentHistories = () => {
         }
     };
 
+    const getResultActionText = (result: any): string => {
+        if (result.status == RESULT_STATUS.PENDING || result.status === RESULT_STATUS.DRAFT) {
+            return RESULT_ACTION_NAME.SIGN;
+        }
+
+        return "";
+    }
+
+    const getResultActionComp = (appointment: any) => {
+        const action: string = getResultActionText(appointment.results[0]); // Currently, defaults to the first result
+        if (action) {
+            return (
+                <div className='flex justify-end mt-12'>
+                    <Button
+                        className="p-4 w-[120px] font-bold "
+                        variant="contained"
+                        onClick={() => handleSignResult(appointment)}
+                    >
+                        {action}
+                    </Button>
+                </div>
+            )
+        }
+
+        return <></>
+    }
+
+    const handleSignResult = async (appointment: any) => {
+        try {
+            const result = appointment.results[0]; 
+            const wallet = await BrowserWallet.enable('eternl');
+            let unsignedTx = result.signHash;
+            const signedTx = await wallet.signTx(unsignedTx, true);
+            await wallet.submitTx(signedTx);
+    
+            const payload = {
+                resultId: result.id, 
+                signHash: signedTx,
+                signerAddress: walletAddress
+            }
+    
+            subscribeOnce(ResultService.sign(payload), () => {
+                addToast({
+                    text: SystemMessage.SIGN_RESULT,
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.Valid,
+                });
+                setIsResetFilter(true);
+            });
+        } catch(err) {
+            console.error(err); 
+            addToast({
+                text: SystemMessage.SIGN_RESULT_FAILED,
+                position: ToastPositionEnum.TopRight,
+                status: ToastStatusEnum.InValid,
+            });
+        }
+    }
+    
     return (
         <div className="h-full overflow-hidden bg-gray">
             <div className="text-center text-[20px] font-bold">Appointment Histories</div>
@@ -284,91 +377,93 @@ const AppointmentHistories = () => {
             <div className="flex justify-start items-center flex-wrap gap-[20px]">
                 {appointmentData.length ? (
                     appointmentData.map((appointment: any) => (
-                        <div className="w-[30%] bg-white" key={appointment.id}>
-                            <Card>
-                                <div className="flex flex-col p-4 border border-[#ccc] border-solid rounded-md h-[258px]">
-                                    <p
-                                        className="text-center mb-[14px] font-bold text-[16px] border-b border-[#ccc] pb-[10px] truncate"
-                                        title={appointment.examinationPackageName}
-                                    >
-                                        {appointment.examinationPackageName}
-                                    </p>
-                                    <div className="flex justify-between h-full">
-                                        <div className="min-w-[130px] flex flex-col items-center w-[40%] gap-2 pr-[20px] h-full justify-between">
-                                            <div className="flex flex-col items-center gap-[4px]">
-                                                <img
-                                                    alt="avatar"
-                                                    className="w-[60px] h-[60px] object-cover rounded-full border mb-1"
-                                                    src={
-                                                        appointment.doctorAvatar
-                                                            ? appointment.doctorAvatar
-                                                            : avatarDefault
-                                                    }
-                                                />
-                                                {appointment.doctorName && <p>{appointment.doctorName}</p>}
-                                                <div className="items-center justify-center">
-                                                    <div className="flex gap-2 items-center">
-                                                        <Images.LuClock size={18} />
-                                                        <span>
-                                                            {appointment.startDateExpectation} -
-                                                            {appointment.endDateExpectation}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div className="items-center justify-center">
-                                                    <div className="flex gap-2 items-center">
-                                                        <Images.FaRegCalendarAlt size={18} />
-                                                        <span>{appointment.dateExpectation}</span>
-                                                    </div>
+                        <div className="w-[calc(33.33%-20px)] p-4 bg-white border border-[#ccc] border-solid rounded-md  min-h-[320px]" key={appointment.id}>
+                            <div className="flex flex-col min-h-[240px]">
+                                <p
+                                    className="text-center mb-[14px] font-bold text-[16px] border-b border-[#ccc] pb-[10px] truncate"
+                                    title={appointment.examinationPackageName}
+                                >
+                                    {appointment.examinationPackageName}
+                                </p>
+                                <div className="flex justify-between h-full">
+                                    <div className="min-w-[130px] flex flex-col items-center w-[40%] gap-2 pr-[20px] h-full justify-between">
+                                        <div className="flex flex-col items-center gap-[4px]">
+                                            <img
+                                                alt="avatar"
+                                                className="w-[60px] h-[60px] object-cover rounded-full border mb-1"
+                                                src={
+                                                    appointment.doctorAvatar
+                                                        ? appointment.doctorAvatar
+                                                        : avatarDefault
+                                                }
+                                            />
+                                            {appointment.doctorName && <p>{appointment.doctorName}</p>}
+                                            <div className="items-center justify-center">
+                                                <div className="flex gap-2 items-center">
+                                                    <Images.LuClock size={18} />
+                                                    <span>
+                                                        {appointment.startDateExpectation} -
+                                                        {appointment.endDateExpectation}
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <Button
-                                                    className="mt-6 p-4 w-[120px] font-bold"
-                                                    variant="contained"
-                                                    color={getStatusColor(appointment.status)}
-                                                >
-                                                    {getStatusText(appointment.status)}
-                                                </Button>
+                                            <div className="items-center justify-center">
+                                                <div className="flex gap-2 items-center">
+                                                    <Images.FaRegCalendarAlt size={18} />
+                                                    <span>{appointment.dateExpectation}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="flex flex-col gap-y-1 flex-1 min-w-[200px]">
-                                            <div className="flex gap-x-2">
-                                                <p className="font-bold">Hospital:</p>
-                                                <p>{appointment.organizationName}</p>
-                                            </div>
-                                            <div className="flex gap-x-2">
-                                                <p className="font-bold">Patient:</p>
-                                                <p>{appointment.name}</p>
-                                            </div>
-                                            <div className="flex gap-x-2">
-                                                <p className="font-bold">Gender:</p>
-                                                <p>{appointment.gender}</p>
-                                            </div>
-                                            <div className="flex gap-x-2">
-                                                <p className="font-bold">Phone:</p>
-                                                <p>{appointment.phone}</p>
-                                            </div>
+                                    </div>
+                                    <div className="flex flex-col gap-y-1 flex-1 min-w-[200px]">
+                                        <div className="flex gap-x-2">
+                                            <p className="font-bold">Hospital:</p>
+                                            <p>{appointment.organizationName}</p>
+                                        </div>
+                                        <div className="flex gap-x-2">
+                                            <p className="font-bold">Patient:</p>
+                                            <p>{appointment.name}</p>
+                                        </div>
+                                        <div className="flex gap-x-2">
+                                            <p className="font-bold">Gender:</p>
+                                            <p>{appointment.gender}</p>
+                                        </div>
+                                        <div className="flex gap-x-2">
+                                            <p className="font-bold">Phone:</p>
+                                            <p>{appointment.phone}</p>
+                                        </div>
+                                        <div className="flex gap-x-2 w-full pr-[10px]">
+                                            <p className="font-bold">Email:</p>
+                                            <p className="flex-1 truncate">{appointment.email}</p>
+                                        </div>
+                                        {appointment.address && (
                                             <div className="flex gap-x-2 w-full pr-[10px]">
-                                                <p className="font-bold">Email:</p>
-                                                <p className="flex-1 truncate">{appointment.email}</p>
+                                                <p className="font-bold">Address:</p>
+                                                <p className="flex-1 truncate">{appointment.address}</p>
                                             </div>
-                                            {appointment.address && (
-                                                <div className="flex gap-x-2 w-full pr-[10px]">
-                                                    <p className="font-bold">Address:</p>
-                                                    <p className="flex-1 truncate">{appointment.address}</p>
-                                                </div>
-                                            )}
-                                            {appointment.reason && (
-                                                <div className="flex gap-x-2 w-full pr-[10px]">
-                                                    <p className="font-bold">Reason:</p>
-                                                    <p className="flex-1 truncate">{appointment.reason}</p>
-                                                </div>
-                                            )}
+                                        )}
+                                        {appointment.reason && (
+                                            <div className="flex gap-x-2 w-full pr-[10px]">
+                                                <p className="font-bold">Reason:</p>
+                                                <p className="flex-1 truncate">{appointment.reason}</p>
+                                            </div>
+                                        )}
+                                        <div className="flex gap-x-2 w-full pr-[10px] items-center mt-1">
+                                            <p className="font-bold">Status:</p>
+                                            <p className="flex-1 truncate">
+                                                <Chip
+                                                    variant='outlined'
+                                                    label={getStatusText(appointment.status)}
+                                                    color={getStatusColor(appointment.status)}
+                                                />
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
-                            </Card>
+                            </div>
+                            {appointment.results?.length > 0
+                                && getResultActionComp(appointment)
+                            }
                         </div>
                     ))
                 ) : (

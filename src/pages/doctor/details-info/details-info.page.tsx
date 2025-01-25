@@ -1,8 +1,8 @@
 import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import CreateConsultation from '../create-consultation/create-consultation.page';
-import { formatStandardDate } from '@/utils/datetime.helper';
-import { getFullName, getGenderName } from '@/utils/common.helpers';
+import {formatStandardDate } from '@/utils/datetime.helper';
+import { getFullName, getGenderName, textToHex } from '@/utils/common.helpers';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
 import { DetailsInfoType } from './details-info.type';
 import { Images } from '@/assets/images';
@@ -24,6 +24,12 @@ import { DataDefaults } from '@/types/dataDefault.type';
 import TheBill from '../bill/bill.page';
 import { BillEnum } from './details-info.const';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
+import {
+    Asset,
+    BrowserWallet,
+    Transaction,
+  } from '@meshsdk/core';
+import { RESULT_STATUS } from '@/enums/Result';
 
 const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) => {
     const { subscribeOnce } = useObservable();
@@ -32,6 +38,7 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
     const [dataDefault, setDataDefault] = useState<DataDefaults>();
     const [isShowCreatePopup, setIsShowCreatePopup] = useState(false);
     const [isShowBillPopup, setIsShowBillPopup] = useState(false);
+    const [isReloadData, setIsReloadData] = useState<boolean>(false);
     const connection = useSelector((state: { notification: NotificationState }) => state.notification.connection);
 
     useEffect(() => {
@@ -45,7 +52,36 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                 setDataDefault(res);
             });
         }
-    }, [dataSource]);
+    }, [dataSource, isReloadData]);
+
+    const handleSendResult = async (result: any) => {
+        try {
+
+            const wallet = await BrowserWallet.enable('eternl');
+            await wallet.getUsedAddresses();
+            const policyId = await wallet.getPolicyIds();
+            const tx = new Transaction({ initiator: wallet });
+            const asset: Asset = {
+              unit: policyId[0] + textToHex(result.hashName),
+              quantity: '1'
+            };
+    
+            tx.sendAssets(dataSource.walletAddress, [asset]);
+            const unsignedTx = await tx.build();
+            const signedTx = await wallet.signTx(unsignedTx, true);
+            await wallet.submitTx(signedTx);
+    
+            pushNotification(result, BillEnum.RESULT_VALUE);
+            subscribeOnce(ResultService.send(result.id), () => {
+                setIsReloadData(true);
+            });
+        } catch(err) {
+            addToast({
+                text: SystemMessage.SEND_RESULT_FAILED, 
+                position: ToastPositionEnum.TopRight,
+            });
+        }
+    }
 
     const pushNotification = (result: Results, type: BillEnum) => {
         let isError = false;
@@ -103,11 +139,12 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                     console.error('Lỗi khi kết nối SignalR: ', error);
                 });
         }
-        if (!isError)
+        if (!isError) {
             addToast({
                 text: type === BillEnum.RESULT_VALUE ? SystemMessage.SEND_RESULT : SystemMessage.SEND_BILL,
                 position: ToastPositionEnum.TopRight,
             });
+        }
     };
 
     const handleClickAccoummodate = () => {
@@ -195,12 +232,12 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                                         >
                                             File PDF
                                         </a>
-                                        <Button
+                                       {item.status == RESULT_STATUS.SIGNED && <Button
                                             variant="outlined"
-                                            onClick={() => pushNotification(item, BillEnum.RESULT_VALUE)}
+                                            onClick={() => handleSendResult(item)}
                                         >
                                             Send result
-                                        </Button>
+                                        </Button>}
                                     </div>
                                     <div className="flex items-center mt-[12px] justify-center">
                                         <p className="ml-[8px] mr-[10px]">Bill:</p>
@@ -210,6 +247,7 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                                         >
                                             File PDF
                                         </p>
+                                       
                                         <Button
                                             variant="outlined"
                                             onClick={() => pushNotification(item, BillEnum.BILL_VALUE)}

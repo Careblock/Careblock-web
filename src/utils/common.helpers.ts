@@ -81,3 +81,13 @@ export const resolveUri = (uri: string) => {
 
     return `${Environment.BASE_API}${uri}`;
 };
+
+export const textToHex = (text: string) => {
+    let result = '';
+    for (var i = 0; i < text.length; i++) {
+        var charCode = text.charCodeAt(i);
+        var hexValue = charCode.toString(16);
+        result += hexValue.padStart(2, '0');
+    }
+    return result;
+}

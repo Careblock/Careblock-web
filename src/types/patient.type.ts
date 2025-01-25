@@ -15,4 +15,6 @@ export interface Patients {
     avatar?: string;
     startDateExpectation?: string;
     appointmentId?: string;
+    stakeId: string; 
+    walletAddress: string; 
 }
