@@ -23,7 +23,7 @@ import AccountService from '@/services/account.service';
 import { DataDefaults } from '@/types/dataDefault.type';
 import TheBill from '../bill/bill.page';
 import { BillEnum } from './details-info.const';
-import { ToastPositionEnum } from '@/components/base/toast/toast.type';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 import {
     Asset,
     BrowserWallet,
@@ -79,6 +79,7 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
             addToast({
                 text: SystemMessage.SEND_RESULT_FAILED, 
                 position: ToastPositionEnum.TopRight,
+                status: ToastStatusEnum.InValid,
             });
         }
     }
