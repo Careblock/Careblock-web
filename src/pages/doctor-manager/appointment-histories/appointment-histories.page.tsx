@@ -38,10 +38,10 @@ import ResultService from '@/services/result.service';
 import { SystemMessage } from '@/constants/message.const';
 import { addToast } from '@/components/base/toast/toast.service';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
-import { RESULT_ACTION_NAME, RESULT_STATUS } from '@/enums/Result';
+import { RESULT_ACTION_NAME, RESULT_STATUS, RESULT_STATUS_NAME } from '@/enums/Result';
 import DynamicResult from '@/components/others/dynamic-result/dynamic-result.component';
 import { FormType } from '@/enums/FormType';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, result } from 'lodash';
 import { dynamicFieldData } from '@/mocks/dynamic-field';
 import { DynamicFieldType } from '@/types/dynamic-field.type';
 import Dialog from '@mui/material/Dialog';
@@ -75,6 +75,7 @@ const AppointmentHistories = () => {
     const [walletAddress, setWalletAddress] = useState<string>();
     const [isShowDetailsPopup, setIsShowDetailsPopup] = useState(false);
     const [dataSource, setDataSource] = useState<DynamicFieldType[]>(getInitialData());
+    const [resultModal, setResultModal] = useState<any>();
 
     const PAGE_NUMBER = 6;
 
@@ -134,9 +135,6 @@ const AppointmentHistories = () => {
         setIsShowDetailsPopup(type);
     };
 
-    const handleClickSign = () => {
-        console.log('Sign');
-    };
 
     function getInitialData() {
         return cloneDeep(dynamicFieldData);
@@ -221,6 +219,24 @@ const AppointmentHistories = () => {
         }
     };
 
+    const getResultStatusText = (status: any) => {
+        if(status == RESULT_STATUS.DRAFT || status == RESULT_STATUS.PENDING) {
+            return RESULT_STATUS_NAME.PENDING;
+        }
+        if(status == RESULT_STATUS.SIGNED || status == RESULT_STATUS.SENT) {
+            return RESULT_STATUS_NAME.SIGNED;
+        }
+    }
+
+    const getResultStatusColor = (status: any) => {
+        if(status == RESULT_STATUS.DRAFT || status == RESULT_STATUS.PENDING) {
+            return Color.info;
+        }
+        if(status == RESULT_STATUS.SIGNED || status == RESULT_STATUS.SENT) {
+            return Color.success;
+        }
+    }
+
     const handleChangeExaminationType = ($event: any) => {
         setExaminationType($event.target.value);
     };
@@ -259,36 +275,8 @@ const AppointmentHistories = () => {
         }
     };
 
-    const getResultActionText = (result: any): string => {
-        if (result.status == RESULT_STATUS.PENDING || result.status === RESULT_STATUS.DRAFT) {
-            return RESULT_ACTION_NAME.SIGN;
-        }
-
-        return '';
-    };
-
-    const getResultActionComp = (appointment: any) => {
-        const action: string = getResultActionText(appointment.results[0]); // Currently, defaults to the first result
-        if (action) {
-            return (
-                <div className="flex justify-end mt-12">
-                    <Button
-                        className="p-4 w-[120px] font-bold"
-                        variant="contained"
-                        onClick={() => handleSignResult(appointment)}
-                    >
-                        {action}
-                    </Button>
-                </div>
-            );
-        }
-
-        return <></>;
-    };
-
-    const handleSignResult = async (appointment: any) => {
+    const handleSignResult = async (result: any) => {
         try {
-            const result = appointment.results[0];
             const wallet = await BrowserWallet.enable('eternl');
             let unsignedTx = result.signHash;
             const signedTx = await wallet.signTx(unsignedTx, true);
@@ -307,6 +295,7 @@ const AppointmentHistories = () => {
                     status: ToastStatusEnum.Valid,
                 });
                 setIsResetFilter(true);
+                setIsShowDetailsPopup(false);
             });
         } catch (err) {
             console.error(err);
@@ -322,6 +311,7 @@ const AppointmentHistories = () => {
         if (!appointment.id) return;
         subscribeOnce(AppointmentDetailService.getByAppointmentId(appointment.id), (res: AppointmentDetails) => {
             setDataSource(cloneDeep(JSON.parse(res.diagnostic)));
+            setResultModal(appointment.results ? appointment.results[0]: null)  // Currently, defaults to the first result
         });
         handleSetIsShowCreatePopup(true);
     };
@@ -519,7 +509,7 @@ const AppointmentHistories = () => {
                                     View details
                                 </Button>
                             )}
-                            {appointment.results?.length > 0 && getResultActionComp(appointment)}
+                           
                         </div>
                     ))
                 ) : (
@@ -535,10 +525,26 @@ const AppointmentHistories = () => {
                 open={isShowDetailsPopup}
                 maxWidth="lg"
             >
-                {/* Header */}
                 <DialogTitle className="text-[20px]" sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                    Create Consultation Request
+                    <div className="flex items-center space-x-2">
+                        <span>Consultation Request</span>
+                        {resultModal && (
+                            <Chip
+                                className="w-fit"
+                                variant="outlined"
+                                label={getResultStatusText(resultModal.status)}
+                                color={getResultStatusColor(resultModal.status)}
+                                sx={{
+                                    fontSize: '0.75rem',
+                                    borderRadius: '16px',
+                                    height: '24px',
+                                    padding: '0 8px',
+                                }}
+                            />
+                        )}
+                    </div>
                 </DialogTitle>
+
                 <IconButton
                     aria-label="close"
                     onClick={() => handleSetIsShowCreatePopup(false)}
@@ -554,7 +560,7 @@ const AppointmentHistories = () => {
 
                 {/* Content */}
                 <DialogContent dividers>
-                    <DynamicResult type={FormType.Detail} datasource={dataSource} setDataSubmit={(data: any) => {}} />
+                    <DynamicResult type={FormType.Detail} datasource={dataSource} setDataSubmit={() => {}} />
                 </DialogContent>
 
                 {/* Footer */}
@@ -562,17 +568,10 @@ const AppointmentHistories = () => {
                     <div className="flex items-center justify-between w-full">
                         <div></div>
                         <div className="flex items-center gap-x-[10px]">
-                            <Button
-                                variant="text"
-                                color="inherit"
-                                autoFocus
-                                onClick={() => handleSetIsShowCreatePopup(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button variant="contained" autoFocus onClick={handleClickSign}>
-                                Sign
-                            </Button>
+                            {resultModal && (resultModal.status == RESULT_STATUS.PENDING || resultModal.status == RESULT_STATUS.DRAFT) &&
+                                <Button variant="contained" autoFocus onClick={() => handleSignResult(resultModal)}>
+                                    {RESULT_ACTION_NAME.SIGN}
+                                </Button>}
                         </div>
                     </div>
                 </DialogActions>

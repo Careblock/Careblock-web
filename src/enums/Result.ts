@@ -3,7 +3,7 @@ export enum RESULT_STATUS_NAME {
     SIGNED = 'Signed',
     SENT = 'Sent',
     BANNED = 'Banned',
-    PENDING = 'Pending',
+    PENDING = 'Pending Sign',
 }
 
 export enum RESULT_ACTION_NAME {
