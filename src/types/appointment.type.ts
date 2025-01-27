@@ -22,5 +22,5 @@ export interface Appointments {
     createdDate?: string;
     modifiedDate?: string;
     isDeleted?: boolean;
-    results: any[],
+    results?: any[];
 }
