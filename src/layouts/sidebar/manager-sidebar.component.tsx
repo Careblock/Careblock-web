@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import 'react-pro-sidebar/dist/css/styles.css';
 import { Images } from '@/assets/images';
 import { useAuth } from '@/contexts/auth.context';
 import { AuthContextType } from '@/types/auth.type';
