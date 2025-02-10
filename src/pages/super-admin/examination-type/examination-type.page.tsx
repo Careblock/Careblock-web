@@ -30,10 +30,13 @@ import ExaminationTypeService from '@/services/examinationType.service';
 import { ExaminationTypes } from '@/types/examinationType.type';
 import { columns } from './examination-type.const';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/stores/global.store';
 
 function ExaminationType() {
     const { subscribeOnce } = useObservable();
     const [initialized, setInitialized] = useState(true);
+    const collapsed = useSelector((state: GlobalState) => state.system.collapsed);
     const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -189,7 +192,7 @@ function ExaminationType() {
     };
 
     return (
-        <div className="h-full w-[calc(100vw-270px-40px)]">
+        <div className={`h-full w-[calc(100vw-${collapsed ? '70px' : '200px'}-40px)]`}>
             <div className="text-[20px] leading-[20px] font-bold">Manage Examination Types</div>
             <div className="text-[16px] mb-[10px]">
                 Set up all examination types that the organization conduct business from.
@@ -216,7 +219,7 @@ function ExaminationType() {
                 </Button>
             </div>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer className="max-h-[calc(100vh-52px-44px-30px-20px-34px-88px-52px)]">
+                <TableContainer className="max-h-[calc(100vh-52px-30px-20px-34px-88px-52px)]">
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>

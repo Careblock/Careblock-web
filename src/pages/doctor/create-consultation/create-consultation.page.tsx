@@ -31,13 +31,7 @@ import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toas
 import { Environment } from '@/environment';
 import { useAuth } from '@/contexts/auth.context';
 import { AuthContextType } from '@/types/auth.type';
-import {
-    AssetMetadata,
-    BrowserWallet,
-    ForgeScript,
-    Mint,
-    Transaction
-  } from '@meshsdk/core';
+import { AssetMetadata, BrowserWallet, ForgeScript, Mint, Transaction } from '@meshsdk/core';
 import { uuidv4 } from '@/utils/common.helpers';
 import { formatDateToString } from '@/utils/datetime.helper';
 
@@ -95,7 +89,7 @@ export default function CreateConsultation({
             setAppointment({
                 id: res.id,
                 doctorId: doctorId,
-                name: res.fullName, 
+                name: res.fullName,
             });
             setAccount(res);
             let temp = cloneDeep(dataSource);
@@ -190,7 +184,6 @@ export default function CreateConsultation({
         return theFile;
     };
 
-
     const handleClickSave = () => {
         if (!examinationOption) {
             addToast({
@@ -202,7 +195,7 @@ export default function CreateConsultation({
         }
         setFormType(FormType.Detail);
         setTimeout(async () => {
-            const file = await getFilePDF() as any;
+            const file = (await getFilePDF()) as any;
             const payload = {
                 examinationOptionId: examinationOption,
                 appointmentId: appointment.id ?? '',
@@ -212,33 +205,34 @@ export default function CreateConsultation({
                 filePDF: file,
                 resultId: uuidv4(),
                 resultName: '',
-                signHash: '', 
+                signHash: '',
             };
 
             if (account) {
-                const signerAddress = "addr_test1qzhtswd5f2fca8e0tea5jlmxs0petdt2zlv0d2xy9m7utzmcjnuv5q4jmja7q2r9t5szrc72sqt2wsczmlpd95z5x2tq8ctu7q"
+                const signerAddress =
+                    'addr_test1qzhtswd5f2fca8e0tea5jlmxs0petdt2zlv0d2xy9m7utzmcjnuv5q4jmja7q2r9t5szrc72sqt2wsczmlpd95z5x2tq8ctu7q';
                 const wallet = await BrowserWallet.enable('eternl');
                 const tx = new Transaction({ initiator: wallet });
                 let unsignedTx = '';
                 const forgingScript = ForgeScript.withOneSignature(account.walletAddress);
                 const assetMetadata: AssetMetadata = {
                     id: payload.resultId,
-                    ipfsHash: file?.ipfsHash
+                    ipfsHash: file?.ipfsHash,
                 };
-                const assetName = `${appointment.name?.replace(/ /g, "_")}_${formatDateToString(new Date())}`;
+                const assetName = `${appointment.name?.replace(/ /g, '_')}_${formatDateToString(new Date())}`;
                 const asset: Mint = {
                     assetName,
                     assetQuantity: '1',
                     metadata: assetMetadata,
                     label: '721',
-                    recipient: account.walletAddress
+                    recipient: account.walletAddress,
                 };
                 tx.mintAsset(forgingScript, asset);
                 tx.setRequiredSigners([account.walletAddress, signerAddress]);
                 unsignedTx = await tx.build();
                 const signedTx = await wallet.signTx(unsignedTx, true);
                 payload.signHash = signedTx;
-                payload.resultName = assetName; 
+                payload.resultName = assetName;
             }
 
             subscribeOnce(AppointmentDetailService.insert(payload), (id: string) => {

@@ -31,10 +31,13 @@ import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
 import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/stores/global.store';
 
 function DepartmentManagement() {
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
+    const collapsed = useSelector((state: GlobalState) => state.system.collapsed);
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(0);
@@ -177,7 +180,7 @@ function DepartmentManagement() {
     };
 
     return (
-        <div className="h-full w-[calc(100vw-270px-40px)]">
+        <div className={`h-full w-[calc(100vw-${collapsed ? '70px' : '200px'}-40px)]`}>
             <div className="text-[20px] leading-[20px] font-bold">Manage Departments</div>
             <div className="text-[16px] mb-[10px]">
                 Set up all departments that your organization conduct business from.
@@ -204,7 +207,7 @@ function DepartmentManagement() {
                 </Button>
             </div>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer className="max-h-[calc(100vh-52px-44px-30px-20px-34px-88px-52px)]">
+                <TableContainer className="max-h-[calc(100vh-52px-30px-20px-34px-88px-52px)]">
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
