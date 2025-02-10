@@ -120,7 +120,7 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                 const timeRange = `${startTime}:00 - ${endTime}:00`;
                 if (
                     (timeRange === time && tempDate === formatStandardDateTime(startDate).split(' ')[0]) ||
-                    (tempDate === formatHyphenDate(new Date()) && +startTime <= new Date().getHours())
+                    (tempDate === formatHyphenDate(new Date()) && +time.split(':')[0] <= new Date().getHours())
                 ) {
                     return true;
                 }
