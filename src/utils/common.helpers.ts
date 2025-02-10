@@ -84,10 +84,10 @@ export const resolveUri = (uri: string) => {
 
 export const textToHex = (text: string) => {
     let result = '';
-    for (var i = 0; i < text.length; i++) {
-        var charCode = text.charCodeAt(i);
-        var hexValue = charCode.toString(16);
+    for (let i = 0; i < text.length; i++) {
+        let charCode = text.charCodeAt(i);
+        let hexValue = charCode.toString(16);
         result += hexValue.padStart(2, '0');
     }
     return result;
-}
+};

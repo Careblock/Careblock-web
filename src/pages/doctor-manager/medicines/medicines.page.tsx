@@ -37,9 +37,12 @@ import MedicineTypeService from '@/services/medicineType.service';
 import { MedicineTypes } from '@/types/medicineType.type';
 import { UnitPrice } from '@/enums/UnitPrice';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/stores/global.store';
 
 function Medicines() {
     const { subscribeOnce } = useObservable();
+    const collapsed = useSelector((state: GlobalState) => state.system.collapsed);
     const { userData } = useAuth() as AuthContextType;
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState<string>('');
@@ -239,7 +242,7 @@ function Medicines() {
     };
 
     return (
-        <div className="h-full w-[calc(100vw-270px-40px)]">
+        <div className={`h-full w-[calc(100vw-${collapsed ? '70px' : '200px'}-40px)]`}>
             <div className="text-[20px] leading-[20px] font-bold">Manage Medicines</div>
             <div className="text-[16px] mb-[10px]">
                 Set up all medicines that your organization conduct business from.
@@ -266,7 +269,7 @@ function Medicines() {
                 </Button>
             </div>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer className="max-h-[calc(100vh-52px-44px-30px-20px-34px-88px-52px)]">
+                <TableContainer className="max-h-[calc(100vh-52px-30px-20px-34px-88px-52px)]">
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>

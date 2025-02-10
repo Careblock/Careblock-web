@@ -41,7 +41,7 @@ import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toas
 import { RESULT_ACTION_NAME, RESULT_STATUS, RESULT_STATUS_NAME } from '@/enums/Result';
 import DynamicResult from '@/components/others/dynamic-result/dynamic-result.component';
 import { FormType } from '@/enums/FormType';
-import { cloneDeep, result } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { dynamicFieldData } from '@/mocks/dynamic-field';
 import { DynamicFieldType } from '@/types/dynamic-field.type';
 import Dialog from '@mui/material/Dialog';
@@ -135,7 +135,6 @@ const AppointmentHistories = () => {
         setIsShowDetailsPopup(type);
     };
 
-
     function getInitialData() {
         return cloneDeep(dynamicFieldData);
     }
@@ -220,22 +219,22 @@ const AppointmentHistories = () => {
     };
 
     const getResultStatusText = (status: any) => {
-        if(status == RESULT_STATUS.DRAFT || status == RESULT_STATUS.PENDING) {
+        if (status == RESULT_STATUS.DRAFT || status == RESULT_STATUS.PENDING) {
             return RESULT_STATUS_NAME.PENDING;
         }
-        if(status == RESULT_STATUS.SIGNED || status == RESULT_STATUS.SENT) {
+        if (status == RESULT_STATUS.SIGNED || status == RESULT_STATUS.SENT) {
             return RESULT_STATUS_NAME.SIGNED;
         }
-    }
+    };
 
     const getResultStatusColor = (status: any) => {
-        if(status == RESULT_STATUS.DRAFT || status == RESULT_STATUS.PENDING) {
+        if (status == RESULT_STATUS.DRAFT || status == RESULT_STATUS.PENDING) {
             return Color.info;
         }
-        if(status == RESULT_STATUS.SIGNED || status == RESULT_STATUS.SENT) {
+        if (status == RESULT_STATUS.SIGNED || status == RESULT_STATUS.SENT) {
             return Color.success;
         }
-    }
+    };
 
     const handleChangeExaminationType = ($event: any) => {
         setExaminationType($event.target.value);
@@ -311,7 +310,7 @@ const AppointmentHistories = () => {
         if (!appointment.id) return;
         subscribeOnce(AppointmentDetailService.getByAppointmentId(appointment.id), (res: AppointmentDetails) => {
             setDataSource(cloneDeep(JSON.parse(res.diagnostic)));
-            setResultModal(appointment.results ? appointment.results[0]: null)  // Currently, defaults to the first result
+            setResultModal(appointment.results ? appointment.results[0] : null); // Currently, defaults to the first result
         });
         handleSetIsShowCreatePopup(true);
     };
@@ -509,7 +508,6 @@ const AppointmentHistories = () => {
                                     View details
                                 </Button>
                             )}
-                           
                         </div>
                     ))
                 ) : (
@@ -568,10 +566,13 @@ const AppointmentHistories = () => {
                     <div className="flex items-center justify-between w-full">
                         <div></div>
                         <div className="flex items-center gap-x-[10px]">
-                            {resultModal && (resultModal.status == RESULT_STATUS.PENDING || resultModal.status == RESULT_STATUS.DRAFT) &&
-                                <Button variant="contained" autoFocus onClick={() => handleSignResult(resultModal)}>
-                                    {RESULT_ACTION_NAME.SIGN}
-                                </Button>}
+                            {resultModal &&
+                                (resultModal.status == RESULT_STATUS.PENDING ||
+                                    resultModal.status == RESULT_STATUS.DRAFT) && (
+                                    <Button variant="contained" autoFocus onClick={() => handleSignResult(resultModal)}>
+                                        {RESULT_ACTION_NAME.SIGN}
+                                    </Button>
+                                )}
                         </div>
                     </div>
                 </DialogActions>

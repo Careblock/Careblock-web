@@ -99,7 +99,12 @@ import { AiOutlineSearch, AiFillWarning } from 'react-icons/ai';
 import { FcGoogle, FcInvite } from 'react-icons/fc';
 import { LuClock } from 'react-icons/lu';
 import { RxUpdate, RxLapTimer } from 'react-icons/rx';
-import { TbListDetails, TbTableOptions } from 'react-icons/tb';
+import {
+    TbListDetails,
+    TbTableOptions,
+    TbLayoutSidebarLeftCollapseFilled,
+    TbLayoutSidebarRightCollapseFilled,
+} from 'react-icons/tb';
 import { TfiWorld } from 'react-icons/tfi';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { TiTick, TiVideo, TiUserAdd } from 'react-icons/ti';
@@ -237,6 +242,8 @@ export const Images = {
     FaBan,
     TbListDetails,
     TbTableOptions,
+    TbLayoutSidebarLeftCollapseFilled,
+    TbLayoutSidebarRightCollapseFilled,
     FaCheck,
     GrClose,
     FaShare,

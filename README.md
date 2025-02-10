@@ -6,6 +6,7 @@
 2. Hiep Tran
 3. Bach Trinh
 4. Minh Le
+5. Trung Pham
 
 ## TechStack
 

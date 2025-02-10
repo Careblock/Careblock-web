@@ -60,6 +60,6 @@ export enum SystemMessage {
     EXAMINATION_REQUIRED = 'Examination Option is required!',
     EXAMINATION_TYPE_REQUIRED = 'Examination Type is required!',
     MEDICINE_TYPE_REQUIRED = 'Medicine Type is required!',
-    SIGN_RESULT = "Sign result successfully!",
-    SIGN_RESULT_FAILED = 'Update specialist failed!',
+    SIGN_RESULT = 'Sign result successfully!',
+    SIGN_RESULT_FAILED = 'Signed result failed!',
 }

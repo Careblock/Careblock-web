@@ -39,7 +39,7 @@ const HeaderLayout = () => {
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [userInfo, setUserInfo] = useState<any>();
-    const [notificationNumber, SetNotificationNumber] = useState(0);
+    const [notificationNumber, setNotificationNumber] = useState(0);
     const [anchorElNoti, setAnchorElNoti] = useState<HTMLButtonElement | null>(null);
     const [notification, setNotification] = useState<Notifications>();
     const [notifications, setNotifications] = useState<Notifications[]>([]);
@@ -84,7 +84,7 @@ const HeaderLayout = () => {
         subscribeOnce(NotificationService.getByUserId(userData.id), (res: Notifications[]) => {
             if (res) {
                 setNotifications(res);
-                SetNotificationNumber(res.filter((noti: Notifications) => !noti.isRead).length);
+                setNotificationNumber(res.filter((noti: Notifications) => !noti.isRead).length);
             }
         });
     };

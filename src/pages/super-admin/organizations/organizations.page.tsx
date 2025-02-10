@@ -31,10 +31,13 @@ import { organizationsSchema } from '@/validations/organizations.validation';
 import { Organizations } from '@/types/organization.type';
 import OrganizationService from '@/services/organization.service';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/stores/global.store';
 
 function OrganizationPage() {
     const { subscribeOnce } = useObservable();
     const [initialized, setInitialized] = useState(true);
+    const collapsed = useSelector((state: GlobalState) => state.system.collapsed);
     const [searchValue, setSearchValue] = useState<string>('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -208,7 +211,7 @@ function OrganizationPage() {
     };
 
     return (
-        <div className="h-full w-[calc(100vw-270px-40px)]">
+        <div className={collapsed ? `h-full w-[calc(100vw-70px-40px)]` : `h-full w-[calc(100vw-200px-40px)]`}>
             <div className="text-[20px] leading-[20px] font-bold">Manage Organizations</div>
             <div className="text-[16px] mb-[10px]">Set up all organizations.</div>
             <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
@@ -233,7 +236,7 @@ function OrganizationPage() {
                 </Button>
             </div>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer className="max-h-[calc(100vh-52px-44px-30px-20px-34px-88px-52px)]">
+                <TableContainer className="max-h-[calc(100vh-52px-30px-20px-34px-88px-52px)]">
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
