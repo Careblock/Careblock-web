@@ -158,9 +158,9 @@ const ManagerSidebar = () => {
             <ul className="bg-white space-y-[4px] py-[10px]">
                 {!userData?.roles.includes(ROLE_NAMES.ADMIN) && (
                     <>
-                        {sidebarItemManagers.map((item: SidebarItemType, index: number) => (
+                        {sidebarItemManagers.map((item: SidebarItemType) => (
                             <SidebarComponent
-                                key={index}
+                                key={item.itemValue}
                                 collapsed={collapsed}
                                 itemValue={item.itemValue}
                                 label={item.label}
@@ -176,9 +176,9 @@ const ManagerSidebar = () => {
                 )}
                 {userData?.roles.includes(ROLE_NAMES.ADMIN) && (
                     <>
-                        {sidebarItemAdmins.map((item: SidebarItemType, index: number) => (
+                        {sidebarItemAdmins.map((item: SidebarItemType) => (
                             <SidebarComponent
-                                key={index}
+                                key={item.itemValue}
                                 collapsed={collapsed}
                                 itemValue={item.itemValue}
                                 label={item.label}
