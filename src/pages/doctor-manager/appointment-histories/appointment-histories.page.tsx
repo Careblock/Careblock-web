@@ -10,6 +10,7 @@ import {
     DialogTitle,
     IconButton,
     DialogActions,
+    FormHelperText,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
@@ -48,6 +49,11 @@ import Dialog from '@mui/material/Dialog';
 import { Appointments } from '@/types/appointment.type';
 import AppointmentDetailService from '@/services/appointmentDetail.service';
 import { AppointmentDetails } from '@/types/appointmentDetail.type';
+import { useFormik } from 'formik';
+import { INITIAL_APPOINTMENTS_HISTORIES_VALUES } from '@/constants/appointmentHistories.const';
+import { appointmentHistoriesSchema } from '@/validations/appointmentHistories.validation';
+import { useDispatch } from 'react-redux';
+import { setNotAssigned } from '@/stores/manager/manager.action';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -59,11 +65,13 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const AppointmentHistories = () => {
+    const dispatch = useDispatch();
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [searchValue, setSearchValue] = useState('');
     const [doctors, setDoctors] = useState<any[]>([]);
     const [appointmentData, setAppointmentData] = useState<any[]>([]);
+    const [selectedAppointment, setSelectedAppointment] = useState<any>();
     const [examinationType, setExaminationType] = useState<any>('');
     const [doctorId, setDoctorId] = useState<any>('');
     const [examinationTypes, setExaminationTypes] = useState<ExaminationTypes[]>([]);
@@ -74,10 +82,20 @@ const AppointmentHistories = () => {
     const [isResetFilter, setIsResetFilter] = useState<boolean>(false);
     const [walletAddress, setWalletAddress] = useState<string>();
     const [isShowDetailsPopup, setIsShowDetailsPopup] = useState(false);
+    const [isShowAssignPopup, setIsShowAssignPopup] = useState(false);
     const [dataSource, setDataSource] = useState<DynamicFieldType[]>(getInitialData());
     const [resultModal, setResultModal] = useState<any>();
+    const [isInitialized, setIsInitialized] = useState<boolean>(false);
 
     const PAGE_NUMBER = 6;
+
+    const formik = useFormik({
+        initialValues: INITIAL_APPOINTMENTS_HISTORIES_VALUES.INFORMATION,
+        validationSchema: appointmentHistoriesSchema,
+        onSubmit: (values) => {
+            handleSubmit(values);
+        },
+    });
 
     useEffect(() => {
         const getWalletAddress = async () => {
@@ -114,25 +132,30 @@ const AppointmentHistories = () => {
 
     useEffect(() => {
         if (isResetFilter) return;
-        if (userData) {
+        if (userData && isInitialized) {
             getDataSource(userData.id);
         }
     }, [pageIndex]);
 
     useEffect(() => {
         if (isResetFilter) return;
-        if (pageIndex === 1 && userData) {
+        if (pageIndex === 1 && userData && isInitialized) {
             getDataSource(userData.id);
-        } else setPageIndex(1);
+        } else if (pageIndex !== 1) setPageIndex(1);
     }, [searchValue, examinationType, doctorId, dateRequestData]);
 
     useEffect(() => {
-        if (userData) getDataSource(userData.id);
+        if (userData && isInitialized && isResetFilter) getDataSource(userData.id);
         setIsResetFilter(false);
+        if (!isInitialized) setIsInitialized(true);
     }, [isResetFilter]);
 
     const handleSetIsShowCreatePopup = (type: boolean) => {
         setIsShowDetailsPopup(type);
+    };
+
+    const handleSetIsShowAssignPopup = (type: boolean) => {
+        setIsShowAssignPopup(type);
     };
 
     function getInitialData() {
@@ -240,6 +263,10 @@ const AppointmentHistories = () => {
         setExaminationType($event.target.value);
     };
 
+    const handleSelectedDoctor = ($event: any) => {
+        formik.setFieldValue('doctorId', $event.target.value);
+    };
+
     const handleChangeDoctor = ($event: any) => {
         setDoctorId($event.target.value);
     };
@@ -313,6 +340,28 @@ const AppointmentHistories = () => {
             setResultModal(appointment.results ? appointment.results[0] : null); // Currently, defaults to the first result
         });
         handleSetIsShowCreatePopup(true);
+    };
+
+    const onClickAssignDoctor = (appointment: Appointments) => {
+        handleSetIsShowAssignPopup(true);
+        setSelectedAppointment(appointment.id);
+    };
+
+    const handleSubmit = (values: { doctorId: string }) => {
+        if (!values.doctorId) {
+            addToast({
+                text: SystemMessage.DOCTOR_REQUIRED,
+                position: ToastPositionEnum.TopRight,
+                status: ToastStatusEnum.InValid,
+            });
+            return;
+        }
+        subscribeOnce(AppointmentService.assignDoctor(selectedAppointment, values.doctorId), (res: number) => {
+            dispatch(setNotAssigned(res) as any);
+            if (userData?.id) getDataSource(userData.id);
+            setIsShowAssignPopup(false);
+            addToast({ text: SystemMessage.ASSIGNED_DOCTOR, position: ToastPositionEnum.TopRight });
+        });
     };
 
     return (
@@ -435,13 +484,21 @@ const AppointmentHistories = () => {
                                                     appointment.doctorAvatar ? appointment.doctorAvatar : avatarDefault
                                                 }
                                             />
-                                            {appointment.doctorName && <p>{appointment.doctorName}</p>}
+                                            {appointment.doctorName ? (
+                                                <p>{appointment.doctorName}</p>
+                                            ) : (
+                                                <p
+                                                    className="w-full text-center bg-primary cursor-pointer select-none text-white py-[2px] hover:bg-[#2c84dc]"
+                                                    onClick={() => onClickAssignDoctor(appointment)}
+                                                >
+                                                    Assign
+                                                </p>
+                                            )}
                                             <div className="items-center justify-center">
                                                 <div className="flex gap-2 items-center">
                                                     <Images.LuClock size={18} />
                                                     <span>
-                                                        {appointment.startDateExpectation} -
-                                                        {appointment.endDateExpectation}
+                                                        {`${appointment.startDateExpectation} - ${appointment.endDateExpectation}`}
                                                     </span>
                                                 </div>
                                             </div>
@@ -464,35 +521,31 @@ const AppointmentHistories = () => {
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-y-1 flex-1 min-w-[200px]">
-                                        <div className="flex gap-x-2">
-                                            <p className="font-bold">Hospital:</p>
-                                            <p>{appointment.organizationName}</p>
-                                        </div>
-                                        <div className="flex gap-x-2">
-                                            <p className="font-bold">Patient:</p>
+                                        <div className="flex gap-x-2" title="Patient">
+                                            <Images.FaUser className="text-[18px]" />
                                             <p>{appointment.name}</p>
                                         </div>
-                                        <div className="flex gap-x-2">
-                                            <p className="font-bold">Gender:</p>
+                                        <div className="flex gap-x-2" title="Gender">
+                                            <Images.PiGenderIntersexFill className="text-[18px]" />
                                             <p>{appointment.gender}</p>
                                         </div>
-                                        <div className="flex gap-x-2">
-                                            <p className="font-bold">Phone:</p>
+                                        <div className="flex gap-x-2" title="Phone number">
+                                            <Images.FaPhoneSquareAlt className="text-[18px]" />
                                             <p>{appointment.phone}</p>
                                         </div>
-                                        <div className="flex gap-x-2 w-full pr-[10px]">
-                                            <p className="font-bold">Email:</p>
+                                        <div className="flex gap-x-2 w-full pr-[10px]" title="Email">
+                                            <Images.MdEmail className="text-[18px]" />
                                             <p className="flex-1 truncate">{appointment.email}</p>
                                         </div>
                                         {appointment.address && (
-                                            <div className="flex gap-x-2 w-full pr-[10px]">
-                                                <p className="font-bold">Address:</p>
+                                            <div className="flex gap-x-2 w-full pr-[10px]" title="Address">
+                                                <Images.FaLocationDot className="text-[18px]" />
                                                 <p className="flex-1 truncate">{appointment.address}</p>
                                             </div>
                                         )}
                                         {appointment.reason && (
-                                            <div className="flex gap-x-2 w-full pr-[10px]">
-                                                <p className="font-bold">Reason:</p>
+                                            <div className="flex gap-x-2 w-full pr-[10px]" title="Reason">
+                                                <Images.MdSick className="text-[18px]" />
                                                 <p className="flex-1 truncate">{appointment.reason}</p>
                                             </div>
                                         )}
@@ -505,7 +558,7 @@ const AppointmentHistories = () => {
                                     variant="contained"
                                     onClick={() => onClickViewDetails(appointment)}
                                 >
-                                    View details
+                                    View result
                                 </Button>
                             )}
                         </div>
@@ -576,6 +629,67 @@ const AppointmentHistories = () => {
                         </div>
                     </div>
                 </DialogActions>
+            </StyledDialog>
+
+            {/* Assign doctor */}
+            <StyledDialog
+                onClose={() => handleSetIsShowAssignPopup(false)}
+                aria-labelledby="customized-dialog-title"
+                open={isShowAssignPopup}
+                maxWidth="lg"
+            >
+                <DialogTitle className="text-[20px]" sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+                    <div className="flex items-center space-x-2">
+                        <span>Assign Doctor</span>
+                    </div>
+                </DialogTitle>
+
+                <IconButton
+                    aria-label="close"
+                    onClick={() => handleSetIsShowAssignPopup(false)}
+                    sx={{
+                        position: 'absolute',
+                        right: 10,
+                        top: 10,
+                        color: (theme) => theme.palette.grey[500],
+                    }}
+                >
+                    <Images.CloseIcon className="!text-[28px]" />
+                </IconButton>
+
+                {/* Content */}
+                <DialogContent dividers>
+                    <form onSubmit={formik.handleSubmit}>
+                        <div className="flex flex-col w-[300px] h-[100px]">
+                            <div>Doctor:</div>
+                            <Select
+                                className="w-full"
+                                size="medium"
+                                displayEmpty
+                                value={formik.values.doctorId}
+                                onChange={($event: any) => handleSelectedDoctor($event)}
+                                error={formik.touched.doctorId && Boolean(formik.errors.doctorId)}
+                            >
+                                {doctors.map((item: any) => (
+                                    <MenuItem key={item.id} value={item.id}>
+                                        {`${item.firstname} ${item.lastname}`}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            <FormHelperText>
+                                <span className="text-[#d32f2f]">{formik.errors.doctorId}</span>
+                            </FormHelperText>
+                        </div>
+                        <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
+                            <Button variant="text" color="inherit" onClick={() => handleSetIsShowAssignPopup(false)}>
+                                Cancel
+                            </Button>
+                            <Button variant="contained" type="submit">
+                                Assign
+                            </Button>
+                        </div>
+                    </form>
+                </DialogContent>
             </StyledDialog>
         </div>
     );
