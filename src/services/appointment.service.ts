@@ -17,6 +17,10 @@ class _AppointmentService {
         return HttpService.get<any>(`/appointment/get-by-patient/${patientId}`);
     }
 
+    public getNumberNotAssigned(userId: string) {
+        return HttpService.get<number>(`/appointment/not-assigned/${userId}`);
+    }
+
     public getOrgAppointmentHistories(appointmentRequest: AppointmentRequest) {
         return HttpService.post<PagingResponse>(`/appointment/get-by-organization`, {
             body: { ...appointmentRequest },
@@ -26,6 +30,14 @@ class _AppointmentService {
     public insert(appointment: Appointments) {
         return HttpService.post<any>(`/appointment/create`, {
             body: { ...appointment },
+        });
+    }
+
+    public assignDoctor(appointmentId: string, doctorId: string) {
+        return HttpService.post<number>(`/appointment/assign-doctor/${appointmentId}`, {
+            body: {
+                doctorId,
+            },
         });
     }
 

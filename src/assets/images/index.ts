@@ -30,6 +30,7 @@ import {
     FaHistory,
     FaInfoCircle,
     FaHospital,
+    FaPhoneSquareAlt,
 } from 'react-icons/fa';
 import {
     MdArticle,
@@ -53,6 +54,8 @@ import {
     MdCancel,
     MdOutlinePayment,
     MdOutlineHelp,
+    MdEmail,
+    MdSick,
 } from 'react-icons/md';
 import {
     IoIosAttach,
@@ -108,7 +111,7 @@ import {
 import { TfiWorld } from 'react-icons/tfi';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { TiTick, TiVideo, TiUserAdd } from 'react-icons/ti';
-import { PiChatsBold, PiVideoFill } from 'react-icons/pi';
+import { PiChatsBold, PiVideoFill, PiGenderIntersexFill } from 'react-icons/pi';
 import { BiSolidLogOut, BiSolidMedal } from 'react-icons/bi';
 import { BsSendFill, BsThreeDotsVertical, BsPersonVcardFill } from 'react-icons/bs';
 import { CiCirclePlus, CiHeart, CiShoppingCart } from 'react-icons/ci';
@@ -162,6 +165,8 @@ export const Images = {
     MdCancel,
     MdOutlinePayment,
     MdOutlineHelp,
+    MdEmail,
+    MdSick,
     MailOutlineIcon,
     IoLogOutOutline,
     IoMdHelp,
@@ -169,6 +174,7 @@ export const Images = {
     FaHistory,
     FaInfoCircle,
     FaHospital,
+    FaPhoneSquareAlt,
     MdOutlineNotifications,
     PiChatsBold,
     FaHouseUser,
@@ -224,6 +230,7 @@ export const Images = {
     BiSolidMedal,
     IoPeople,
     PiVideoFill,
+    PiGenderIntersexFill,
     IoMdStarOutline,
     IoMdPricetags,
     FaAngleLeft,

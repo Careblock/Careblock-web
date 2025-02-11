@@ -7,27 +7,37 @@ import { sidebarItemAdmins, SidebarItemValue, sidebarItemManagers, SidebarItemTy
 import SidebarComponent from './sidebar-item.component';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleCollapse } from '@/stores/system/system.action';
+import { setNotAssigned } from '@/stores/manager/manager.action';
 import { GlobalState } from '@/stores/global.store';
 import { useLocation } from 'react-router-dom';
 import { PATHS } from '@/enums/RoutePath';
+import AppointmentService from '@/services/appointment.service';
+import useObservable from '@/hooks/use-observable.hook';
 
 const ManagerSidebar = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const collapsed = useSelector((state: GlobalState) => state.system.collapsed);
+    const numberNotAssigned = useSelector((state: GlobalState) => state.manager.numberNotAssigned);
+    const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [activeItem, setActiveItem] = useState<SidebarItemValue>(SidebarItemValue.Organization);
-    const [numberUnassigned, setNumberUnassigned] = useState<number>(0);
 
     useEffect(() => {
-        setNumberUnassigned(2);
-
         if (!userData?.roles.includes(ROLE_NAMES.ADMIN)) {
             handleSetActiveItemManager();
         } else {
             handleSetActiveItemAdmin();
         }
     }, []);
+
+    useEffect(() => {
+        if (userData?.roles.includes(ROLE_NAMES.MANAGER)) {
+            subscribeOnce(AppointmentService.getNumberNotAssigned(userData.id), (res: number) => {
+                dispatch(setNotAssigned(res) as any);
+            });
+        }
+    }, [location.pathname]);
 
     const handleSetActiveItemManager = () => {
         switch (location.pathname) {
@@ -128,9 +138,9 @@ const ManagerSidebar = () => {
                         {!collapsed && (
                             <div className="relative">
                                 <p className=" text-[16px]">Appoinments</p>
-                                {numberUnassigned > 0 && (
+                                {numberNotAssigned > 0 && (
                                     <p className="rounded-full p-[2px] text-[white] bg-[red] min-w-[22px] h-[22px] flex items-center justify-center text-[12px] absolute top-0 right-[-26px]">
-                                        {numberUnassigned}
+                                        {numberNotAssigned}
                                     </p>
                                 )}
                             </div>
