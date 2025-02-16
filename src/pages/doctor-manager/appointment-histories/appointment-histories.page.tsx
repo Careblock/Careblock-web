@@ -336,7 +336,9 @@ const AppointmentHistories = () => {
     const onClickViewDetails = (appointment: Appointments) => {
         if (!appointment.id) return;
         subscribeOnce(AppointmentDetailService.getByAppointmentId(appointment.id), (res: AppointmentDetails) => {
-            setDataSource(cloneDeep(JSON.parse(res.diagnostic)));
+            if (res) {
+                setDataSource(cloneDeep(JSON.parse(res.diagnostic)));
+            }
             setResultModal(appointment.results ? appointment.results[0] : null); // Currently, defaults to the first result
         });
         handleSetIsShowCreatePopup(true);
@@ -365,211 +367,216 @@ const AppointmentHistories = () => {
     };
 
     return (
-        <div className="h-full overflow-hidden bg-gray">
-            <div className="text-center text-[20px] font-bold">Appointment Histories</div>
-            <div className="flex items-center justify-center gap-x-[8px] select-none mb-[10px]">
-                <div
-                    className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
-                    onClick={handleClickPrevious}
-                >
-                    <Images.ArrowBackIosNewIcon fontSize="small" />
-                </div>
-                <p className="text-[16px]">
-                    {pageIndex}/{totalPage}
-                </p>
-                <div
-                    className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
-                    onClick={handleClickNext}
-                >
-                    <Images.ArrowForwardIosIcon fontSize="small" />
-                </div>
-            </div>
-            <div className="flex items-center justify-between w-full bg-[#f4f4f4] rounded-lg p-[16px] mb-[10px]">
-                <div className="flex items-center w-full justify-around gap-x-[10xp]">
-                    <div className="flex flex-col w-full">
-                        <div>Search:</div>
-                        <TextField
-                            variant="outlined"
-                            size="medium"
-                            label=""
-                            placeholder="Enter keyword"
-                            value={searchValue}
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <Images.SearchIcon className="text-[24px]" />
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                    </div>
-                    <div className="flex flex-col ml-[20px] w-full">
-                        <div>Doctor:</div>
-                        <Select
-                            className="w-full"
-                            size="medium"
-                            displayEmpty
-                            value={doctorId}
-                            onChange={($event: any) => handleChangeDoctor($event)}
-                        >
-                            <MenuItem value="">
-                                <em>All</em>
-                            </MenuItem>
-                            {doctors.map((item: any) => (
-                                <MenuItem key={item.id} value={item.id}>
-                                    {`${item.firstname} ${item.lastname}`}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </div>
-                    <div className="flex flex-col ml-[20px] w-full">
-                        <div>Examination type:</div>
-                        <Select
-                            className="w-full"
-                            size="medium"
-                            displayEmpty
-                            value={examinationType}
-                            onChange={($event: any) => handleChangeExaminationType($event)}
-                        >
-                            <MenuItem value="">
-                                <em>All</em>
-                            </MenuItem>
-                            {examinationTypes.map((item: any) => (
-                                <MenuItem key={item.id} value={item.id}>
-                                    {item.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </div>
-                    <div className="flex flex-col ml-[20px] w-full">
-                        <div>Date:</div>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                value={dateFilterData}
-                                onChange={(newValue) => handleChangeDateFilter(newValue)}
-                            />
-                        </LocalizationProvider>
-                    </div>
+        <>
+            <div className="h-[calc(100vh-52px-30px)] mr-[-24px] pr-[16px] pb-[4px] overflow-y-auto overflow-x-hidden bg-gray">
+                <div className="text-center text-[20px] font-bold">Appointment Histories</div>
+                <div className="flex items-center justify-center gap-x-[8px] select-none mb-[10px]">
                     <div
-                        className="flex items-center mt-auto justify-center ml-[20px] w-[200px] border border-[#a8a8a8] rounded-md p-[6px] cursor-pointer hover:bg-[#d5d5d5]"
-                        title="Reset filter data"
-                        onClick={handleClickResetFilter}
+                        className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
+                        onClick={handleClickPrevious}
                     >
-                        <Images.GrPowerReset className="!w-full !h-full text-[#a8a8a8]" />
+                        <Images.ArrowBackIosNewIcon fontSize="small" />
+                    </div>
+                    <p className="text-[16px]">
+                        {pageIndex}/{totalPage}
+                    </p>
+                    <div
+                        className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
+                        onClick={handleClickNext}
+                    >
+                        <Images.ArrowForwardIosIcon fontSize="small" />
                     </div>
                 </div>
-            </div>
-            <div className="flex justify-start items-center flex-wrap gap-[20px]">
-                {appointmentData.length ? (
-                    appointmentData.map((appointment: any) => (
+                <div className="flex items-center justify-between w-full bg-[#f4f4f4] rounded-lg p-[16px] mb-[10px]">
+                    <div className="flex items-center w-full justify-around gap-x-[10xp]">
+                        <div className="flex flex-col w-full">
+                            <div>Search:</div>
+                            <TextField
+                                variant="outlined"
+                                size="medium"
+                                label=""
+                                placeholder="Enter keyword"
+                                value={searchValue}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                                    handleSearchValueChanged(event)
+                                }
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <Images.SearchIcon className="text-[24px]" />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        </div>
+                        <div className="flex flex-col ml-[20px] w-full">
+                            <div>Doctor:</div>
+                            <Select
+                                className="w-full"
+                                size="medium"
+                                displayEmpty
+                                value={doctorId}
+                                onChange={($event: any) => handleChangeDoctor($event)}
+                            >
+                                <MenuItem value="">
+                                    <em>All</em>
+                                </MenuItem>
+                                {doctors.map((item: any) => (
+                                    <MenuItem key={item.id} value={item.id}>
+                                        {`${item.firstname} ${item.lastname}`}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </div>
+                        <div className="flex flex-col ml-[20px] w-full">
+                            <div>Examination type:</div>
+                            <Select
+                                className="w-full"
+                                size="medium"
+                                displayEmpty
+                                value={examinationType}
+                                onChange={($event: any) => handleChangeExaminationType($event)}
+                            >
+                                <MenuItem value="">
+                                    <em>All</em>
+                                </MenuItem>
+                                {examinationTypes.map((item: any) => (
+                                    <MenuItem key={item.id} value={item.id}>
+                                        {item.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </div>
+                        <div className="flex flex-col ml-[20px] w-full">
+                            <div>Date:</div>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    value={dateFilterData}
+                                    onChange={(newValue) => handleChangeDateFilter(newValue)}
+                                />
+                            </LocalizationProvider>
+                        </div>
                         <div
-                            className="flex flex-col justify-between w-[calc(33.33%-20px)] p-4 bg-white border border-[#ccc] border-solid rounded-md  min-h-[320px]"
-                            key={appointment.id}
+                            className="flex items-center mt-auto justify-center ml-[20px] w-[200px] border border-[#a8a8a8] rounded-md p-[6px] cursor-pointer hover:bg-[#d5d5d5]"
+                            title="Reset filter data"
+                            onClick={handleClickResetFilter}
                         >
-                            <div className="flex flex-col min-h-[240px]">
-                                <p
-                                    className="text-center mb-[14px] font-bold text-[16px] border-b border-[#ccc] pb-[10px] truncate"
-                                    title={appointment.examinationPackageName}
-                                >
-                                    {appointment.examinationPackageName}
-                                </p>
-                                <div className="flex justify-between h-full">
-                                    <div className="min-w-[130px] flex flex-col items-center w-[40%] gap-2 pr-[20px] h-full justify-between">
-                                        <div className="flex flex-col items-center gap-[4px]">
-                                            <img
-                                                alt="avatar"
-                                                className="w-[60px] h-[60px] object-cover rounded-full border mb-1"
-                                                src={
-                                                    appointment.doctorAvatar ? appointment.doctorAvatar : avatarDefault
-                                                }
-                                            />
-                                            {appointment.doctorName ? (
-                                                <p>{appointment.doctorName}</p>
-                                            ) : (
-                                                <p
-                                                    className="w-full text-center bg-primary cursor-pointer select-none text-white py-[2px] hover:bg-[#2c84dc]"
-                                                    onClick={() => onClickAssignDoctor(appointment)}
-                                                >
-                                                    Assign
-                                                </p>
+                            <Images.GrPowerReset className="!w-full !h-full text-[#a8a8a8]" />
+                        </div>
+                    </div>
+                </div>
+                <div className="flex justify-start items-center flex-wrap gap-[20px]">
+                    {appointmentData.length ? (
+                        appointmentData.map((appointment: any) => (
+                            <div
+                                className="flex flex-col justify-between w-[calc(33.33%-20px)] p-4 bg-white border border-[#ccc] border-solid rounded-md  min-h-[320px]"
+                                key={appointment.id}
+                            >
+                                <div className="flex flex-col min-h-[240px]">
+                                    <p
+                                        className="text-center mb-[14px] font-bold text-[16px] border-b border-[#ccc] pb-[10px] truncate"
+                                        title={appointment.examinationPackageName}
+                                    >
+                                        {appointment.examinationPackageName}
+                                    </p>
+                                    <div className="flex justify-between h-full">
+                                        <div className="min-w-[130px] flex flex-col items-center w-[40%] gap-2 pr-[20px] h-full justify-between">
+                                            <div className="flex flex-col items-center gap-[4px]">
+                                                <img
+                                                    alt="avatar"
+                                                    className="w-[60px] h-[60px] object-cover rounded-full border mb-1"
+                                                    src={
+                                                        appointment.doctorAvatar
+                                                            ? appointment.doctorAvatar
+                                                            : avatarDefault
+                                                    }
+                                                />
+                                                {appointment.doctorName ? (
+                                                    <p>{appointment.doctorName}</p>
+                                                ) : (
+                                                    <p
+                                                        className="w-full text-center bg-primary cursor-pointer select-none text-white py-[2px] hover:bg-[#2c84dc]"
+                                                        onClick={() => onClickAssignDoctor(appointment)}
+                                                    >
+                                                        Assign
+                                                    </p>
+                                                )}
+                                                <div className="items-center justify-center">
+                                                    <div className="flex gap-2 items-center">
+                                                        <Images.LuClock size={18} />
+                                                        <span>
+                                                            {`${appointment.startDateExpectation} - ${appointment.endDateExpectation}`}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="items-center justify-center">
+                                                    <div className="flex gap-2 items-center">
+                                                        <Images.FaRegCalendarAlt size={18} />
+                                                        <span>{appointment.dateExpectation}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex w-full items-center mt-1">
+                                                    <div className="flex-1 truncate w-full">
+                                                        <Chip
+                                                            className="w-full"
+                                                            variant="outlined"
+                                                            label={getStatusText(appointment.status)}
+                                                            color={getStatusColor(appointment.status)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col gap-y-1 flex-1 min-w-[200px]">
+                                            <div className="flex gap-x-2" title="Patient">
+                                                <Images.FaUser className="text-[18px]" />
+                                                <p>{appointment.name}</p>
+                                            </div>
+                                            <div className="flex gap-x-2" title="Gender">
+                                                <Images.PiGenderIntersexFill className="text-[18px]" />
+                                                <p>{appointment.gender}</p>
+                                            </div>
+                                            <div className="flex gap-x-2" title="Phone number">
+                                                <Images.FaPhoneSquareAlt className="text-[18px]" />
+                                                <p>{appointment.phone}</p>
+                                            </div>
+                                            <div className="flex gap-x-2 w-full pr-[10px]" title="Email">
+                                                <Images.MdEmail className="text-[18px]" />
+                                                <p className="flex-1 truncate">{appointment.email}</p>
+                                            </div>
+                                            {appointment.address && (
+                                                <div className="flex gap-x-2 w-full pr-[10px]" title="Address">
+                                                    <Images.FaLocationDot className="text-[18px]" />
+                                                    <p className="flex-1 truncate">{appointment.address}</p>
+                                                </div>
                                             )}
-                                            <div className="items-center justify-center">
-                                                <div className="flex gap-2 items-center">
-                                                    <Images.LuClock size={18} />
-                                                    <span>
-                                                        {`${appointment.startDateExpectation} - ${appointment.endDateExpectation}`}
-                                                    </span>
+                                            {appointment.reason && (
+                                                <div className="flex gap-x-2 w-full pr-[10px]" title="Reason">
+                                                    <Images.MdSick className="text-[18px]" />
+                                                    <p className="flex-1 truncate">{appointment.reason}</p>
                                                 </div>
-                                            </div>
-                                            <div className="items-center justify-center">
-                                                <div className="flex gap-2 items-center">
-                                                    <Images.FaRegCalendarAlt size={18} />
-                                                    <span>{appointment.dateExpectation}</span>
-                                                </div>
-                                            </div>
-                                            <div className="flex w-full items-center mt-1">
-                                                <div className="flex-1 truncate w-full">
-                                                    <Chip
-                                                        className="w-full"
-                                                        variant="outlined"
-                                                        label={getStatusText(appointment.status)}
-                                                        color={getStatusColor(appointment.status)}
-                                                    />
-                                                </div>
-                                            </div>
+                                            )}
                                         </div>
-                                    </div>
-                                    <div className="flex flex-col gap-y-1 flex-1 min-w-[200px]">
-                                        <div className="flex gap-x-2" title="Patient">
-                                            <Images.FaUser className="text-[18px]" />
-                                            <p>{appointment.name}</p>
-                                        </div>
-                                        <div className="flex gap-x-2" title="Gender">
-                                            <Images.PiGenderIntersexFill className="text-[18px]" />
-                                            <p>{appointment.gender}</p>
-                                        </div>
-                                        <div className="flex gap-x-2" title="Phone number">
-                                            <Images.FaPhoneSquareAlt className="text-[18px]" />
-                                            <p>{appointment.phone}</p>
-                                        </div>
-                                        <div className="flex gap-x-2 w-full pr-[10px]" title="Email">
-                                            <Images.MdEmail className="text-[18px]" />
-                                            <p className="flex-1 truncate">{appointment.email}</p>
-                                        </div>
-                                        {appointment.address && (
-                                            <div className="flex gap-x-2 w-full pr-[10px]" title="Address">
-                                                <Images.FaLocationDot className="text-[18px]" />
-                                                <p className="flex-1 truncate">{appointment.address}</p>
-                                            </div>
-                                        )}
-                                        {appointment.reason && (
-                                            <div className="flex gap-x-2 w-full pr-[10px]" title="Reason">
-                                                <Images.MdSick className="text-[18px]" />
-                                                <p className="flex-1 truncate">{appointment.reason}</p>
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
+                                {appointment.status === APPOINTMENT_STATUS_NAME.CHECKEDIN && (
+                                    <Button
+                                        className="w-full"
+                                        variant="contained"
+                                        onClick={() => onClickViewDetails(appointment)}
+                                    >
+                                        View result
+                                    </Button>
+                                )}
                             </div>
-                            {appointment.status === APPOINTMENT_STATUS_NAME.CHECKEDIN && (
-                                <Button
-                                    className="w-full"
-                                    variant="contained"
-                                    onClick={() => onClickViewDetails(appointment)}
-                                >
-                                    View result
-                                </Button>
-                            )}
+                        ))
+                    ) : (
+                        <div className="w-[340px] mx-auto">
+                            <Nodata />
                         </div>
-                    ))
-                ) : (
-                    <div className="w-[340px] mx-auto">
-                        <Nodata />
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
-
             <StyledDialog
                 onClose={() => handleSetIsShowCreatePopup(false)}
                 aria-labelledby="customized-dialog-title"
@@ -691,7 +698,7 @@ const AppointmentHistories = () => {
                     </form>
                 </DialogContent>
             </StyledDialog>
-        </div>
+        </>
     );
 };
 

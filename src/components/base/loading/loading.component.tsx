@@ -3,7 +3,7 @@ import useObservable from '@/hooks/use-observable.hook';
 import HttpService from '@/services/http/http.service';
 import './loading.style.scss';
 
-const Loading = () => {
+const Loading = ({ isLoading }: { isLoading?: boolean }) => {
     const [isShow, setIsShow] = useState(false);
 
     const { subscribeUntilDestroy } = useObservable();
@@ -17,6 +17,10 @@ const Loading = () => {
             }
         });
     }, []);
+
+    useEffect(() => {
+        setIsShow(!!isLoading);
+    }, [isLoading]);
 
     useEffect(() => {
         if (isShow) {

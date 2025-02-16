@@ -34,6 +34,7 @@ import { AuthContextType } from '@/types/auth.type';
 import { AssetMetadata, BrowserWallet, ForgeScript, Mint, Transaction } from '@meshsdk/core';
 import { uuidv4 } from '@/utils/common.helpers';
 import { formatDateToString } from '@/utils/datetime.helper';
+import Loading from '@/components/base/loading/loading.component';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -61,6 +62,7 @@ export default function CreateConsultation({
     const [examinationOptions, setExaminationOptions] = useState<ExaminationOptions[]>([]);
     const [patientId, setPatientId] = useState<string>('');
     const [account, setAccount] = useState<DataDefaults>();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         if (visible) {
@@ -117,48 +119,59 @@ export default function CreateConsultation({
         return cloneDeep(dynamicFieldData);
     }
 
-    const handleClose = () => {
+    const handleClosePopup = () => {
         setVisible(false);
+    };
+
+    const pinFileToIPFS = async (dataUrl: any) => {
+        let ipfsHash = '';
+
+        await fetch(dataUrl)
+            .then((res) => res.blob())
+            .then(async (blob) => {
+                const theImage = new File([blob], `result-${patientId}-${appointment.id}.jpg`, {
+                    type: 'image/jpg',
+                });
+                let formData = new FormData();
+                formData.append('file', theImage);
+
+                try {
+                    const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            pinata_api_key: Environment.PINATA_API_KEY,
+                            pinata_secret_api_key: Environment.PINATA_API_SECRET,
+                        },
+                    });
+                    const data = await response.json();
+                    ipfsHash = data.IpfsHash;
+                    if (!response.ok) {
+                        console.error('Uploaded failed!');
+                        addToast({
+                            text: SystemMessage.UPLOAD_FILE_FAILED,
+                            position: ToastPositionEnum.TopRight,
+                            status: ToastStatusEnum.InValid,
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error uploading file:', error);
+                }
+            });
+
+        return ipfsHash;
     };
 
     const getFilePDF = async () => {
         let theFile;
+        let ipfsHash;
 
         await toPng(dynamicRef.current as unknown as HTMLElement)
             .then(async function (dataUrl: any) {
                 let img = new Image();
                 img.src = dataUrl;
 
-                await fetch(dataUrl)
-                    .then((res) => res.blob())
-                    .then(async (blob) => {
-                        const theImage = new File([blob], `result-${patientId}-${appointment.id}.jpg`, {
-                            type: 'image/jpg',
-                        });
-                        let formData = new FormData();
-                        formData.append('file', theImage);
-
-                        try {
-                            const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
-                                method: 'POST',
-                                body: formData,
-                                headers: {
-                                    pinata_api_key: Environment.PINATA_API_KEY,
-                                    pinata_secret_api_key: Environment.PINATA_API_SECRET,
-                                },
-                            });
-                            if (!response.ok) {
-                                console.error('Uploaded failed!');
-                                addToast({
-                                    text: SystemMessage.UPLOAD_FILE_FAILED,
-                                    position: ToastPositionEnum.TopRight,
-                                    status: ToastStatusEnum.InValid,
-                                });
-                            }
-                        } catch (error) {
-                            console.error('Error uploading file:', error);
-                        }
-                    });
+                ipfsHash = await pinFileToIPFS(dataUrl);
 
                 const doc = new jsPDF();
                 const imgProps = doc.getImageProperties(img);
@@ -181,43 +194,31 @@ export default function CreateConsultation({
                 console.error('Oops, something went wrong!', error);
             });
 
-        return theFile;
+        return {
+            file: theFile,
+            ipfsHash,
+        };
     };
 
-    const handleClickSave = () => {
+    const isValidExaminationOption = (): boolean => {
         if (!examinationOption) {
             addToast({
                 text: SystemMessage.EXAMINATION_REQUIRED,
                 position: ToastPositionEnum.TopRight,
                 status: ToastStatusEnum.InValid,
             });
-            return;
+            return false;
         }
-        setFormType(FormType.Detail);
-        setTimeout(async () => {
-            const file = (await getFilePDF()) as any;
-            const payload = {
-                examinationOptionId: examinationOption,
-                appointmentId: appointment.id ?? '',
-                doctorId: appointment.doctorId ?? '',
-                diagnostic: JSON.stringify(dataRef.current),
-                price: '0',
-                filePDF: file,
-                resultId: uuidv4(),
-                resultName: '',
-                signHash: '',
-            };
+        return true;
+    };
 
-            if (account) {
-                const signerAddress =
-                    'addr_test1qzhtswd5f2fca8e0tea5jlmxs0petdt2zlv0d2xy9m7utzmcjnuv5q4jmja7q2r9t5szrc72sqt2wsczmlpd95z5x2tq8ctu7q';
-                const wallet = await BrowserWallet.enable('eternl');
-                const tx = new Transaction({ initiator: wallet });
-                let unsignedTx = '';
-                const forgingScript = ForgeScript.withOneSignature(account.walletAddress);
+    const mintAsset = async (payload: any, ipfsHash: any) => {
+        if (account) {
+            try {
+                const walletAddress = account.walletAddress;
                 const assetMetadata: AssetMetadata = {
                     id: payload.resultId,
-                    ipfsHash: file?.ipfsHash,
+                    ipfsHash: ipfsHash,
                 };
                 const assetName = `${appointment.name?.replace(/ /g, '_')}_${formatDateToString(new Date())}`;
                 const asset: Mint = {
@@ -225,31 +226,70 @@ export default function CreateConsultation({
                     assetQuantity: '1',
                     metadata: assetMetadata,
                     label: '721',
-                    recipient: account.walletAddress,
+                    recipient: walletAddress,
                 };
+                const forgingScript = ForgeScript.withOneSignature(walletAddress);
+                const wallet = await BrowserWallet.enable('eternl');
+                const tx = new Transaction({ initiator: wallet });
                 tx.mintAsset(forgingScript, asset);
-                tx.setRequiredSigners([account.walletAddress, signerAddress]);
-                unsignedTx = await tx.build();
+                tx.setRequiredSigners([walletAddress, account.signerAddress]);
+                const unsignedTx = await tx.build();
                 const signedTx = await wallet.signTx(unsignedTx, true);
                 payload.signHash = signedTx;
                 payload.resultName = assetName;
+            } catch (err) {
+                console.error(err);
             }
+        }
+    };
 
-            subscribeOnce(AppointmentDetailService.insert(payload), (id: string) => {
-                if (id !== EMPTY_GUID) {
-                    setVisible(false);
-                    addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: ToastPositionEnum.TopRight });
-                    clickedSave();
-                } else {
-                    addToast({
-                        text: SystemMessage.INSERT_DIAGNOSTIC_FAILED,
-                        position: ToastPositionEnum.TopRight,
-                        status: ToastStatusEnum.InValid,
-                    });
-                    setFormType(FormType.Create);
-                }
-            });
-            handleClose();
+    const getSavePayload = (file: any) => {
+        return {
+            examinationOptionId: examinationOption,
+            appointmentId: appointment.id ?? '',
+            doctorId: appointment.doctorId ?? '',
+            diagnostic: JSON.stringify(dataRef.current),
+            price: '0',
+            filePDF: file,
+            resultId: uuidv4(),
+            resultName: '',
+            signHash: '',
+        };
+    };
+
+    const setDetailsAppointment = (payload: any) => {
+        subscribeOnce(AppointmentDetailService.insert(payload), (id: string) => {
+            if (id !== EMPTY_GUID) {
+                handleClosePopup();
+                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: ToastPositionEnum.TopRight });
+                clickedSave();
+            } else {
+                addToast({
+                    text: SystemMessage.INSERT_DIAGNOSTIC_FAILED,
+                    position: ToastPositionEnum.TopRight,
+                    status: ToastStatusEnum.InValid,
+                });
+                setFormType(FormType.Create);
+            }
+        });
+    };
+
+    const handleClickSave = () => {
+        if (!isValidExaminationOption()) return;
+
+        setIsLoading(true);
+        setFormType(FormType.Detail);
+
+        setTimeout(async () => {
+            const fileRes = await getFilePDF();
+            const payload = getSavePayload(fileRes.file);
+
+            mintAsset(payload, fileRes.ipfsHash);
+
+            setDetailsAppointment(payload);
+
+            handleClosePopup();
+            setIsLoading(false);
         }, 100);
     };
 
@@ -275,68 +315,76 @@ export default function CreateConsultation({
     };
 
     return (
-        <StyledDialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={visible} maxWidth="lg">
-            {/* Header */}
-            <DialogTitle className="text-[20px]" sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                Create Consultation Request
-            </DialogTitle>
-            <IconButton
-                aria-label="close"
-                onClick={handleClose}
-                sx={{
-                    position: 'absolute',
-                    right: 10,
-                    top: 10,
-                    color: (theme) => theme.palette.grey[500],
-                }}
+        <>
+            <StyledDialog
+                onClose={handleClosePopup}
+                aria-labelledby="customized-dialog-title"
+                open={visible}
+                maxWidth="lg"
             >
-                <Images.CloseIcon className="!text-[28px]" />
-            </IconButton>
+                {/* Header */}
+                <DialogTitle className="text-[20px]" sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+                    Create Consultation Request
+                </DialogTitle>
+                <IconButton
+                    aria-label="close"
+                    onClick={handleClosePopup}
+                    sx={{
+                        position: 'absolute',
+                        right: 10,
+                        top: 10,
+                        color: (theme) => theme.palette.grey[500],
+                    }}
+                >
+                    <Images.CloseIcon className="!text-[28px]" />
+                </IconButton>
 
-            {/* Content */}
-            <DialogContent dividers>
-                {formType === FormType.Create && (
-                    <div className="flex items-center space-x-[12px] mb-[16px]">
-                        <p className="font-semibold text-[16px]">Choose an option: </p>
-                        <Select
-                            name="option"
-                            value={examinationOption}
-                            size="small"
-                            className="w-[300px]"
-                            onChange={(event: SelectChangeEvent<any>) => setExaminationOption(event.target.value)}
-                        >
-                            {examinationOptions?.map((item) => (
-                                <MenuItem key={item.id} value={item.id}>
-                                    {item.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </div>
-                )}
-                <DynamicResult
-                    ref={dynamicRef}
-                    type={formType}
-                    datasource={dataSource}
-                    setDataSubmit={(data: any) => (dataRef.current = data)}
-                />
-            </DialogContent>
+                {/* Content */}
+                <DialogContent dividers>
+                    {formType === FormType.Create && (
+                        <div className="flex items-center space-x-[12px] mb-[16px]">
+                            <p className="font-semibold text-[16px]">Choose an option: </p>
+                            <Select
+                                name="option"
+                                value={examinationOption}
+                                size="small"
+                                className="w-[300px]"
+                                onChange={(event: SelectChangeEvent<any>) => setExaminationOption(event.target.value)}
+                            >
+                                {examinationOptions?.map((item) => (
+                                    <MenuItem key={item.id} value={item.id}>
+                                        {item.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </div>
+                    )}
+                    <DynamicResult
+                        ref={dynamicRef}
+                        type={formType}
+                        datasource={dataSource}
+                        setDataSubmit={(data: any) => (dataRef.current = data)}
+                    />
+                </DialogContent>
 
-            {/* Footer */}
-            <DialogActions>
-                <div className="flex items-center justify-between w-full">
-                    <Button variant="contained" onClick={onClickConvertToImage}>
-                        Convert to pdf
-                    </Button>
-                    <div className="flex items-center gap-x-[10px]">
-                        <Button variant="text" color="inherit" autoFocus onClick={handleClose}>
-                            Cancel
+                {/* Footer */}
+                <DialogActions>
+                    <div className="flex items-center justify-between w-full">
+                        <Button variant="contained" onClick={onClickConvertToImage}>
+                            Convert to pdf
                         </Button>
-                        <Button variant="contained" autoFocus onClick={handleClickSave}>
-                            Create
-                        </Button>
+                        <div className="flex items-center gap-x-[10px]">
+                            <Button variant="text" color="inherit" autoFocus onClick={handleClosePopup}>
+                                Cancel
+                            </Button>
+                            <Button variant="contained" autoFocus onClick={handleClickSave}>
+                                Create
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </DialogActions>
-        </StyledDialog>
+                </DialogActions>
+            </StyledDialog>
+            <Loading isLoading={isLoading} />
+        </>
     );
 }
