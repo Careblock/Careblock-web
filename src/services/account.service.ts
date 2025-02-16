@@ -19,8 +19,8 @@ class _AccountService {
         return HttpService.get<Patients[]>(`/account/get-scheduled-patient/${status}/${doctorID}`);
     }
 
-    public getDefaultData(id: string) {
-        return HttpService.get<DataDefaults>(`/account/get-default-data/${id}`);
+    public getDefaultData(appointmentId: string) {
+        return HttpService.get<DataDefaults>(`/account/get-default-data/${appointmentId}`);
     }
 
     public getAllDoctor() {
