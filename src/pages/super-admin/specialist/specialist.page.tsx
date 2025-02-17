@@ -14,7 +14,6 @@ import {
     Select,
     Table,
     TableBody,
-    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -38,6 +37,7 @@ import { Organizations } from '@/types/organization.type';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
+import { StyledTableCell } from '@/constants/common.const';
 
 function SpecialistPage() {
     const { subscribeOnce } = useObservable();
@@ -230,7 +230,7 @@ function SpecialistPage() {
                     label="Search"
                     size="medium"
                     placeholder="Enter name or description"
-                    className="w-[300px]"
+                    className="w-[300px] bg-white"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -251,17 +251,17 @@ function SpecialistPage() {
                         <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
-                                    <TableCell
+                                    <StyledTableCell
                                         key={column.id}
                                         align={column.align}
                                         style={{ minWidth: column.minWidth }}
                                     >
                                         <div className="font-bold uppercase">{column.label}</div>
-                                    </TableCell>
+                                    </StyledTableCell>
                                 ))}
-                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                <StyledTableCell key="actions" align="center" style={{ minWidth: 150 }}>
                                     <div className="font-bold uppercase">Actions</div>
-                                </TableCell>
+                                </StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -273,7 +273,7 @@ function SpecialistPage() {
                                             {columns.map((column) => {
                                                 const value = specialist[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <StyledTableCell key={column.id} align={column.align}>
                                                         {column.id === 'thumbnail' ? (
                                                             <img
                                                                 src={getNotNullString(value, DefaultThumbnail)}
@@ -285,21 +285,21 @@ function SpecialistPage() {
                                                         ) : (
                                                             value
                                                         )}
-                                                    </TableCell>
+                                                    </StyledTableCell>
                                                 );
                                             })}
-                                            <TableCell key="action" align="center">
+                                            <StyledTableCell key="action" align="center">
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
                                                         onClick={() => handleClickEdit(specialist)}
                                                     />
                                                     <Images.MdDelete
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
                                                         onClick={() => handleClickRemove(specialist)}
                                                     />
                                                 </div>
-                                            </TableCell>
+                                            </StyledTableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -360,14 +360,15 @@ function SpecialistPage() {
                                 />
                             </div>
                         </div>
-                        <div className="flex flex-col w-full mb-[16px]">
+                        <div className="flex flex-col w-full">
                             <div>Specialist name:</div>
                             <TextField
+                                fullWidth
                                 id="name"
                                 name="name"
                                 placeholder="Specialist name"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.name}
                                 onChange={formik.handleChange}
@@ -381,7 +382,7 @@ function SpecialistPage() {
                             <Select
                                 className="w-full"
                                 name="organizationId"
-                                size="medium"
+                                size="small"
                                 value={formik.values.organizationId ?? ''}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -393,18 +394,21 @@ function SpecialistPage() {
                                     </MenuItem>
                                 ))}
                             </Select>
-                            <FormHelperText>
-                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.organizationId}</span>
-                            </FormHelperText>
+                            {formik.errors.organizationId && (
+                                <FormHelperText>
+                                    <span className="text-[#d32f2f] mx-[14px]">{formik.errors.organizationId}</span>
+                                </FormHelperText>
+                            )}
                         </div>
                         <div className="flex flex-col w-full">
                             <div>Description:</div>
                             <TextField
+                                fullWidth
                                 id="description"
                                 name="description"
                                 placeholder="Description"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.description}
                                 onChange={formik.handleChange}

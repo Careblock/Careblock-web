@@ -11,7 +11,6 @@ import {
     Paper,
     Table,
     TableBody,
-    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -32,6 +31,7 @@ import { columns } from './examination-type.const';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
+import { StyledTableCell } from '@/constants/common.const';
 
 function ExaminationType() {
     const { subscribeOnce } = useObservable();
@@ -203,7 +203,7 @@ function ExaminationType() {
                     label="Search"
                     size="medium"
                     placeholder="Enter name"
-                    className="w-[300px]"
+                    className="w-[300px] bg-white"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -224,17 +224,17 @@ function ExaminationType() {
                         <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
-                                    <TableCell
+                                    <StyledTableCell
                                         key={column.id}
                                         align={column.align}
                                         style={{ minWidth: column.minWidth }}
                                     >
                                         <div className="font-bold uppercase">{column.label}</div>
-                                    </TableCell>
+                                    </StyledTableCell>
                                 ))}
-                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                <StyledTableCell key="actions" align="center" style={{ minWidth: 150 }}>
                                     <div className="font-bold uppercase">Actions</div>
-                                </TableCell>
+                                </StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -246,33 +246,33 @@ function ExaminationType() {
                                             {columns.map((column) => {
                                                 const value = examinationType[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <StyledTableCell key={column.id} align={column.align}>
                                                         {column.id === 'thumbnail' ? (
                                                             <img
                                                                 src={value ? value : DefaultThumbnail}
                                                                 alt="Thumbnail"
-                                                                className="w-[100px] h-[60px] object-cover"
+                                                                className="size-[60px] object-cover"
                                                             />
                                                         ) : column.format && typeof value === 'number' ? (
                                                             column.format(value)
                                                         ) : (
                                                             value
                                                         )}
-                                                    </TableCell>
+                                                    </StyledTableCell>
                                                 );
                                             })}
-                                            <TableCell key="action" align="center">
+                                            <StyledTableCell key="action" align="center">
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
                                                         onClick={() => handleClickEdit(examinationType)}
                                                     />
                                                     <Images.MdDelete
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
                                                         onClick={() => handleClickRemove(examinationType)}
                                                     />
                                                 </div>
-                                            </TableCell>
+                                            </StyledTableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -336,11 +336,12 @@ function ExaminationType() {
                         <div className="flex flex-col w-full">
                             <div>Type:</div>
                             <TextField
+                                fullWidth
                                 id="name"
                                 name="name"
                                 placeholder="Examination type"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.name}
                                 onChange={formik.handleChange}

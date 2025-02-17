@@ -1,5 +1,5 @@
 export interface Column {
-    id: 'name' | 'thumbnail';
+    id: 'name' | 'thumbnail' | 'examinationTypeName';
     label: string;
     minWidth?: number;
     align?: 'right' | 'left' | 'center';

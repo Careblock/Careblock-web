@@ -161,7 +161,7 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondSt
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
                         startAdornment: (
-                            <InputAdornment position="start">
+                            <InputAdornment position="start" className="!bg-transparent">
                                 <Images.SearchIcon className="!text-[28px]" />
                             </InputAdornment>
                         ),

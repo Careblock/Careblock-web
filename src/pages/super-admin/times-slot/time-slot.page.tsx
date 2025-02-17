@@ -14,7 +14,6 @@ import {
     Select,
     Table,
     TableBody,
-    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -38,6 +37,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
+import { StyledTableCell } from '@/constants/common.const';
 
 function TimeSlot() {
     const { subscribeOnce } = useObservable();
@@ -237,7 +237,7 @@ function TimeSlot() {
                     label="Search"
                     size="medium"
                     placeholder="Enter examination package"
-                    className="w-[300px]"
+                    className="w-[300px] bg-white"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -258,17 +258,17 @@ function TimeSlot() {
                         <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
-                                    <TableCell
+                                    <StyledTableCell
                                         key={column.id}
                                         align={column.align}
                                         style={{ minWidth: column.minWidth }}
                                     >
                                         <div className="font-bold uppercase">{column.label}</div>
-                                    </TableCell>
+                                    </StyledTableCell>
                                 ))}
-                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                <StyledTableCell key="actions" align="center" style={{ minWidth: 150 }}>
                                     <div className="font-bold uppercase">Actions</div>
-                                </TableCell>
+                                </StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -280,25 +280,25 @@ function TimeSlot() {
                                             {columns.map((column) => {
                                                 const value = timeSlot[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <StyledTableCell key={column.id} align={column.align}>
                                                         {column.format && typeof value === 'number'
                                                             ? column.format(value)
                                                             : value}
-                                                    </TableCell>
+                                                    </StyledTableCell>
                                                 );
                                             })}
-                                            <TableCell key="action" align="center">
+                                            <StyledTableCell key="action" align="center">
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
                                                         onClick={() => handleClickEdit(timeSlot)}
                                                     />
                                                     <Images.MdDelete
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
                                                         onClick={() => handleClickRemove(timeSlot)}
                                                     />
                                                 </div>
-                                            </TableCell>
+                                            </StyledTableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -336,27 +336,39 @@ function TimeSlot() {
                                 name="startTime"
                                 value={startTime}
                                 ampm={false}
+                                slotProps={{ textField: { size: 'small' } }}
                                 onChange={handleChangeStartTime}
                             />
-                            <FormHelperText>
-                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.startTime as any}</span>
-                            </FormHelperText>
+                            {formik.errors.startTime && (
+                                <FormHelperText>
+                                    <span className="text-[#d32f2f] mx-[14px]">{formik.errors.startTime as any}</span>
+                                </FormHelperText>
+                            )}
                         </div>
                         <div className="flex flex-col flex-1">
                             <div>End time:</div>
-                            <TimePicker name="endTime" value={endTime} ampm={false} onChange={handleChangeEndTime} />
-                            <FormHelperText>
-                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.endTime as any}</span>
-                            </FormHelperText>
+                            <TimePicker
+                                name="endTime"
+                                value={endTime}
+                                ampm={false}
+                                slotProps={{ textField: { size: 'small' } }}
+                                onChange={handleChangeEndTime}
+                            />
+                            {formik.errors.endTime && (
+                                <FormHelperText>
+                                    <span className="text-[#d32f2f] mx-[14px]">{formik.errors.endTime as any}</span>
+                                </FormHelperText>
+                            )}
                         </div>
                         <div className="flex flex-col flex-1">
                             <div>Period:</div>
                             <TextField
+                                fullWidth
                                 id="period"
                                 name="period"
                                 placeholder="Period"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.period ?? ''}
                                 onChange={formik.handleChange}
@@ -365,12 +377,12 @@ function TimeSlot() {
                                 helperText={formik.touched.period && formik.errors.period}
                             />
                         </div>
-                        <div className="mt-[10px]">
+                        <div>
                             <div>Examination Package:</div>
                             <Select
                                 className="w-full"
                                 name="examinationPackageId"
-                                size="medium"
+                                size="small"
                                 value={formik.values.examinationPackageId ?? ''}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -384,9 +396,13 @@ function TimeSlot() {
                                     </MenuItem>
                                 ))}
                             </Select>
-                            <FormHelperText>
-                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.examinationPackageId}</span>
-                            </FormHelperText>
+                            {formik.errors.examinationPackageId && (
+                                <FormHelperText>
+                                    <span className="text-[#d32f2f] mx-[14px]">
+                                        {formik.errors.examinationPackageId}
+                                    </span>
+                                </FormHelperText>
+                            )}
                         </div>
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
                             <Button variant="text" color="inherit" onClick={handleClosePopupAdd}>

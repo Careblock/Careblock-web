@@ -13,4 +13,10 @@ export const columns: readonly Column[] = [
         minWidth: 170,
         align: 'left',
     },
+    {
+        id: 'examinationTypeName',
+        label: 'Examination Type',
+        minWidth: 170,
+        align: 'left',
+    },
 ];

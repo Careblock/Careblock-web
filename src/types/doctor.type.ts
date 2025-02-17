@@ -3,6 +3,7 @@ import { GENDER } from '@/enums/Common';
 export interface Doctors {
     id: string;
     departmentId: string;
+    departmentName?: string;
     stakeId: string;
     identityId?: string;
     firstname: string;

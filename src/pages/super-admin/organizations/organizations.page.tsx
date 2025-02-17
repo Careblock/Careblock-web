@@ -11,7 +11,6 @@ import {
     Paper,
     Table,
     TableBody,
-    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -33,6 +32,7 @@ import OrganizationService from '@/services/organization.service';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
+import { StyledTableCell } from '@/constants/common.const';
 
 function OrganizationPage() {
     const { subscribeOnce } = useObservable();
@@ -220,7 +220,7 @@ function OrganizationPage() {
                     label="Search"
                     size="medium"
                     placeholder="Enter name or description"
-                    className="w-[300px]"
+                    className="w-[300px] bg-white"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -241,17 +241,17 @@ function OrganizationPage() {
                         <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
-                                    <TableCell
+                                    <StyledTableCell
                                         key={column.id}
                                         align={column.align}
                                         style={{ minWidth: column.minWidth }}
                                     >
                                         <div className="font-bold uppercase">{column.label}</div>
-                                    </TableCell>
+                                    </StyledTableCell>
                                 ))}
-                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                <StyledTableCell key="actions" align="center" style={{ minWidth: 150 }}>
                                     <div className="font-bold uppercase">Actions</div>
-                                </TableCell>
+                                </StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -263,33 +263,33 @@ function OrganizationPage() {
                                             {columns.map((column) => {
                                                 const value = org[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <StyledTableCell key={column.id} align={column.align}>
                                                         {column.id === 'thumbnail' ? (
                                                             <img
                                                                 src={getNotNullString(value, DefaultThumbnail)}
                                                                 alt="Thumbnail"
-                                                                className="w-[100px] max-w-[100%] h-[60px] object-cover"
+                                                                className="size-[60px] object-cover"
                                                             />
                                                         ) : column.format && typeof value === 'number' ? (
                                                             column.format(value)
                                                         ) : (
                                                             value
                                                         )}
-                                                    </TableCell>
+                                                    </StyledTableCell>
                                                 );
                                             })}
-                                            <TableCell key="action" align="center">
+                                            <StyledTableCell key="action" align="center">
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
                                                         onClick={() => handleClickEdit(org)}
                                                     />
                                                     <Images.MdDelete
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
                                                         onClick={() => handleClickRemove(org)}
                                                     />
                                                 </div>
-                                            </TableCell>
+                                            </StyledTableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -359,6 +359,7 @@ function OrganizationPage() {
                                     placeholder="Code"
                                     type="text"
                                     fullWidth
+                                    size="small"
                                     variant="outlined"
                                     value={formik.values.code ?? ''}
                                     onChange={formik.handleChange}
@@ -370,11 +371,12 @@ function OrganizationPage() {
                             <div className="flex flex-col flex-1">
                                 <div>Name:</div>
                                 <TextField
+                                    fullWidth
                                     id="name"
                                     name="name"
                                     placeholder="Name"
                                     type="text"
-                                    fullWidth
+                                    size="small"
                                     variant="outlined"
                                     value={formik.values.name ?? ''}
                                     onChange={formik.handleChange}
@@ -388,11 +390,12 @@ function OrganizationPage() {
                             <div className="flex flex-col w-[40%]">
                                 <div>City:</div>
                                 <TextField
+                                    fullWidth
                                     id="city"
                                     name="city"
                                     placeholder="City"
                                     type="text"
-                                    fullWidth
+                                    size="small"
                                     variant="outlined"
                                     value={formik.values.city ?? ''}
                                     onChange={formik.handleChange}
@@ -404,11 +407,12 @@ function OrganizationPage() {
                             <div className="flex flex-col flex-1">
                                 <div>District:</div>
                                 <TextField
+                                    fullWidth
                                     id="district"
                                     name="district"
                                     placeholder="District"
                                     type="text"
-                                    fullWidth
+                                    size="small"
                                     variant="outlined"
                                     value={formik.values.district ?? ''}
                                     onChange={formik.handleChange}
@@ -421,11 +425,12 @@ function OrganizationPage() {
                         <div className="flex flex-col w-full">
                             <div>Address:</div>
                             <TextField
+                                fullWidth
                                 id="address"
                                 name="address"
                                 placeholder="Address"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.address ?? ''}
                                 onChange={formik.handleChange}
@@ -438,11 +443,12 @@ function OrganizationPage() {
                             <div className="flex flex-col w-full">
                                 <div>MapUrl:</div>
                                 <TextField
+                                    fullWidth
                                     id="mapUrl"
                                     name="mapUrl"
                                     placeholder="MapUrl"
                                     type="text"
-                                    fullWidth
+                                    size="small"
                                     variant="outlined"
                                     value={formik.values.mapUrl ?? ''}
                                     onChange={formik.handleChange}
@@ -454,11 +460,12 @@ function OrganizationPage() {
                             <div className="flex flex-col w-full">
                                 <div>Tel:</div>
                                 <TextField
+                                    fullWidth
                                     id="tel"
                                     name="tel"
                                     placeholder="Tel"
                                     type="text"
-                                    fullWidth
+                                    size="small"
                                     variant="outlined"
                                     value={formik.values.tel ?? ''}
                                     onChange={formik.handleChange}
@@ -468,15 +475,16 @@ function OrganizationPage() {
                                 />
                             </div>
                         </div>
-                        <div className="flex  justify-between gap-[16px]">
+                        <div className="flex  justify-between gap-[16px] mb-[66px]">
                             <div className="flex flex-col w-full">
                                 <div>Website:</div>
                                 <TextField
+                                    fullWidth
                                     id="website"
                                     name="website"
                                     placeholder="Website"
                                     type="text"
-                                    fullWidth
+                                    size="small"
                                     variant="outlined"
                                     value={formik.values.website ?? ''}
                                     onChange={formik.handleChange}
@@ -488,11 +496,12 @@ function OrganizationPage() {
                             <div className="flex flex-col w-full">
                                 <div>Fax:</div>
                                 <TextField
+                                    fullWidth
                                     id="fax"
                                     name="fax"
                                     placeholder="Fax"
                                     type="text"
-                                    fullWidth
+                                    size="small"
                                     variant="outlined"
                                     value={formik.values.fax ?? ''}
                                     onChange={formik.handleChange}
@@ -502,7 +511,7 @@ function OrganizationPage() {
                                 />
                             </div>
                         </div>
-                        <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
+                        <div className="flex items-center justify-end p-[16px] gap-x-[10px] absolute bottom-0 left-0 w-full bg-white">
                             <Button variant="text" color="inherit" onClick={handleClosePopupAdd}>
                                 Cancel
                             </Button>

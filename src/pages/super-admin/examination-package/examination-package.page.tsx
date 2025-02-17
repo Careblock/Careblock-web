@@ -14,7 +14,6 @@ import {
     Select,
     Table,
     TableBody,
-    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -39,6 +38,7 @@ import { Organizations } from '@/types/organization.type';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
+import { StyledTableCell } from '@/constants/common.const';
 
 function ExaminationPackage() {
     const { subscribeOnce } = useObservable();
@@ -246,7 +246,7 @@ function ExaminationPackage() {
                     label="Search"
                     size="medium"
                     placeholder="Enter name"
-                    className="w-[300px]"
+                    className="w-[300px] bg-white"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -267,17 +267,17 @@ function ExaminationPackage() {
                         <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
-                                    <TableCell
+                                    <StyledTableCell
                                         key={column.id}
                                         align={column.align}
                                         style={{ minWidth: column.minWidth }}
                                     >
                                         <div className="font-bold uppercase">{column.label}</div>
-                                    </TableCell>
+                                    </StyledTableCell>
                                 ))}
-                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                <StyledTableCell key="actions" align="center" style={{ minWidth: 150 }}>
                                     <div className="font-bold uppercase">Actions</div>
-                                </TableCell>
+                                </StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -289,7 +289,7 @@ function ExaminationPackage() {
                                             {columns.map((column) => {
                                                 const value = examinationPackage[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <StyledTableCell key={column.id} align={column.align}>
                                                         {column.id === 'thumbnail' ? (
                                                             <img
                                                                 src={value ? value : DefaultThumbnail}
@@ -301,21 +301,21 @@ function ExaminationPackage() {
                                                         ) : (
                                                             value
                                                         )}
-                                                    </TableCell>
+                                                    </StyledTableCell>
                                                 );
                                             })}
-                                            <TableCell key="action" align="center">
+                                            <StyledTableCell key="action" align="center">
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
                                                         onClick={() => handleClickEdit(examinationPackage)}
                                                     />
                                                     <Images.MdDelete
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
                                                         onClick={() => handleClickRemove(examinationPackage)}
                                                     />
                                                 </div>
-                                            </TableCell>
+                                            </StyledTableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -379,11 +379,12 @@ function ExaminationPackage() {
                         <div className="flex flex-col w-full">
                             <div>Package name:</div>
                             <TextField
+                                fullWidth
                                 id="name"
                                 name="name"
                                 placeholder="Examination package name"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.name}
                                 onChange={formik.handleChange}
@@ -392,12 +393,12 @@ function ExaminationPackage() {
                                 helperText={formik.touched.name && formik.errors.name}
                             />
                         </div>
-                        <div className="mt-[16px]">
+                        <div>
                             <div>Examination type:</div>
                             <Select
                                 className="w-full"
                                 name="examinationTypeId"
-                                size="medium"
+                                size="small"
                                 displayEmpty
                                 value={formik.values.examinationTypeId ?? ''}
                                 onChange={formik.handleChange}
@@ -410,16 +411,18 @@ function ExaminationPackage() {
                                     </MenuItem>
                                 ))}
                             </Select>
-                            <FormHelperText>
-                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.examinationTypeId}</span>
-                            </FormHelperText>
+                            {formik.errors.examinationTypeId && (
+                                <FormHelperText>
+                                    <span className="text-[#d32f2f] mx-[14px]">{formik.errors.examinationTypeId}</span>
+                                </FormHelperText>
+                            )}
                         </div>
                         <div>
                             <div>Organization:</div>
                             <Select
                                 className="w-full"
                                 name="organizationId"
-                                size="medium"
+                                size="small"
                                 value={formik.values.organizationId ?? ''}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -431,9 +434,11 @@ function ExaminationPackage() {
                                     </MenuItem>
                                 ))}
                             </Select>
-                            <FormHelperText>
-                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.organizationId}</span>
-                            </FormHelperText>
+                            {formik.errors.organizationId && (
+                                <FormHelperText>
+                                    <span className="text-[#d32f2f] mx-[14px]">{formik.errors.organizationId}</span>
+                                </FormHelperText>
+                            )}
                         </div>
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
                             <Button variant="text" color="inherit" onClick={handleClosePopupAdd}>

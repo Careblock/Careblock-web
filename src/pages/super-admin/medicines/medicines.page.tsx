@@ -14,7 +14,6 @@ import {
     Select,
     Table,
     TableBody,
-    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -38,6 +37,7 @@ import { UnitPrice, UnitPriceName } from '@/enums/UnitPrice';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
+import { StyledTableCell } from '@/constants/common.const';
 
 function Medicines() {
     const { subscribeOnce } = useObservable();
@@ -252,7 +252,7 @@ function Medicines() {
                     label="Search"
                     size="medium"
                     placeholder="Enter name or description"
-                    className="w-[300px]"
+                    className="w-[300px] bg-white"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -273,17 +273,17 @@ function Medicines() {
                         <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
-                                    <TableCell
+                                    <StyledTableCell
                                         key={column.id}
                                         align={column.align}
                                         style={{ minWidth: column.minWidth }}
                                     >
                                         <div className="font-bold uppercase">{column.label}</div>
-                                    </TableCell>
+                                    </StyledTableCell>
                                 ))}
-                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                <StyledTableCell key="actions" align="center" style={{ minWidth: 150 }}>
                                     <div className="font-bold uppercase">Actions</div>
-                                </TableCell>
+                                </StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -295,33 +295,33 @@ function Medicines() {
                                             {columns.map((column) => {
                                                 const value = medicine[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <StyledTableCell key={column.id} align={column.align}>
                                                         {column.id === 'thumbnail' ? (
                                                             <img
                                                                 src={value ? (value as string) : DefaultThumbnail}
                                                                 alt="Thumbnail"
-                                                                className="w-[100px] h-[60px] object-cover"
+                                                                className="size-[70px] object-cover"
                                                             />
                                                         ) : column.format && typeof value === 'number' ? (
                                                             column.format(value)
                                                         ) : (
                                                             value
                                                         )}
-                                                    </TableCell>
+                                                    </StyledTableCell>
                                                 );
                                             })}
-                                            <TableCell key="action" align="center">
+                                            <StyledTableCell key="action" align="center">
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
                                                         onClick={() => handleClickEdit(medicine)}
                                                     />
                                                     <Images.MdDelete
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
                                                         onClick={() => handleClickRemove(medicine)}
                                                     />
                                                 </div>
-                                            </TableCell>
+                                            </StyledTableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -379,11 +379,12 @@ function Medicines() {
                         <div className="flex flex-col flex-1">
                             <div>Medicine name:</div>
                             <TextField
+                                fullWidth
                                 id="name"
                                 name="name"
                                 placeholder="Medicine name"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.name}
                                 onChange={formik.handleChange}
@@ -395,11 +396,12 @@ function Medicines() {
                         <div className="flex flex-col w-full">
                             <div>Description:</div>
                             <TextField
+                                fullWidth
                                 id="description"
                                 name="description"
                                 placeholder="Description"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.description}
                                 onChange={formik.handleChange}
@@ -412,11 +414,12 @@ function Medicines() {
                             <div className="flex flex-col w-full">
                                 <div>Price:</div>
                                 <TextField
+                                    fullWidth
                                     id="price"
                                     name="price"
                                     placeholder="Price"
                                     type="number"
-                                    fullWidth
+                                    size="small"
                                     variant="outlined"
                                     value={formik.values.price}
                                     onChange={formik.handleChange}
@@ -430,7 +433,7 @@ function Medicines() {
                                 <Select
                                     className="w-full"
                                     name="unitPrice"
-                                    size="medium"
+                                    size="small"
                                     displayEmpty
                                     value={formik.values.unitPrice ?? ''}
                                     onChange={formik.handleChange}
@@ -450,7 +453,7 @@ function Medicines() {
                             <Select
                                 className="w-full"
                                 name="medicineTypeId"
-                                size="medium"
+                                size="small"
                                 displayEmpty
                                 value={formik.values.medicineTypeId ?? ''}
                                 onChange={formik.handleChange}
@@ -463,9 +466,11 @@ function Medicines() {
                                     </MenuItem>
                                 ))}
                             </Select>
-                            <FormHelperText>
-                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.medicineTypeId}</span>
-                            </FormHelperText>
+                            {formik.errors.medicineTypeId && (
+                                <FormHelperText>
+                                    <span className="text-[#d32f2f] mx-[14px]">{formik.errors.medicineTypeId}</span>
+                                </FormHelperText>
+                            )}
                         </div>
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
                             <Button variant="text" color="inherit" onClick={handleClosePopupAdd}>

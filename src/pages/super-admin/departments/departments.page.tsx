@@ -16,7 +16,6 @@ import {
     Select,
     Table,
     TableBody,
-    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -36,6 +35,7 @@ import { Organizations } from '@/types/organization.type';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
+import { StyledTableCell } from '@/constants/common.const';
 
 function DepartmentManagement() {
     const { subscribeOnce } = useObservable();
@@ -202,7 +202,7 @@ function DepartmentManagement() {
                     label="Search"
                     size="medium"
                     placeholder="Enter name or location"
-                    className="w-[300px]"
+                    className="w-[300px] bg-white"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -223,17 +223,17 @@ function DepartmentManagement() {
                         <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
-                                    <TableCell
+                                    <StyledTableCell
                                         key={column.id}
                                         align={column.align}
                                         style={{ minWidth: column.minWidth }}
                                     >
                                         <div className="font-bold uppercase">{column.label}</div>
-                                    </TableCell>
+                                    </StyledTableCell>
                                 ))}
-                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                <StyledTableCell key="actions" align="center" style={{ minWidth: 150 }}>
                                     <div className="font-bold uppercase">Actions</div>
-                                </TableCell>
+                                </StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -245,25 +245,25 @@ function DepartmentManagement() {
                                             {columns.map((column) => {
                                                 const value = department[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <StyledTableCell key={column.id} align={column.align}>
                                                         {column.format && typeof value === 'number'
                                                             ? column.format(value)
                                                             : value}
-                                                    </TableCell>
+                                                    </StyledTableCell>
                                                 );
                                             })}
-                                            <TableCell key="action" align="center">
+                                            <StyledTableCell key="action" align="center">
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
                                                         onClick={() => handleClickEdit(department)}
                                                     />
                                                     <Images.MdDelete
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
                                                         onClick={() => handleClickRemove(department)}
                                                     />
                                                 </div>
-                                            </TableCell>
+                                            </StyledTableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -298,11 +298,12 @@ function DepartmentManagement() {
                         <div className="">
                             <div>Name:</div>
                             <TextField
+                                fullWidth
                                 id="name"
                                 name="name"
                                 placeholder="Department name"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.name}
                                 onChange={formik.handleChange}
@@ -314,11 +315,12 @@ function DepartmentManagement() {
                         <div className="">
                             <div>Location:</div>
                             <TextField
+                                fullWidth
                                 id="location"
                                 name="location"
                                 placeholder="Enter location"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.location}
                                 onChange={formik.handleChange}
@@ -332,7 +334,7 @@ function DepartmentManagement() {
                             <Select
                                 className="w-full"
                                 name="organizationId"
-                                size="medium"
+                                size="small"
                                 value={formik.values.organizationId ?? ''}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -344,9 +346,11 @@ function DepartmentManagement() {
                                     </MenuItem>
                                 ))}
                             </Select>
-                            <FormHelperText>
-                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.organizationId}</span>
-                            </FormHelperText>
+                            {formik.errors.organizationId && (
+                                <FormHelperText>
+                                    <span className="text-[#d32f2f] mx-[14px]">{formik.errors.organizationId}</span>
+                                </FormHelperText>
+                            )}
                         </div>
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
                             <Button variant="text" color="inherit" onClick={handleClosePopupAdd}>
