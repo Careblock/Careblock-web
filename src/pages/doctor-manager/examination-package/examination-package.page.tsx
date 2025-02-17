@@ -15,6 +15,7 @@ import {
     Select,
     Table,
     TableBody,
+    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -38,6 +39,7 @@ import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toas
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
 import { StyledTableCell } from '@/constants/common.const';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 function ExaminationPackage() {
     const { subscribeOnce } = useObservable();
@@ -284,44 +286,56 @@ function ExaminationPackage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {examinationPackagesDisplays
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((examinationPackage: ExaminationPackages) => {
-                                    return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={examinationPackage.id}>
-                                            {columns.map((column) => {
-                                                const value = examinationPackage[column.id];
-                                                return (
-                                                    <StyledTableCell key={column.id} align={column.align}>
-                                                        {column.id === 'thumbnail' ? (
-                                                            <img
-                                                                src={value ? value : DefaultThumbnail}
-                                                                alt="Thumbnail"
-                                                                className="w-[100px] h-[60px] object-cover"
-                                                            />
-                                                        ) : column.format && typeof value === 'number' ? (
-                                                            column.format(value)
-                                                        ) : (
-                                                            value
-                                                        )}
-                                                    </StyledTableCell>
-                                                );
-                                            })}
-                                            <StyledTableCell key="action" align="center">
-                                                <div className="flex items-center justify-center">
-                                                    <Images.MdEdit
-                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
-                                                        onClick={() => handleClickEdit(examinationPackage)}
-                                                    />
-                                                    <Images.MdDelete
-                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
-                                                        onClick={() => handleClickRemove(examinationPackage)}
-                                                    />
-                                                </div>
-                                            </StyledTableCell>
-                                        </TableRow>
-                                    );
-                                })}
+                            {examinationPackagesDisplays.length ? (
+                                examinationPackagesDisplays
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((examinationPackage: ExaminationPackages) => {
+                                        return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={examinationPackage.id}>
+                                                {columns.map((column) => {
+                                                    const value = examinationPackage[column.id];
+                                                    return (
+                                                        <StyledTableCell key={column.id} align={column.align}>
+                                                            {column.id === 'thumbnail' ? (
+                                                                <img
+                                                                    src={value ? value : DefaultThumbnail}
+                                                                    alt="Thumbnail"
+                                                                    className="w-[100px] h-[60px] object-cover"
+                                                                />
+                                                            ) : column.format && typeof value === 'number' ? (
+                                                                column.format(value)
+                                                            ) : (
+                                                                value
+                                                            )}
+                                                        </StyledTableCell>
+                                                    );
+                                                })}
+                                                <StyledTableCell key="action" align="center">
+                                                    <div className="flex items-center justify-center">
+                                                        <Images.MdEdit
+                                                            className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                            onClick={() => handleClickEdit(examinationPackage)}
+                                                        />
+                                                        <Images.MdDelete
+                                                            className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                            onClick={() => handleClickRemove(examinationPackage)}
+                                                        />
+                                                    </div>
+                                                </StyledTableCell>
+                                            </TableRow>
+                                        );
+                                    })
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={4}>
+                                        <div className="w-full flex items-center justify-center">
+                                            <div className="w-[200px]">
+                                                <Nodata />
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>

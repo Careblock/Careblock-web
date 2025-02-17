@@ -14,6 +14,7 @@ import {
     Select,
     Table,
     TableBody,
+    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -38,6 +39,7 @@ import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
 import { StyledTableCell } from '@/constants/common.const';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 function TimeSlot() {
     const { subscribeOnce } = useObservable();
@@ -272,36 +274,48 @@ function TimeSlot() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {timeSlotsDisplays
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((timeSlot: TimeSlots) => {
-                                    return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={timeSlot.id}>
-                                            {columns.map((column) => {
-                                                const value = timeSlot[column.id];
-                                                return (
-                                                    <StyledTableCell key={column.id} align={column.align}>
-                                                        {column.format && typeof value === 'number'
-                                                            ? column.format(value)
-                                                            : value}
-                                                    </StyledTableCell>
-                                                );
-                                            })}
-                                            <StyledTableCell key="action" align="center">
-                                                <div className="flex items-center justify-center">
-                                                    <Images.MdEdit
-                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
-                                                        onClick={() => handleClickEdit(timeSlot)}
-                                                    />
-                                                    <Images.MdDelete
-                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
-                                                        onClick={() => handleClickRemove(timeSlot)}
-                                                    />
-                                                </div>
-                                            </StyledTableCell>
-                                        </TableRow>
-                                    );
-                                })}
+                            {timeSlotsDisplays.length ? (
+                                timeSlotsDisplays
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((timeSlot: TimeSlots) => {
+                                        return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={timeSlot.id}>
+                                                {columns.map((column) => {
+                                                    const value = timeSlot[column.id];
+                                                    return (
+                                                        <StyledTableCell key={column.id} align={column.align}>
+                                                            {column.format && typeof value === 'number'
+                                                                ? column.format(value)
+                                                                : value}
+                                                        </StyledTableCell>
+                                                    );
+                                                })}
+                                                <StyledTableCell key="action" align="center">
+                                                    <div className="flex items-center justify-center">
+                                                        <Images.MdEdit
+                                                            className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                            onClick={() => handleClickEdit(timeSlot)}
+                                                        />
+                                                        <Images.MdDelete
+                                                            className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                            onClick={() => handleClickRemove(timeSlot)}
+                                                        />
+                                                    </div>
+                                                </StyledTableCell>
+                                            </TableRow>
+                                        );
+                                    })
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={5}>
+                                        <div className="w-full flex items-center justify-center">
+                                            <div className="w-[200px]">
+                                                <Nodata />
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>

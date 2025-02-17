@@ -11,6 +11,7 @@ import {
     Paper,
     Table,
     TableBody,
+    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -31,6 +32,7 @@ import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
 import { StyledTableCell } from '@/constants/common.const';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 function PaymentMethodPage() {
     const { subscribeOnce } = useObservable();
@@ -217,36 +219,48 @@ function PaymentMethodPage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {paymentMethodsDisplays
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((paymentMethod: PaymentMethods) => {
-                                    return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={paymentMethod.id}>
-                                            {columns.map((column) => {
-                                                const value = paymentMethod[column.id];
-                                                return (
-                                                    <StyledTableCell key={column.id} align={column.align}>
-                                                        {column.format && typeof value === 'number'
-                                                            ? column.format(value)
-                                                            : value}
-                                                    </StyledTableCell>
-                                                );
-                                            })}
-                                            <StyledTableCell key="action" align="center">
-                                                <div className="flex items-center justify-center">
-                                                    <Images.MdEdit
-                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
-                                                        onClick={() => handleClickEdit(paymentMethod)}
-                                                    />
-                                                    <Images.MdDelete
-                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
-                                                        onClick={() => handleClickRemove(paymentMethod)}
-                                                    />
-                                                </div>
-                                            </StyledTableCell>
-                                        </TableRow>
-                                    );
-                                })}
+                            {paymentMethodsDisplays.length ? (
+                                paymentMethodsDisplays
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((paymentMethod: PaymentMethods) => {
+                                        return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={paymentMethod.id}>
+                                                {columns.map((column) => {
+                                                    const value = paymentMethod[column.id];
+                                                    return (
+                                                        <StyledTableCell key={column.id} align={column.align}>
+                                                            {column.format && typeof value === 'number'
+                                                                ? column.format(value)
+                                                                : value}
+                                                        </StyledTableCell>
+                                                    );
+                                                })}
+                                                <StyledTableCell key="action" align="center">
+                                                    <div className="flex items-center justify-center">
+                                                        <Images.MdEdit
+                                                            className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                            onClick={() => handleClickEdit(paymentMethod)}
+                                                        />
+                                                        <Images.MdDelete
+                                                            className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                            onClick={() => handleClickRemove(paymentMethod)}
+                                                        />
+                                                    </div>
+                                                </StyledTableCell>
+                                            </TableRow>
+                                        );
+                                    })
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={2}>
+                                        <div className="w-full flex items-center justify-center">
+                                            <div className="w-[200px]">
+                                                <Nodata />
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>

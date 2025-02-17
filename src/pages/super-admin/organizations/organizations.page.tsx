@@ -9,8 +9,10 @@ import {
     DialogTitle,
     InputAdornment,
     Paper,
+    Stack,
     Table,
     TableBody,
+    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -33,6 +35,7 @@ import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
 import { StyledTableCell } from '@/constants/common.const';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 function OrganizationPage() {
     const { subscribeOnce } = useObservable();
@@ -255,44 +258,56 @@ function OrganizationPage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {organizationsDisplays
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((org: Organizations) => {
-                                    return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={org.id}>
-                                            {columns.map((column) => {
-                                                const value = org[column.id];
-                                                return (
-                                                    <StyledTableCell key={column.id} align={column.align}>
-                                                        {column.id === 'thumbnail' ? (
-                                                            <img
-                                                                src={getNotNullString(value, DefaultThumbnail)}
-                                                                alt="Thumbnail"
-                                                                className="size-[60px] object-cover"
-                                                            />
-                                                        ) : column.format && typeof value === 'number' ? (
-                                                            column.format(value)
-                                                        ) : (
-                                                            value
-                                                        )}
-                                                    </StyledTableCell>
-                                                );
-                                            })}
-                                            <StyledTableCell key="action" align="center">
-                                                <div className="flex items-center justify-center">
-                                                    <Images.MdEdit
-                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
-                                                        onClick={() => handleClickEdit(org)}
-                                                    />
-                                                    <Images.MdDelete
-                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
-                                                        onClick={() => handleClickRemove(org)}
-                                                    />
-                                                </div>
-                                            </StyledTableCell>
-                                        </TableRow>
-                                    );
-                                })}
+                            {organizationsDisplays.length ? (
+                                organizationsDisplays
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((org: Organizations) => {
+                                        return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={org.id}>
+                                                {columns.map((column) => {
+                                                    const value = org[column.id];
+                                                    return (
+                                                        <StyledTableCell key={column.id} align={column.align}>
+                                                            {column.id === 'thumbnail' ? (
+                                                                <img
+                                                                    src={getNotNullString(value, DefaultThumbnail)}
+                                                                    alt="Thumbnail"
+                                                                    className="size-[60px] object-cover"
+                                                                />
+                                                            ) : column.format && typeof value === 'number' ? (
+                                                                column.format(value)
+                                                            ) : (
+                                                                value
+                                                            )}
+                                                        </StyledTableCell>
+                                                    );
+                                                })}
+                                                <StyledTableCell key="action" align="center">
+                                                    <div className="flex items-center justify-center">
+                                                        <Images.MdEdit
+                                                            className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                            onClick={() => handleClickEdit(org)}
+                                                        />
+                                                        <Images.MdDelete
+                                                            className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                            onClick={() => handleClickRemove(org)}
+                                                        />
+                                                    </div>
+                                                </StyledTableCell>
+                                            </TableRow>
+                                        );
+                                    })
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={11}>
+                                        <div className="w-full flex items-center justify-center">
+                                            <div className="w-[200px]">
+                                                <Nodata />
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
