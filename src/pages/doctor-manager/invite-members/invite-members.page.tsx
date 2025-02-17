@@ -9,7 +9,6 @@ import {
     Paper,
     Table,
     TableBody,
-    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -34,6 +33,7 @@ import { NotificationState } from '@/stores/notification';
 import * as signalR from '@microsoft/signalr';
 import { NotificationType } from '@/enums/NotificationType';
 import { Notifications } from '@/types/notification.type';
+import { StyledTableCell } from '@/constants/common.const';
 
 function InviteMembersPage() {
     const { subscribeOnce } = useObservable();
@@ -178,7 +178,7 @@ function InviteMembersPage() {
                     label="Search"
                     size="medium"
                     placeholder="Enter name, phone number or email"
-                    className="w-[300px]"
+                    className="w-[300px] bg-white"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -196,17 +196,17 @@ function InviteMembersPage() {
                         <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
-                                    <TableCell
+                                    <StyledTableCell
                                         key={column.id}
                                         align={column.align}
                                         style={{ minWidth: column.minWidth }}
                                     >
                                         <div className="font-bold uppercase">{column.label}</div>
-                                    </TableCell>
+                                    </StyledTableCell>
                                 ))}
-                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                <StyledTableCell key="actions" align="center" style={{ minWidth: 150 }}>
                                     <div className="font-bold uppercase">Actions</div>
-                                </TableCell>
+                                </StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -218,20 +218,20 @@ function InviteMembersPage() {
                                             {columns.map((column) => {
                                                 const value = inviteMember[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <StyledTableCell key={column.id} align={column.align}>
                                                         {getCellElement(inviteMember, column, value)}
-                                                    </TableCell>
+                                                    </StyledTableCell>
                                                 );
                                             })}
-                                            <TableCell key="action" align="center">
+                                            <StyledTableCell key="action" align="center">
                                                 <div className="flex items-center justify-center gap-x-[16px] border-[#d6d6d6] w-full">
                                                     <Images.FcInvite
-                                                        className="text-[28px] cursor-pointer"
+                                                        className="text-[40px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
                                                         title="Invite to join the organization"
                                                         onClick={() => pushNotification(inviteMember)}
                                                     />
                                                 </div>
-                                            </TableCell>
+                                            </StyledTableCell>
                                         </TableRow>
                                     );
                                 })}

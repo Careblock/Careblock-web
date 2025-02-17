@@ -396,6 +396,7 @@ const AppointmentHistories = () => {
                                 size="medium"
                                 label=""
                                 placeholder="Enter keyword"
+                                className="bg-white"
                                 value={searchValue}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                                     handleSearchValueChanged(event)
@@ -412,7 +413,7 @@ const AppointmentHistories = () => {
                         <div className="flex flex-col ml-[20px] w-full">
                             <div>Doctor:</div>
                             <Select
-                                className="w-full"
+                                className="w-full bg-white"
                                 size="medium"
                                 displayEmpty
                                 value={doctorId}
@@ -431,7 +432,7 @@ const AppointmentHistories = () => {
                         <div className="flex flex-col ml-[20px] w-full">
                             <div>Examination type:</div>
                             <Select
-                                className="w-full"
+                                className="w-full bg-white"
                                 size="medium"
                                 displayEmpty
                                 value={examinationType}
@@ -451,13 +452,14 @@ const AppointmentHistories = () => {
                             <div>Date:</div>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
+                                    className="bg-white"
                                     value={dateFilterData}
                                     onChange={(newValue) => handleChangeDateFilter(newValue)}
                                 />
                             </LocalizationProvider>
                         </div>
                         <div
-                            className="flex items-center mt-auto justify-center ml-[20px] w-[200px] border border-[#a8a8a8] rounded-md p-[6px] cursor-pointer hover:bg-[#d5d5d5]"
+                            className="flex items-center mt-auto justify-center ml-[20px] w-[200px] border border-[#a8a8a8] rounded-md p-[6px] cursor-pointer hover:bg-[#f3f3f3] bg-white"
                             title="Reset filter data"
                             onClick={handleClickResetFilter}
                         >

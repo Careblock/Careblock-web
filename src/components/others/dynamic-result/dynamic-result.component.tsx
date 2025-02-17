@@ -157,7 +157,7 @@ const DynamicResult = forwardRef(({ type, datasource, classes, setDataSubmit }: 
                         value={field.value}
                         variant="outlined"
                         size="small"
-                        className="flex-1 my-[10px]"
+                        className="flex-1 my-[10px] bg-white"
                         onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
                             handleSetFieldValue(field, event.target.value)
                         }
@@ -207,7 +207,7 @@ const DynamicResult = forwardRef(({ type, datasource, classes, setDataSubmit }: 
                         value={field.value}
                         variant="outlined"
                         size="small"
-                        className="w-full my-[10px]"
+                        className="w-full my-[10px] bg-white"
                         onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
                             handleSetFieldValue(field, event.target.value)
                         }
@@ -329,7 +329,7 @@ const DynamicResult = forwardRef(({ type, datasource, classes, setDataSubmit }: 
                                                     value={field.caption}
                                                     variant="outlined"
                                                     size="small"
-                                                    className="w-[160px] !mr-[10px]"
+                                                    className="w-[160px] !mr-[10px] bg-white"
                                                     onChange={(
                                                         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                                                     ) => handleSetCaptionValue(field, event.target.value)}

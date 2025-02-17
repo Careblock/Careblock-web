@@ -15,7 +15,6 @@ import {
     Select,
     Table,
     TableBody,
-    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -35,10 +34,11 @@ import { type Medicines } from '@/types/medicine.type';
 import MedicineService from '@/services/medicine.service';
 import MedicineTypeService from '@/services/medicineType.service';
 import { MedicineTypes } from '@/types/medicineType.type';
-import { UnitPrice } from '@/enums/UnitPrice';
+import { UnitPrice, UnitPriceName } from '@/enums/UnitPrice';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
+import { StyledTableCell } from '@/constants/common.const';
 
 function Medicines() {
     const { subscribeOnce } = useObservable();
@@ -96,12 +96,23 @@ function Medicines() {
         } else setInitialized(false);
     }, [searchValue]);
 
+    const getUnitPriceName = (unitPrice: UnitPrice) => {
+        if (unitPrice === UnitPrice.USD) return UnitPriceName.USD;
+        if (unitPrice === UnitPrice.VND) return UnitPriceName.VND;
+    };
+
     const getDatasource = () => {
         if (!userData?.id) return;
         subscribeOnce(MedicineService.getByOrganization(userData.id), (res: Medicines[]) => {
             if (res) {
-                setMedicines(res);
-                setMedicinesDisplays(res);
+                const theData = res.map((item: Medicines) => {
+                    return {
+                        ...item,
+                        unitPriceName: getUnitPriceName(item.unitPrice),
+                    };
+                });
+                setMedicines(theData);
+                setMedicinesDisplays(theData);
             }
         });
     };
@@ -253,7 +264,7 @@ function Medicines() {
                     label="Search"
                     size="medium"
                     placeholder="Enter name or description"
-                    className="w-[300px]"
+                    className="w-[300px] bg-white"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -274,17 +285,17 @@ function Medicines() {
                         <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
-                                    <TableCell
+                                    <StyledTableCell
                                         key={column.id}
                                         align={column.align}
                                         style={{ minWidth: column.minWidth }}
                                     >
                                         <div className="font-bold uppercase">{column.label}</div>
-                                    </TableCell>
+                                    </StyledTableCell>
                                 ))}
-                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                <StyledTableCell key="actions" align="center" style={{ minWidth: 150 }}>
                                     <div className="font-bold uppercase">Actions</div>
-                                </TableCell>
+                                </StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -296,33 +307,33 @@ function Medicines() {
                                             {columns.map((column) => {
                                                 const value = medicine[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <StyledTableCell key={column.id} align={column.align}>
                                                         {column.id === 'thumbnail' ? (
                                                             <img
-                                                                src={value ? value : DefaultThumbnail}
+                                                                src={value ? `${value}` : DefaultThumbnail}
                                                                 alt="Thumbnail"
-                                                                className="w-[100px] h-[60px] object-cover"
+                                                                className="size-[60px] object-cover"
                                                             />
                                                         ) : column.format && typeof value === 'number' ? (
                                                             column.format(value)
                                                         ) : (
                                                             value
                                                         )}
-                                                    </TableCell>
+                                                    </StyledTableCell>
                                                 );
                                             })}
-                                            <TableCell key="action" align="center">
+                                            <StyledTableCell key="action" align="center">
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
                                                         onClick={() => handleClickEdit(medicine)}
                                                     />
                                                     <Images.MdDelete
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
                                                         onClick={() => handleClickRemove(medicine)}
                                                     />
                                                 </div>
-                                            </TableCell>
+                                            </StyledTableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -385,6 +396,7 @@ function Medicines() {
                                 placeholder="Medicine name"
                                 type="text"
                                 fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.name}
                                 onChange={formik.handleChange}
@@ -401,6 +413,7 @@ function Medicines() {
                                 placeholder="Description"
                                 type="text"
                                 fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.description}
                                 onChange={formik.handleChange}
@@ -418,6 +431,7 @@ function Medicines() {
                                     placeholder="Price"
                                     type="number"
                                     fullWidth
+                                    size="small"
                                     variant="outlined"
                                     value={formik.values.price}
                                     onChange={formik.handleChange}
@@ -430,7 +444,7 @@ function Medicines() {
                                 <div>Unit Price:</div>
                                 <Select
                                     className="w-full"
-                                    size="medium"
+                                    size="small"
                                     displayEmpty
                                     value={formik.values.unitPrice ?? ''}
                                     onChange={($event: any) => handleChangeUnitPrice($event)}
@@ -447,7 +461,7 @@ function Medicines() {
                             <div>Medicine type:</div>
                             <Select
                                 className="w-full"
-                                size="medium"
+                                size="small"
                                 displayEmpty
                                 value={formik.values.medicineTypeId ?? ''}
                                 onChange={($event: any) => handleChangeMedicineType($event)}

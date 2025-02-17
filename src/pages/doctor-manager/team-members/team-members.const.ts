@@ -15,6 +15,18 @@ export const columns: readonly Column[] = [
         align: 'left',
     },
     {
+        id: 'gender',
+        label: 'Gender',
+        minWidth: 100,
+        align: 'left',
+    },
+    {
+        id: 'departmentName',
+        label: 'Department',
+        minWidth: 170,
+        align: 'left',
+    },
+    {
         id: 'email',
         label: 'Email',
         minWidth: 170,

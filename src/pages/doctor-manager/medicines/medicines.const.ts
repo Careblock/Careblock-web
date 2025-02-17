@@ -13,4 +13,28 @@ export const columns: readonly Column[] = [
         minWidth: 170,
         align: 'left',
     },
+    {
+        id: 'medicineTypeName',
+        label: 'Medicine Type',
+        minWidth: 170,
+        align: 'left',
+    },
+    {
+        id: 'price',
+        label: 'Price',
+        minWidth: 170,
+        align: 'left',
+    },
+    {
+        id: 'unitPriceName',
+        label: 'Unit Price',
+        minWidth: 170,
+        align: 'left',
+    },
+    {
+        id: 'description',
+        label: 'Description',
+        minWidth: 170,
+        align: 'left',
+    },
 ];

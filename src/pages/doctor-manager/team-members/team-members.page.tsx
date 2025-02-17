@@ -17,7 +17,6 @@ import {
     Select,
     Table,
     TableBody,
-    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -38,7 +37,7 @@ import SpecialistService from '@/services/specialist.service';
 import AccountService from '@/services/account.service';
 import { Place } from '@/enums/Place';
 import { ROLE_NAMES } from '@/enums/Common';
-import { EMPTY_GUID } from '@/constants/common.const';
+import { EMPTY_GUID, StyledTableCell } from '@/constants/common.const';
 import { PATHS } from '@/enums/RoutePath';
 import { useNavigate } from 'react-router-dom';
 import PopupEditInformation from '../popup-edit-information/popup-edit-information.component';
@@ -327,7 +326,7 @@ function TeamMembersPage() {
                     label="Search"
                     size="medium"
                     placeholder="Enter name, phone number or email"
-                    className="w-[300px]"
+                    className="w-[300px] bg-white"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -345,17 +344,17 @@ function TeamMembersPage() {
                         <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
-                                    <TableCell
+                                    <StyledTableCell
                                         key={column.id}
                                         align={column.align}
                                         style={{ minWidth: column.minWidth }}
                                     >
                                         <div className="font-bold uppercase">{column.label}</div>
-                                    </TableCell>
+                                    </StyledTableCell>
                                 ))}
-                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                <StyledTableCell key="actions" align="center" style={{ minWidth: 150 }}>
                                     <div className="font-bold uppercase">Actions</div>
-                                </TableCell>
+                                </StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -367,32 +366,32 @@ function TeamMembersPage() {
                                             {columns.map((column) => {
                                                 const value = teamMember[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <StyledTableCell key={column.id} align={column.align}>
                                                         {getCellElement(teamMember, column, value)}
-                                                    </TableCell>
+                                                    </StyledTableCell>
                                                 );
                                             })}
-                                            <TableCell key="action" align="center">
+                                            <StyledTableCell key="action" align="center">
                                                 <div className="flex items-center justify-center gap-x-[16px] border-[#d6d6d6] w-full">
                                                     <Images.FaClipboardUser
                                                         title="Assign specialist"
-                                                        className="text-[24px] cursor-pointer hover:text-[#bc8c39]"
+                                                        className="text-[26px] cursor-pointer hover:text-[#bc8c39]"
                                                         onClick={() => handleClickEdit(teamMember)}
                                                     />
                                                     <Images.RiAdminFill
                                                         title="Grant permissions"
-                                                        className="text-[24px] cursor-pointer hover:text-[#3986bc]"
+                                                        className="text-[26px] cursor-pointer hover:text-[#3986bc]"
                                                         onClick={() => handleClickGrant(teamMember)}
                                                     />
                                                     <Images.MdDelete
                                                         title="Remove from the organization"
-                                                        className="text-[24px] cursor-pointer hover:text-[red]"
+                                                        className="text-[26px] cursor-pointer hover:text-[red]"
                                                         onClick={($event: any) =>
                                                             handleClickRemove(teamMember.id, $event)
                                                         }
                                                     />
                                                 </div>
-                                            </TableCell>
+                                            </StyledTableCell>
                                         </TableRow>
                                     );
                                 })}

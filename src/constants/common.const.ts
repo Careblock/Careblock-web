@@ -1,5 +1,6 @@
 import { GENDER, ROLES } from '@/enums/Common';
 import { LoginInitialValues, SignUpInitialValues } from '../types/auth.type';
+import { styled, TableCell, tableCellClasses } from '@mui/material';
 
 export const EMPTY_GUID = '00000000-0000-0000-0000-000000000000';
 export const DEFAULT_DATE_FORMAT = 'DD/MM/YYYY';
@@ -56,3 +57,13 @@ export const INITIAL_USER_VALUES = {
     } as SignUpInitialValues,
     CHANGE_PASSWORD_PROFILE: { oldPassword: '', newPassword: '', confirmPassword: '' },
 };
+
+export const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: '#1976d2',
+        color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+    },
+}));

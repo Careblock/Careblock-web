@@ -14,7 +14,6 @@ import {
     Select,
     Table,
     TableBody,
-    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -36,6 +35,7 @@ import { Specialists } from '@/types/specialist.type';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 import { GlobalState } from '@/stores/global.store';
 import { useSelector } from 'react-redux';
+import { StyledTableCell } from '@/constants/common.const';
 
 function ExaminationOption() {
     const { subscribeOnce } = useObservable();
@@ -210,7 +210,7 @@ function ExaminationOption() {
                     label="Search"
                     size="medium"
                     placeholder="Enter name"
-                    className="w-[300px]"
+                    className="w-[300px] bg-white"
                     value={searchValue}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
                     InputProps={{
@@ -231,17 +231,17 @@ function ExaminationOption() {
                         <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
-                                    <TableCell
+                                    <StyledTableCell
                                         key={column.id}
                                         align={column.align}
                                         style={{ minWidth: column.minWidth }}
                                     >
                                         <div className="font-bold uppercase">{column.label}</div>
-                                    </TableCell>
+                                    </StyledTableCell>
                                 ))}
-                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                <StyledTableCell key="actions" align="center" style={{ minWidth: 150 }}>
                                     <div className="font-bold uppercase">Actions</div>
-                                </TableCell>
+                                </StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -253,25 +253,25 @@ function ExaminationOption() {
                                             {columns.map((column) => {
                                                 const value = examinationOption[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <StyledTableCell key={column.id} align={column.align}>
                                                         {column.format && typeof value === 'number'
                                                             ? column.format(value)
                                                             : value}
-                                                    </TableCell>
+                                                    </StyledTableCell>
                                                 );
                                             })}
-                                            <TableCell key="action" align="center">
+                                            <StyledTableCell key="action" align="center">
                                                 <div className="flex items-center justify-center">
                                                     <Images.MdEdit
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
                                                         onClick={() => handleClickEdit(examinationOption)}
                                                     />
                                                     <Images.MdDelete
-                                                        className="text-[30px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
                                                         onClick={() => handleClickRemove(examinationOption)}
                                                     />
                                                 </div>
-                                            </TableCell>
+                                            </StyledTableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -306,11 +306,12 @@ function ExaminationOption() {
                         <div className="flex flex-col w-full">
                             <div>Name:</div>
                             <TextField
+                                fullWidth
                                 id="name"
                                 name="name"
                                 placeholder="Option name"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.name}
                                 onChange={formik.handleChange}
@@ -322,11 +323,12 @@ function ExaminationOption() {
                         <div className="flex flex-col flex-1">
                             <div>Description:</div>
                             <TextField
+                                fullWidth
                                 id="description"
                                 name="description"
                                 placeholder="Description"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.description ?? ''}
                                 onChange={formik.handleChange}
@@ -338,11 +340,12 @@ function ExaminationOption() {
                         <div className="flex flex-col flex-1">
                             <div>Price:</div>
                             <TextField
+                                fullWidth
                                 id="price"
                                 name="price"
                                 placeholder="Price"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.price ?? ''}
                                 onChange={formik.handleChange}
@@ -354,11 +357,12 @@ function ExaminationOption() {
                         <div className="flex flex-col flex-1">
                             <div>Time Estimation:</div>
                             <TextField
+                                fullWidth
                                 id="timeEstimation"
                                 name="timeEstimation"
                                 placeholder="Time Estimation"
                                 type="text"
-                                fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={formik.values.timeEstimation ?? ''}
                                 onChange={formik.handleChange}
@@ -372,7 +376,7 @@ function ExaminationOption() {
                             <Select
                                 className="w-full"
                                 name="specialistId"
-                                size="medium"
+                                size="small"
                                 value={formik.values.specialistId ?? ''}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -384,9 +388,11 @@ function ExaminationOption() {
                                     </MenuItem>
                                 ))}
                             </Select>
-                            <FormHelperText>
-                                <span className="text-[#d32f2f] mx-[14px]">{formik.errors.specialistId}</span>
-                            </FormHelperText>
+                            {formik.errors.specialistId && (
+                                <FormHelperText>
+                                    <span className="text-[#d32f2f] mx-[14px]">{formik.errors.specialistId}</span>
+                                </FormHelperText>
+                            )}
                         </div>
                         <div className="flex items-center justify-end mt-[16px] gap-x-[10px]">
                             <Button variant="text" color="inherit" onClick={handleClosePopupAdd}>
