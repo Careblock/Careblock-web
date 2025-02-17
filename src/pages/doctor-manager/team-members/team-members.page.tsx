@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
+import { AuthContextType } from '@/types/auth.type';
+import { addToast } from '@/components/base/toast/toast.service';
 import useObservable from '@/hooks/use-observable.hook';
+import { useAuth } from '@/contexts/auth.context';
 import { setTitle } from '@/utils/document';
 import {
     Box,
@@ -10,51 +13,60 @@ import {
     InputLabel,
     MenuItem,
     OutlinedInput,
+    Paper,
     Select,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
     TextField,
     useTheme,
 } from '@mui/material';
 import { Images } from '@/assets/images';
-import BaseTeamCard from '../team-card.component';
-import AccountService from '@/services/account.service';
-import { Doctors } from '@/types/doctor.type';
-import { AuthContextType } from '@/types/auth.type';
-import { useAuth } from '@/contexts/auth.context';
-import { Place } from '@/enums/Place';
-import { addToast } from '@/components/base/toast/toast.service';
 import { SystemMessage } from '@/constants/message.const';
 import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
-import PopupGrantPermission from '../popup-grant-permisstion/popup-grant-permission.component';
-import { ROLE_NAMES } from '@/enums/Common';
-import { useNavigate } from 'react-router-dom';
-import { PATHS } from '@/enums/RoutePath';
-import PopupEditInformation from '../popup-edit-information/popup-edit-information.component';
-import { getStyles, MenuProps } from './team-members.const';
-import SpecialistService from '@/services/specialist.service';
-import { Specialists } from '@/types/specialist.type';
-import { EMPTY_GUID } from '@/constants/common.const';
-import Nodata from '@/components/base/no-data/nodata.component';
+import { columns, getStyles, MenuProps } from './team-members.const';
+import { getNotNullString } from '@/utils/string.helper';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/stores/global.store';
+import { Doctors } from '@/types/doctor.type';
+import SpecialistService from '@/services/specialist.service';
+import AccountService from '@/services/account.service';
+import { Place } from '@/enums/Place';
+import { ROLE_NAMES } from '@/enums/Common';
+import { EMPTY_GUID } from '@/constants/common.const';
+import { PATHS } from '@/enums/RoutePath';
+import { useNavigate } from 'react-router-dom';
+import PopupEditInformation from '../popup-edit-information/popup-edit-information.component';
+import PopupGrantPermission from '../popup-grant-permisstion/popup-grant-permission.component';
+import avatarDefault from '@/assets/images/auth/avatarDefault.png';
+import { Specialists } from '@/types/specialist.type';
+import { Column } from './team-members.type';
+import { getFullName } from '@/utils/common.helpers';
 
 function TeamMembersPage() {
-    const MAX_RECORE_PERPAGE = 9;
     const theme = useTheme();
     const navigate = useNavigate();
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [initialized, setInitialized] = useState(true);
-    const [doctors, setDoctors] = useState<any[]>([]);
-    const [doctorDisplays, setDoctorDisplays] = useState<any[]>([]);
+    const collapsed = useSelector((state: GlobalState) => state.system.collapsed);
     const [searchValue, setSearchValue] = useState<string>('');
-    const [pageIndex, setPageIndex] = useState<number>(1);
-    const [totalPage, setTotalPage] = useState<number>(0);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [teamMembers, setTeamMembers] = useState<any[]>([]);
+    const [teamMembersDisplays, setTeamMembersDisplays] = useState<any[]>([]);
+    const [isVisiblePopupEdit, setIsVisiblePopupEdit] = useState<boolean>(false);
     const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
     const [isVisiblePopupGrant, setIsVisiblePopupGrant] = useState<boolean>(false);
-    const [isVisiblePopupEdit, setIsVisiblePopupEdit] = useState<boolean>(false);
     const [deletedId, setDeletedId] = useState<string>();
     const [grantedDoctor, setGrantedDoctor] = useState<any>();
-    const [editDoctor, setEditDoctor] = useState<any>();
     const [permissionCheckedList, setPermissionCheckedList] = useState<boolean[]>([false, false]);
+    const [editDoctor, setEditDoctor] = useState<any>();
     const [specialist, setSpecialist] = useState<any[]>([]);
     const [selectedSpecialist, setSelectedSpecialist] = useState<any[]>([]);
 
@@ -62,29 +74,23 @@ function TeamMembersPage() {
         setTitle('Team Members | CareBlock');
 
         getSpecialistData();
-        getDoctorDatas();
+        getDatasource();
     }, []);
 
     useEffect(() => {
         if (!initialized) {
-            if (searchValue.trim() === '') {
-                setDoctorDisplays(doctors.slice(0, 9));
-                setPageIndex(1);
-                setTotalPage(Math.ceil(doctors.length / MAX_RECORE_PERPAGE));
-            } else {
-                let result = doctors.filter((doctor: Doctors) => {
-                    if (
-                        doctor.firstname.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
-                        doctor.lastname?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
-                        doctor.phone?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
-                        doctor.email?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())
-                    )
-                        return doctor;
-                });
-                setDoctorDisplays(result);
-                setPageIndex(1);
-                setTotalPage(1);
-            }
+            let result = teamMembers.filter((teamMember: Doctors) => {
+                if (
+                    teamMember.firstname.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
+                    teamMember.lastname?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
+                    teamMember.phone?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
+                    teamMember.email?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())
+                ) {
+                    return teamMember;
+                }
+            });
+            setTeamMembersDisplays(result);
+            setPage(0);
         } else setInitialized(false);
     }, [searchValue]);
 
@@ -95,12 +101,13 @@ function TeamMembersPage() {
         });
     };
 
-    const getDoctorDatas = () => {
+    const getDatasource = () => {
         if (!userData?.id) return;
         subscribeOnce(AccountService.getDoctorsOrg(Place.Inclusive, userData.id), (res: Doctors[]) => {
-            setDoctors(res);
-            setDoctorDisplays(res.slice(0, 9));
-            setTotalPage(Math.ceil(res.length / MAX_RECORE_PERPAGE));
+            if (res) {
+                setTeamMembers(res);
+                setTeamMembersDisplays(res);
+            }
         });
     };
 
@@ -108,27 +115,13 @@ function TeamMembersPage() {
         setSearchValue(event.target.value);
     };
 
-    const handleClickPrevious = () => {
-        const prevIndex = pageIndex - 1;
-        if (prevIndex > 0) {
-            setDoctorDisplays(
-                doctors.slice(
-                    (prevIndex - 1) * MAX_RECORE_PERPAGE,
-                    (prevIndex - 1) * MAX_RECORE_PERPAGE + MAX_RECORE_PERPAGE
-                )
-            );
-            setPageIndex(prevIndex);
-        }
+    const handleChangePage = (_: unknown, newPage: number) => {
+        setPage(newPage);
     };
 
-    const handleClickNext = () => {
-        const nextIndex = pageIndex + 1;
-        if (nextIndex <= totalPage) {
-            setDoctorDisplays(
-                doctors.slice(pageIndex * MAX_RECORE_PERPAGE, pageIndex * MAX_RECORE_PERPAGE + MAX_RECORE_PERPAGE)
-            );
-            setPageIndex(nextIndex);
-        }
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
     };
 
     const handleClickRemove = (doctorId: string, event: any) => {
@@ -149,7 +142,7 @@ function TeamMembersPage() {
 
     const handleClickEdit = (doctor: any) => {
         const specialistData: any[] = doctor.specialist.filter((spec: string) => spec !== EMPTY_GUID);
-        const ids = specialist.map((sp: Specialists) => sp.id);
+        const ids = specialist.map((sp: Doctors) => sp.id);
         const existedIds = specialistData.filter((item: string) => ids.includes(item));
         let result = new Set();
         if (existedIds.length) {
@@ -178,13 +171,14 @@ function TeamMembersPage() {
         if (!deletedId) return;
         subscribeOnce(AccountService.removeDoctorFromOrg(deletedId), (res: boolean) => {
             if (res === true) {
+                setPage(0);
                 setIsVisiblePopupConfirm(false);
                 addToast({
                     text: SystemMessage.DELETE_DEPARTMENT,
                     position: ToastPositionEnum.TopRight,
                     status: ToastStatusEnum.Valid,
                 });
-                getDoctorDatas();
+                getDatasource();
 
                 if (deletedId === userData!.id) {
                     navigate({
@@ -224,7 +218,7 @@ function TeamMembersPage() {
     };
 
     const getSpecialistName = (id: string) => {
-        return specialist.filter((item: Specialists) => item.id === id)[0]?.name ?? '';
+        return specialist.filter((item: Doctors) => item.id === id)[0]?.name ?? '';
     };
 
     const handleGrantPermission = (permissionRequest: string[]) => {
@@ -237,7 +231,7 @@ function TeamMembersPage() {
                     position: ToastPositionEnum.TopRight,
                     status: ToastStatusEnum.Valid,
                 });
-                getDoctorDatas();
+                getDatasource();
 
                 if (grantedDoctor.id === userData!.id) {
                     navigate({
@@ -274,7 +268,7 @@ function TeamMembersPage() {
                     position: ToastPositionEnum.TopRight,
                     status: ToastStatusEnum.Valid,
                 });
-                getDoctorDatas();
+                getDatasource();
             } else {
                 setIsVisiblePopupEdit(false);
                 addToast({
@@ -286,69 +280,136 @@ function TeamMembersPage() {
         });
     };
 
+    const getCellElement = (teamMember: Doctors, column: Column, value: any) => {
+        if (column.id === 'avatar') {
+            return (
+                <img
+                    src={getNotNullString(value as string, avatarDefault)}
+                    alt="Thumbnail"
+                    className="size-[50px] object-cover rounded-full"
+                />
+            );
+        }
+        if (column.id === 'firstname') {
+            return getFullName(teamMember);
+        }
+        if (column.id === 'roles') {
+            return (
+                <div className="flex flex-col gap-y-[4px]">
+                    {teamMember.roles!.includes(ROLE_NAMES.MANAGER) && (
+                        <div className="text-center text-white bg-[#672bff] py-[2px] px-[10px] rounded-full select-none">
+                            Manager
+                        </div>
+                    )}
+                    {teamMember.roles!.includes(ROLE_NAMES.DOCTOR) && (
+                        <div className="text-center text-white bg-[#1976d2] py-[2px] px-[10px] rounded-full select-none">
+                            Doctor
+                        </div>
+                    )}
+                </div>
+            );
+        }
+        if (column.format && typeof value === 'number') {
+            return column.format(value);
+        }
+        return value;
+    };
+
     return (
-        <div>
-            {/* Header */}
+        <div className={`h-full w-[calc(100vw-${collapsed ? '70px' : '200px'}-40px)]`}>
             <div className="text-[20px] leading-[20px] font-bold">Manage Team Members</div>
             <div className="text-[16px] mb-[10px]">
                 Add your team members and manage their details & user permissions.
             </div>
-            <div className="w-full h-full overflow-hidden rounded-md shadow-lg">
-                <div className="toolbar bg-[#f4f4f4] rounded-t-md border w-full p-[16px] flex items-center justify-between">
-                    <TextField
-                        variant="outlined"
-                        label="Search"
-                        placeholder="Enter name, phone number or email"
-                        className="w-[300px]"
-                        value={searchValue}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <Images.SearchIcon className="!text-[28px]" />
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                </div>
-                {/* Content */}
-                <div className="p-[16px] flex items-center flex-wrap border border-x-[#d7d7d7] gap-y-[14px] gap-x-[16px]">
-                    {doctorDisplays.length > 0 ? (
-                        doctorDisplays.map((doctor: Doctors) => (
-                            <BaseTeamCard
-                                key={doctor.id}
-                                isInOrganization={true}
-                                dataSource={doctor}
-                                onClickRemove={($event: any) => handleClickRemove(doctor.id, $event)}
-                                onClickGrant={() => handleClickGrant(doctor)}
-                                onClickEdit={() => handleClickEdit(doctor)}
-                            />
-                        ))
-                    ) : (
-                        <div className="w-[260px] mx-auto">
-                            <Nodata />
-                        </div>
-                    )}
-                </div>
-                {/* Footer */}
-                <div className="border bg-[#f4f4f4] border-[#d7d7d7] w-full p-[14px] flex items-center justify-center rounded-b-xl gap-x-[8px] select-none">
-                    <div
-                        className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
-                        onClick={handleClickPrevious}
-                    >
-                        <Images.ArrowBackIosNewIcon fontSize="small" />
-                    </div>
-                    <p className="text-[16px]">
-                        {pageIndex}/{totalPage}
-                    </p>
-                    <div
-                        className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
-                        onClick={handleClickNext}
-                    >
-                        <Images.ArrowForwardIosIcon fontSize="small" />
-                    </div>
-                </div>
+            <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
+                <TextField
+                    variant="outlined"
+                    label="Search"
+                    size="medium"
+                    placeholder="Enter name, phone number or email"
+                    className="w-[300px]"
+                    value={searchValue}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <Images.SearchIcon className="!text-[28px]" />
+                            </InputAdornment>
+                        ),
+                    }}
+                />
             </div>
+            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                <TableContainer className="max-h-[calc(100vh-52px-30px-20px-34px-88px-52px)]">
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((column) => (
+                                    <TableCell
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{ minWidth: column.minWidth }}
+                                    >
+                                        <div className="font-bold uppercase">{column.label}</div>
+                                    </TableCell>
+                                ))}
+                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                    <div className="font-bold uppercase">Actions</div>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {teamMembersDisplays
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((teamMember: Doctors) => {
+                                    return (
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={teamMember.id}>
+                                            {columns.map((column) => {
+                                                const value = teamMember[column.id];
+                                                return (
+                                                    <TableCell key={column.id} align={column.align}>
+                                                        {getCellElement(teamMember, column, value)}
+                                                    </TableCell>
+                                                );
+                                            })}
+                                            <TableCell key="action" align="center">
+                                                <div className="flex items-center justify-center gap-x-[16px] border-[#d6d6d6] w-full">
+                                                    <Images.FaClipboardUser
+                                                        title="Assign specialist"
+                                                        className="text-[24px] cursor-pointer hover:text-[#bc8c39]"
+                                                        onClick={() => handleClickEdit(teamMember)}
+                                                    />
+                                                    <Images.RiAdminFill
+                                                        title="Grant permissions"
+                                                        className="text-[24px] cursor-pointer hover:text-[#3986bc]"
+                                                        onClick={() => handleClickGrant(teamMember)}
+                                                    />
+                                                    <Images.MdDelete
+                                                        title="Remove from the organization"
+                                                        className="text-[24px] cursor-pointer hover:text-[red]"
+                                                        onClick={($event: any) =>
+                                                            handleClickRemove(teamMember.id, $event)
+                                                        }
+                                                    />
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[10, 25, 100]}
+                    component="div"
+                    className="border-t bg-[#f4f4f4]"
+                    count={teamMembersDisplays.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
 
             {/* Edit information */}
             <PopupEditInformation
