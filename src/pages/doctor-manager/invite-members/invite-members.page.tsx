@@ -1,71 +1,82 @@
 import { useEffect, useState } from 'react';
+import { AuthContextType } from '@/types/auth.type';
 import { addToast } from '@/components/base/toast/toast.service';
 import useObservable from '@/hooks/use-observable.hook';
-import { setTitle } from '@/utils/document';
-import { InputAdornment, TextField } from '@mui/material';
-import { Images } from '@/assets/images';
-import BaseTeamCard from '../team-card.component';
-import AccountService from '@/services/account.service';
-import { Doctors } from '@/types/doctor.type';
-import { AuthContextType } from '@/types/auth.type';
 import { useAuth } from '@/contexts/auth.context';
-import { Place } from '@/enums/Place';
-import { Notifications } from '@/types/notification.type';
-import { NotificationType } from '@/enums/NotificationType';
+import { setTitle } from '@/utils/document';
+import {
+    InputAdornment,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+    TextField,
+} from '@mui/material';
+import { Images } from '@/assets/images';
 import { SystemMessage } from '@/constants/message.const';
+import { columns } from './invite-members.const';
+import { getNotNullString } from '@/utils/string.helper';
+import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
+import { GlobalState } from '@/stores/global.store';
+import { Doctors } from '@/types/doctor.type';
+import AccountService from '@/services/account.service';
+import { Place } from '@/enums/Place';
+import { ROLE_NAMES } from '@/enums/Common';
+import avatarDefault from '@/assets/images/auth/avatarDefault.png';
+import { Column } from './invite-members.type';
+import { getFullName } from '@/utils/common.helpers';
 import { NotificationState } from '@/stores/notification';
 import * as signalR from '@microsoft/signalr';
-import Nodata from '@/components/base/no-data/nodata.component';
-import { ToastPositionEnum } from '@/components/base/toast/toast.type';
+import { NotificationType } from '@/enums/NotificationType';
+import { Notifications } from '@/types/notification.type';
 
 function InviteMembersPage() {
-    const MAX_RECORE_PERPAGE = 9;
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [initialized, setInitialized] = useState(true);
-    const [doctors, setDoctors] = useState<any[]>([]);
-    const [doctorDisplays, setDoctorDisplays] = useState<any[]>([]);
     const [searchValue, setSearchValue] = useState<string>('');
-    const [pageIndex, setPageIndex] = useState<number>(1);
-    const [totalPage, setTotalPage] = useState<number>(0);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [inviteMembers, setInviteMembers] = useState<any[]>([]);
+    const [inviteMembersDisplays, setInviteMembersDisplays] = useState<any[]>([]);
+    const collapsed = useSelector((state: GlobalState) => state.system.collapsed);
     const connection = useSelector((state: { notification: NotificationState }) => state.notification.connection);
 
     useEffect(() => {
         setTitle('Invite Members | CareBlock');
 
-        getDoctorDatas();
+        getDatasource();
     }, []);
 
     useEffect(() => {
         if (!initialized) {
-            if (searchValue.trim() === '') {
-                setDoctorDisplays(doctors.slice(0, 9));
-                setPageIndex(1);
-                setTotalPage(Math.ceil(doctors.length / MAX_RECORE_PERPAGE));
-            } else {
-                let result = doctors.filter((doctor: Doctors) => {
-                    if (
-                        doctor.firstname.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
-                        doctor.lastname?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
-                        doctor.phone?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
-                        doctor.email?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())
-                    )
-                        return doctor;
-                });
-                setDoctorDisplays(result);
-                setPageIndex(1);
-                setTotalPage(1);
-            }
+            let result = inviteMembers.filter((inviteMember: Doctors) => {
+                if (
+                    inviteMember.firstname.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
+                    inviteMember.lastname?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
+                    inviteMember.phone?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase()) ||
+                    inviteMember.email?.toLocaleLowerCase().includes(searchValue?.toLocaleLowerCase())
+                ) {
+                    return inviteMember;
+                }
+            });
+            setInviteMembersDisplays(result);
+            setPage(0);
         } else setInitialized(false);
     }, [searchValue]);
 
-    const getDoctorDatas = () => {
+    const getDatasource = () => {
         if (!userData?.id) return;
         subscribeOnce(AccountService.getDoctorsOrg(Place.Exclusive, userData.id), (res: Doctors[]) => {
-            setDoctors(res);
-            setDoctorDisplays(res.slice(0, 9));
-            setTotalPage(Math.ceil(res.length / MAX_RECORE_PERPAGE));
+            if (res) {
+                setInviteMembers(res);
+                setInviteMembersDisplays(res);
+            }
         });
     };
 
@@ -73,27 +84,13 @@ function InviteMembersPage() {
         setSearchValue(event.target.value);
     };
 
-    const handleClickPrevious = () => {
-        const prevIndex = pageIndex - 1;
-        if (prevIndex > 0) {
-            setDoctorDisplays(
-                doctors.slice(
-                    (prevIndex - 1) * MAX_RECORE_PERPAGE,
-                    (prevIndex - 1) * MAX_RECORE_PERPAGE + MAX_RECORE_PERPAGE
-                )
-            );
-            setPageIndex(prevIndex);
-        }
+    const handleChangePage = (_: unknown, newPage: number) => {
+        setPage(newPage);
     };
 
-    const handleClickNext = () => {
-        const nextIndex = pageIndex + 1;
-        if (nextIndex <= totalPage) {
-            setDoctorDisplays(
-                doctors.slice(pageIndex * MAX_RECORE_PERPAGE, pageIndex * MAX_RECORE_PERPAGE + MAX_RECORE_PERPAGE)
-            );
-            setPageIndex(nextIndex);
-        }
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
     };
 
     const pushNotification = (doctor: any) => {
@@ -134,70 +131,124 @@ function InviteMembersPage() {
         if (!isError) addToast({ text: SystemMessage.INVITE_MEMBER, position: ToastPositionEnum.TopRight });
     };
 
+    const getCellElement = (inviteMember: Doctors, column: Column, value: any) => {
+        if (column.id === 'avatar') {
+            return (
+                <img
+                    src={getNotNullString(value as string, avatarDefault)}
+                    alt="Thumbnail"
+                    className="size-[50px] object-cover rounded-full"
+                />
+            );
+        }
+        if (column.id === 'firstname') {
+            return getFullName(inviteMember);
+        }
+        if (column.id === 'roles') {
+            return (
+                <div className="flex flex-col gap-y-[4px]">
+                    {inviteMember.roles!.includes(ROLE_NAMES.MANAGER) && (
+                        <div className="text-center text-white bg-[#672bff] py-[2px] px-[10px] rounded-full select-none">
+                            Manager
+                        </div>
+                    )}
+                    {inviteMember.roles!.includes(ROLE_NAMES.DOCTOR) && (
+                        <div className="text-center text-white bg-[#1976d2] py-[2px] px-[10px] rounded-full select-none">
+                            Doctor
+                        </div>
+                    )}
+                </div>
+            );
+        }
+        if (column.format && typeof value === 'number') {
+            return column.format(value);
+        }
+        return value;
+    };
+
     return (
-        <div>
-            {/* Header */}
+        <div className={`h-full w-[calc(100vw-${collapsed ? '70px' : '200px'}-40px)]`}>
             <div className="text-[20px] leading-[20px] font-bold">Invite to join the Organization</div>
             <div className="text-[16px] mb-[10px]">
                 Add to your team members and manage their details & user permissions.
             </div>
-            <div className="w-full h-full overflow-hidden rounded-md shadow-lg">
-                <div className="toolbar bg-[#f4f4f4] rounded-t-md border w-full p-[16px] flex items-center justify-between">
-                    <TextField
-                        variant="outlined"
-                        label="Search"
-                        placeholder="Enter name, phone number or email"
-                        className="w-[300px]"
-                        value={searchValue}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <Images.SearchIcon className="!text-[28px]" />
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                </div>
-                {/* Content */}
-                <div className="p-[16px] flex items-center flex-wrap border border-x-[#d7d7d7] gap-y-[14px] gap-x-[16px]">
-                    {doctorDisplays.length > 0 ? (
-                        doctorDisplays.map((doctor: Doctors) => (
-                            <BaseTeamCard
-                                key={doctor.id}
-                                isInOrganization={false}
-                                dataSource={doctor}
-                                onClickRemove={() => {}}
-                                onClickGrant={() => {}}
-                                onClickEdit={() => {}}
-                                onClickInvite={() => pushNotification(doctor)}
-                            />
-                        ))
-                    ) : (
-                        <div className="w-[260px] mx-auto">
-                            <Nodata />
-                        </div>
-                    )}
-                </div>
-                {/* Footer */}
-                <div className="border bg-[#f4f4f4] border-[#d7d7d7] w-full p-[14px] flex items-center justify-center rounded-b-xl gap-x-[8px] select-none">
-                    <div
-                        className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
-                        onClick={handleClickPrevious}
-                    >
-                        <Images.ArrowBackIosNewIcon />
-                    </div>
-                    <p className="text-[16px]">
-                        {pageIndex}/{totalPage}
-                    </p>
-                    <div
-                        className="flex items-center justify-center cursor-pointer rounded-full hover:bg-[#eee]"
-                        onClick={handleClickNext}
-                    >
-                        <Images.ArrowForwardIosIcon fontSize="small" />
-                    </div>
-                </div>
+            <div className="toolbar bg-[#f4f4f4] shadow-md rounded-t-md border w-full p-[16px] flex items-center justify-between">
+                <TextField
+                    variant="outlined"
+                    label="Search"
+                    size="medium"
+                    placeholder="Enter name, phone number or email"
+                    className="w-[300px]"
+                    value={searchValue}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleSearchValueChanged(event)}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <Images.SearchIcon className="!text-[28px]" />
+                            </InputAdornment>
+                        ),
+                    }}
+                />
             </div>
+            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                <TableContainer className="max-h-[calc(100vh-52px-30px-20px-34px-88px-52px)]">
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((column) => (
+                                    <TableCell
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{ minWidth: column.minWidth }}
+                                    >
+                                        <div className="font-bold uppercase">{column.label}</div>
+                                    </TableCell>
+                                ))}
+                                <TableCell key="actions" align="center" style={{ minWidth: 150 }}>
+                                    <div className="font-bold uppercase">Actions</div>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {inviteMembersDisplays
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((inviteMember: Doctors) => {
+                                    return (
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={inviteMember.id}>
+                                            {columns.map((column) => {
+                                                const value = inviteMember[column.id];
+                                                return (
+                                                    <TableCell key={column.id} align={column.align}>
+                                                        {getCellElement(inviteMember, column, value)}
+                                                    </TableCell>
+                                                );
+                                            })}
+                                            <TableCell key="action" align="center">
+                                                <div className="flex items-center justify-center gap-x-[16px] border-[#d6d6d6] w-full">
+                                                    <Images.FcInvite
+                                                        className="text-[28px] cursor-pointer"
+                                                        title="Invite to join the organization"
+                                                        onClick={() => pushNotification(inviteMember)}
+                                                    />
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[10, 25, 100]}
+                    component="div"
+                    className="border-t bg-[#f4f4f4]"
+                    count={inviteMembersDisplays.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
         </div>
     );
 }

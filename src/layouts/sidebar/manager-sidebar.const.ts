@@ -45,6 +45,11 @@ export const sidebarItemManagers: SidebarItemType[] = [
         path: PATHS.INVITE_MEMBERS,
     },
     {
+        itemValue: SidebarItemValue.Specialist,
+        label: 'Specialist',
+        path: PATHS.SPECIALIST,
+    },
+    {
         itemValue: SidebarItemValue.Packages,
         label: 'Packages',
         path: PATHS.EXAMINATION_PACKAGE,
@@ -53,11 +58,6 @@ export const sidebarItemManagers: SidebarItemType[] = [
         itemValue: SidebarItemValue.Medicines,
         label: 'Medicines',
         path: PATHS.MEDICINES,
-    },
-    {
-        itemValue: SidebarItemValue.Specialist,
-        label: 'Specialist',
-        path: PATHS.SPECIALIST,
     },
     {
         itemValue: SidebarItemValue.Appoinments,

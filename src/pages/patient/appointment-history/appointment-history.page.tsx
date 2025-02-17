@@ -83,9 +83,9 @@ const AppointmentHistory = () => {
     return (
         <div className="h-[calc(100vh-48px-28px-40px-44px)] overflow-hidden bg-gray mt-[40px] w-full">
             <div className="text-center text-[20px] font-bold uppercase mb-[10px]">Appointments History</div>
-            <div className="flex items-center justify-center flex-wrap gap-[20px] overflow-y-auto h-[calc(100%-48px)]">
+            <div className="flex-wrap gap-[20px] overflow-y-auto h-[calc(100%-48px)]">
                 {formattedAppointments.map((appointment: any) => (
-                    <div className="w-[30%] bg-white" key={appointment.id}>
+                    <div className="w-[400px] bg-white" key={appointment.id}>
                         <Card>
                             <div className="flex flex-col p-4 border border-[#ccc] border-solid rounded-md h-[258px]">
                                 <p
@@ -109,8 +109,7 @@ const AppointmentHistory = () => {
                                                 <div className="flex gap-2 items-center">
                                                     <Images.LuClock size={18} />
                                                     <span>
-                                                        {appointment.startDateExpectation} -
-                                                        {appointment.endDateExpectation}
+                                                        {`${appointment.startDateExpectation} - ${appointment.endDateExpectation}`}
                                                     </span>
                                                 </div>
                                             </div>
@@ -132,35 +131,35 @@ const AppointmentHistory = () => {
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-y-1 flex-1 min-w-[200px]">
-                                        <div className="flex gap-x-2">
-                                            <p className="font-bold">Hospital:</p>
+                                        <div className="flex gap-x-2" title="Hospital">
+                                            <Images.GrOrganization className="text-[18px]" />
                                             <p>{appointment.organizationName}</p>
                                         </div>
-                                        <div className="flex gap-x-2">
-                                            <p className="font-bold">Patient:</p>
+                                        <div className="flex gap-x-2" title="Patient">
+                                            <Images.FaUser className="text-[18px]" />
                                             <p>{appointment.name}</p>
                                         </div>
-                                        <div className="flex gap-x-2">
-                                            <p className="font-bold">Gender:</p>
+                                        <div className="flex gap-x-2" title="Gender">
+                                            <Images.PiGenderIntersexFill className="text-[18px]" />
                                             <p>{appointment.gender}</p>
                                         </div>
-                                        <div className="flex gap-x-2">
-                                            <p className="font-bold">Phone:</p>
+                                        <div className="flex gap-x-2" title="Phone number">
+                                            <Images.FaPhoneSquareAlt className="text-[18px]" />
                                             <p>{appointment.phone}</p>
                                         </div>
-                                        <div className="flex gap-x-2 w-full pr-[10px]">
-                                            <p className="font-bold">Email:</p>
+                                        <div className="flex gap-x-2 w-full pr-[10px]" title="Email">
+                                            <Images.MdEmail className="text-[18px]" />
                                             <p className="flex-1 truncate">{appointment.email}</p>
                                         </div>
                                         {appointment.address && (
-                                            <div className="flex gap-x-2 w-full pr-[10px]">
-                                                <p className="font-bold">Address:</p>
+                                            <div className="flex gap-x-2 w-full pr-[10px]" title="Address">
+                                                <Images.FaLocationDot className="text-[18px]" />
                                                 <p className="flex-1 truncate">{appointment.address}</p>
                                             </div>
                                         )}
                                         {appointment.reason && (
-                                            <div className="flex gap-x-2 w-full pr-[10px]">
-                                                <p className="font-bold">Reason:</p>
+                                            <div className="flex gap-x-2 w-full pr-[10px]" title="Reason">
+                                                <Images.MdSick className="text-[18px]" />
                                                 <p className="flex-1 truncate">{appointment.reason}</p>
                                             </div>
                                         )}

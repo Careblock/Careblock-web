@@ -130,12 +130,12 @@ function Register() {
     };
 
     return (
-        <div className="flex h-[calc(100vh-48px-44px-28px-16px-30px)] overflow-hidden bg-center bg-cover rounded-xl mx-[-4px]">
-            <div className="w-full flex items-center rounded-[10px] bg-blue-100 shadow-2xl">
+        <div className="flex h-[calc(100vh-48px-44px-28px-16px-30px)] overflow-hidden bg-center bg-cover rounded-tl-xl rounded-bl-xl mx-[-4px]">
+            <div className="w-full flex items-center rounded-tl-[10px] rounded-bl-[10px] bg-blue-100 shadow-2xl">
                 <div className="flex flex-col justify-center items-center w-2/5 h-full select-none">
                     <img src={avatarRegister} alt="Register logo" className="w-full h-full object-contain rounded" />
                 </div>
-                <div className="pb-8 w-2/3 flex-1 text-center rounded-xl shadow-sm bg-white overflow-auto h-[calc(100vh-52px-52px-20px)]">
+                <div className="pb-8 w-2/3 flex-1 text-center shadow-sm bg-white overflow-auto h-[calc(100vh-52px-52px-20px)]">
                     <h2 className="my-4 text-[26px] font-bold text-center select-none">Register</h2>
                     <form onSubmit={formik.handleSubmit} className="w-4/5 mx-auto">
                         <div className="mb-15">
