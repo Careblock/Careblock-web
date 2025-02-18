@@ -20,4 +20,8 @@ export default defineConfig({
             plugins: [tailwindcss()],
         },
     },
+    server: {
+        port: process.env.PORT as unknown as number,
+    },
+    plugins: [vercel()],
 });
