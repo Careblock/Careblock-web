@@ -22,7 +22,7 @@ import { Images } from '@/assets/images';
 import { useFormik } from 'formik';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
-import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import PopupConfirm from '@/components/base/popup/popup-confirm.component';
 import { columns } from './medicine-type.const';
 import { MedicineTypes } from '@/types/medicineType.type';
 import MedicineTypeService from '@/services/medicineType.service';
@@ -318,7 +318,7 @@ function MedicineType() {
                 </DialogContent>
             </Dialog>
 
-            <PopupConfirmDelete
+            <PopupConfirm
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}
                 onClickConfirm={handleConfirmDelete}

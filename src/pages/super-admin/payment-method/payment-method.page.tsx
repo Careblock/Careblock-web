@@ -22,7 +22,7 @@ import { Images } from '@/assets/images';
 import { useFormik } from 'formik';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
-import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import PopupConfirm from '@/components/base/popup/popup-confirm.component';
 import { columns } from './payment-method.const';
 import { INITIAL_PAYMENT_METHOD_VALUES } from '@/constants/payment.const';
 import { paymentMethodSchema } from '@/validations/payment.validation';
@@ -318,7 +318,7 @@ function PaymentMethodPage() {
                 </DialogContent>
             </Dialog>
 
-            <PopupConfirmDelete
+            <PopupConfirm
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}
                 onClickConfirm={handleConfirmDelete}

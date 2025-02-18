@@ -32,7 +32,7 @@ const ManagerSidebar = () => {
     }, []);
 
     useEffect(() => {
-        if (userData?.roles.includes(ROLE_NAMES.MANAGER)) {
+        if (userData?.roles.includes(ROLE_NAMES.MANAGER) || userData?.roles.includes(ROLE_NAMES.MANAGER_SIGN)) {
             subscribeOnce(AppointmentService.getNumberNotAssigned(userData.id), (res: number) => {
                 dispatch(setNotAssigned(res) as any);
             });
@@ -100,6 +100,9 @@ const ManagerSidebar = () => {
             case PATHS.PAYMENT_METHOD_ADMIN:
                 setActiveItem(SidebarItemValue.Payment);
                 break;
+            case PATHS.PERMISSION_ADMIN:
+                setActiveItem(SidebarItemValue.Permission);
+                break;
         }
     };
 
@@ -157,6 +160,8 @@ const ManagerSidebar = () => {
                 return <Images.RiMedicineBottleFill className={`text-[20px] ${collapsed && 'size-[22px]'}`} />;
             case SidebarItemValue.Payment:
                 return <Images.MdOutlinePayment className={`text-[20px] ${collapsed && 'size-[22px]'}`} />;
+            case SidebarItemValue.Permission:
+                return <Images.MdManageAccounts className={`text-[20px] ${collapsed && 'size-[22px]'}`} />;
         }
     };
 

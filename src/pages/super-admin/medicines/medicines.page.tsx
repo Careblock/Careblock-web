@@ -25,7 +25,7 @@ import { Images } from '@/assets/images';
 import { useFormik } from 'formik';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
-import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import PopupConfirm from '@/components/base/popup/popup-confirm.component';
 import { columns } from './medicines.const';
 import DefaultThumbnail from '@/assets/images/common/package.jpg';
 import { INITIAL_MEDICINES_VALUES, UnitPriceOptions } from '@/constants/medicines.const';
@@ -498,7 +498,7 @@ function Medicines() {
                 </DialogContent>
             </Dialog>
 
-            <PopupConfirmDelete
+            <PopupConfirm
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}
                 onClickConfirm={handleConfirmDelete}

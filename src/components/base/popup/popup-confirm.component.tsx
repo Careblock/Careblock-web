@@ -1,10 +1,10 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import { IProps } from './popup-confirm-delete.type';
+import { IProps } from './popup-confirm.type';
 import { getNotNullString } from '@/utils/string.helper';
 import { Images } from '@/assets/images';
 import { ColorValue } from '@/enums/Color';
 
-const PopupConfirmDelete = ({
+const PopupConfirm = ({
     isVisible,
     onClickCancel,
     onClickConfirm,
@@ -44,4 +44,4 @@ const PopupConfirmDelete = ({
     );
 };
 
-export default PopupConfirmDelete;
+export default PopupConfirm;

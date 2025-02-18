@@ -25,7 +25,7 @@ import { Images } from '@/assets/images';
 import { useFormik } from 'formik';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
-import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import PopupConfirm from '@/components/base/popup/popup-confirm.component';
 import { columns } from './examination-package.const';
 import { INITIAL_EXAMINATION_PACKAGES_VALUES } from '@/constants/examinationPackage.const';
 import { editExaminationPackagesAdminSchema } from '@/validations/examinationPackage.validation';
@@ -466,7 +466,7 @@ function ExaminationPackage() {
                 </DialogContent>
             </Dialog>
 
-            <PopupConfirmDelete
+            <PopupConfirm
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}
                 onClickConfirm={handleConfirmDelete}

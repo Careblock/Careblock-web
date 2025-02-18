@@ -25,7 +25,7 @@ import { Images } from '@/assets/images';
 import { useFormik } from 'formik';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
-import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import PopupConfirm from '@/components/base/popup/popup-confirm.component';
 import { columns } from './time-slot.const';
 import { INITIAL_TIME_SLOT_VALUES } from '@/constants/timeSlot.const';
 import { timeSlotSchema } from '@/validations/timeSlot.validation';
@@ -430,7 +430,7 @@ function TimeSlot() {
                 </DialogContent>
             </Dialog>
 
-            <PopupConfirmDelete
+            <PopupConfirm
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}
                 onClickConfirm={handleConfirmDelete}

@@ -31,6 +31,10 @@ class _AccountService {
         return HttpService.get<Doctors[]>(`/account/get-doctors-org/${place}/${doctorId}`);
     }
 
+    public getManagersOrg(organizationId: string) {
+        return HttpService.get<Doctors[]>(`/account/get-managers-org/${organizationId}`);
+    }
+
     public removeDoctorFromOrg(doctorId: string) {
         return HttpService.post<boolean>(`/account/remove-doctors-org/${doctorId}`);
     }
@@ -39,6 +43,15 @@ class _AccountService {
         return HttpService.post<boolean>(`/account/grant-permission/${userId}`, {
             body: {
                 permissions,
+            },
+        });
+    }
+
+    public grantSignPermission(targetId: string, originId?: string) {
+        return HttpService.post<boolean>(`/account/grant-sign-permission`, {
+            body: {
+                targetId,
+                originId: originId,
             },
         });
     }

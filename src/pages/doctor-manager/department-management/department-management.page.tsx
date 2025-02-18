@@ -29,7 +29,7 @@ import { INITIAL_DEPARTMENT_VALUES } from '@/constants/department.const';
 import { departmentSchema } from '@/validations/department.validation';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
-import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import PopupConfirm from '@/components/base/popup/popup-confirm.component';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
@@ -338,7 +338,7 @@ function DepartmentManagement() {
                 </DialogContent>
             </Dialog>
 
-            <PopupConfirmDelete
+            <PopupConfirm
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}
                 onClickConfirm={handleConfirmDelete}

@@ -27,7 +27,7 @@ import {
 } from '@mui/material';
 import { Images } from '@/assets/images';
 import { SystemMessage } from '@/constants/message.const';
-import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import PopupConfirm from '@/components/base/popup/popup-confirm.component';
 import { columns, getStyles, MenuProps } from './team-members.const';
 import { getNotNullString } from '@/utils/string.helper';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
@@ -495,7 +495,7 @@ function TeamMembersPage() {
                 }
             </PopupGrantPermission>
             {/* Delete */}
-            <PopupConfirmDelete
+            <PopupConfirm
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}
                 onClickConfirm={handleConfirmDelete}

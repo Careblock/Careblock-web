@@ -30,7 +30,7 @@ import { INITIAL_DEPARTMENT_VALUES } from '@/constants/department.const';
 import { departmentAdminSchema } from '@/validations/department.validation';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
-import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import PopupConfirm from '@/components/base/popup/popup-confirm.component';
 import OrganizationService from '@/services/organization.service';
 import { Organizations } from '@/types/organization.type';
 import { ToastPositionEnum } from '@/components/base/toast/toast.type';
@@ -378,7 +378,7 @@ function DepartmentManagement() {
                 </DialogContent>
             </Dialog>
 
-            <PopupConfirmDelete
+            <PopupConfirm
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}
                 onClickConfirm={handleConfirmDelete}

@@ -31,6 +31,7 @@ import {
     FaInfoCircle,
     FaHospital,
     FaPhoneSquareAlt,
+    FaFileSignature,
 } from 'react-icons/fa';
 import {
     MdArticle,
@@ -56,6 +57,7 @@ import {
     MdOutlineHelp,
     MdEmail,
     MdSick,
+    MdManageAccounts,
 } from 'react-icons/md';
 import {
     IoIosAttach,
@@ -167,6 +169,7 @@ export const Images = {
     MdOutlineHelp,
     MdEmail,
     MdSick,
+    MdManageAccounts,
     MailOutlineIcon,
     IoLogOutOutline,
     IoMdHelp,
@@ -175,6 +178,7 @@ export const Images = {
     FaInfoCircle,
     FaHospital,
     FaPhoneSquareAlt,
+    FaFileSignature,
     MdOutlineNotifications,
     PiChatsBold,
     FaHouseUser,

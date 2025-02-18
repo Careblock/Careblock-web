@@ -22,7 +22,7 @@ import { Images } from '@/assets/images';
 import { useFormik } from 'formik';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
-import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import PopupConfirm from '@/components/base/popup/popup-confirm.component';
 import { INITIAL_EXAMINATION_TYPES_VALUES } from '@/constants/examinationPackage.const';
 import { examinationTypesSchema } from '@/validations/examinationPackage.validation';
 import DefaultThumbnail from '@/assets/images/common/package.jpg';
@@ -376,7 +376,7 @@ function ExaminationType() {
                 </DialogContent>
             </Dialog>
 
-            <PopupConfirmDelete
+            <PopupConfirm
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}
                 onClickConfirm={handleConfirmDelete}
