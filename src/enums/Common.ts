@@ -8,6 +8,7 @@ export enum ROLES {
     DOCTOR = 2,
     MANAGER = 3,
     ADMIN = 4,
+    MANAGER_SIGN = 5,
 }
 
 export enum ROLE_NAMES {
@@ -15,6 +16,7 @@ export enum ROLE_NAMES {
     DOCTOR = 'DOCTOR',
     MANAGER = 'MANAGER',
     ADMIN = 'ADMIN',
+    MANAGER_SIGN = 'MANAGER_SIGN',
 }
 
 export enum GENDER {

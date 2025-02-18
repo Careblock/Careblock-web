@@ -197,7 +197,7 @@ export default function Navbar() {
                     </div>
                     <div className="flex items-center border-t" onClick={() => handleLogout()}>
                         <Images.IoLogOutOutline size={18} color="red" className="ml-5" />
-                        <Typography className="text-[14px] px-2 pb-2 pt-4 ml-8 text-[red]">Log Out</Typography>
+                        <Typography className="text-[14px] px-2 py-2 ml-8 text-[red]">Log Out</Typography>
                     </div>
                 </div>
             </MenuItem>

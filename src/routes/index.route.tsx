@@ -26,6 +26,7 @@ import ExaminationPackageAdmin from '@/pages/super-admin/examination-package/exa
 import MedicinesAdmin from '@/pages/super-admin/medicines/medicines.page';
 import ExaminationOptions from '@/pages/super-admin/examination-options/examination-options.page';
 import PaymentMethod from '@/pages/super-admin/payment-method/payment-method.page';
+import PermissionPage from '@/pages/super-admin/permissions/permissions.page';
 import TimeSlot from '@/pages/super-admin/times-slot/time-slot.page';
 
 export const routesForNotAuthenticatedOnly = [
@@ -89,6 +90,7 @@ export const routesForAdmin = [
             { path: PATHS.MEDICINE_TYPE_ADMIN, element: <MedicineType /> },
             { path: PATHS.MEDICINES_ADMIN, element: <MedicinesAdmin /> },
             { path: PATHS.PAYMENT_METHOD_ADMIN, element: <PaymentMethod /> },
+            { path: PATHS.PERMISSION_ADMIN, element: <PermissionPage /> },
         ],
     },
 ];

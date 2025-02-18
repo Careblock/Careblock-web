@@ -41,6 +41,7 @@ export enum PATHS {
     MEDICINE_TYPE_ADMIN = '/medicine-type-admin',
     MEDICINES_ADMIN = '/medicines-admin',
     PAYMENT_METHOD_ADMIN = '/payment-method-admin',
+    PERMISSION_ADMIN = '/permission-admin',
     // Error
     NOTFOUND = '*',
     FORBIDDEN = '/forbidden',

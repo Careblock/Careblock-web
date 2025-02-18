@@ -15,6 +15,7 @@ import {
     Select,
     Table,
     TableBody,
+    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -25,7 +26,7 @@ import { Images } from '@/assets/images';
 import { useFormik } from 'formik';
 import { SystemMessage } from '@/constants/message.const';
 import { FormMode } from '@/enums/FormMode';
-import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import PopupConfirm from '@/components/base/popup/popup-confirm.component';
 import { columns } from './medicines.const';
 import DefaultThumbnail from '@/assets/images/common/package.jpg';
 import { INITIAL_MEDICINES_VALUES, UnitPriceOptions } from '@/constants/medicines.const';
@@ -39,6 +40,7 @@ import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toas
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/stores/global.store';
 import { StyledTableCell } from '@/constants/common.const';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 function Medicines() {
     const { subscribeOnce } = useObservable();
@@ -299,44 +301,56 @@ function Medicines() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {medicinesDisplays
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((medicine: Medicines) => {
-                                    return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={medicine.id}>
-                                            {columns.map((column) => {
-                                                const value = medicine[column.id];
-                                                return (
-                                                    <StyledTableCell key={column.id} align={column.align}>
-                                                        {column.id === 'thumbnail' ? (
-                                                            <img
-                                                                src={value ? `${value}` : DefaultThumbnail}
-                                                                alt="Thumbnail"
-                                                                className="size-[60px] object-cover"
-                                                            />
-                                                        ) : column.format && typeof value === 'number' ? (
-                                                            column.format(value)
-                                                        ) : (
-                                                            value
-                                                        )}
-                                                    </StyledTableCell>
-                                                );
-                                            })}
-                                            <StyledTableCell key="action" align="center">
-                                                <div className="flex items-center justify-center">
-                                                    <Images.MdEdit
-                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
-                                                        onClick={() => handleClickEdit(medicine)}
-                                                    />
-                                                    <Images.MdDelete
-                                                        className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
-                                                        onClick={() => handleClickRemove(medicine)}
-                                                    />
-                                                </div>
-                                            </StyledTableCell>
-                                        </TableRow>
-                                    );
-                                })}
+                            {medicinesDisplays.length ? (
+                                medicinesDisplays
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((medicine: Medicines) => {
+                                        return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={medicine.id}>
+                                                {columns.map((column) => {
+                                                    const value = medicine[column.id];
+                                                    return (
+                                                        <StyledTableCell key={column.id} align={column.align}>
+                                                            {column.id === 'thumbnail' ? (
+                                                                <img
+                                                                    src={value ? `${value}` : DefaultThumbnail}
+                                                                    alt="Thumbnail"
+                                                                    className="size-[60px] object-cover"
+                                                                />
+                                                            ) : column.format && typeof value === 'number' ? (
+                                                                column.format(value)
+                                                            ) : (
+                                                                value
+                                                            )}
+                                                        </StyledTableCell>
+                                                    );
+                                                })}
+                                                <StyledTableCell key="action" align="center">
+                                                    <div className="flex items-center justify-center">
+                                                        <Images.MdEdit
+                                                            className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                            onClick={() => handleClickEdit(medicine)}
+                                                        />
+                                                        <Images.MdDelete
+                                                            className="text-[34px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[red]"
+                                                            onClick={() => handleClickRemove(medicine)}
+                                                        />
+                                                    </div>
+                                                </StyledTableCell>
+                                            </TableRow>
+                                        );
+                                    })
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={7}>
+                                        <div className="w-full flex items-center justify-center">
+                                            <div className="w-[200px]">
+                                                <Nodata />
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -485,7 +499,7 @@ function Medicines() {
                 </DialogContent>
             </Dialog>
 
-            <PopupConfirmDelete
+            <PopupConfirm
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}
                 onClickConfirm={handleConfirmDelete}

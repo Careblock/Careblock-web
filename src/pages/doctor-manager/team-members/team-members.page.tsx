@@ -17,6 +17,7 @@ import {
     Select,
     Table,
     TableBody,
+    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -26,7 +27,7 @@ import {
 } from '@mui/material';
 import { Images } from '@/assets/images';
 import { SystemMessage } from '@/constants/message.const';
-import PopupConfirmDelete from '@/components/base/popup/popup-confirm-delete.component';
+import PopupConfirm from '@/components/base/popup/popup-confirm.component';
 import { columns, getStyles, MenuProps } from './team-members.const';
 import { getNotNullString } from '@/utils/string.helper';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
@@ -46,6 +47,7 @@ import avatarDefault from '@/assets/images/auth/avatarDefault.png';
 import { Specialists } from '@/types/specialist.type';
 import { Column } from './team-members.type';
 import { getFullName } from '@/utils/common.helpers';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 function TeamMembersPage() {
     const theme = useTheme();
@@ -358,43 +360,55 @@ function TeamMembersPage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {teamMembersDisplays
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((teamMember: Doctors) => {
-                                    return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={teamMember.id}>
-                                            {columns.map((column) => {
-                                                const value = teamMember[column.id];
-                                                return (
-                                                    <StyledTableCell key={column.id} align={column.align}>
-                                                        {getCellElement(teamMember, column, value)}
-                                                    </StyledTableCell>
-                                                );
-                                            })}
-                                            <StyledTableCell key="action" align="center">
-                                                <div className="flex items-center justify-center gap-x-[16px] border-[#d6d6d6] w-full">
-                                                    <Images.FaClipboardUser
-                                                        title="Assign specialist"
-                                                        className="text-[26px] cursor-pointer hover:text-[#bc8c39]"
-                                                        onClick={() => handleClickEdit(teamMember)}
-                                                    />
-                                                    <Images.RiAdminFill
-                                                        title="Grant permissions"
-                                                        className="text-[26px] cursor-pointer hover:text-[#3986bc]"
-                                                        onClick={() => handleClickGrant(teamMember)}
-                                                    />
-                                                    <Images.MdDelete
-                                                        title="Remove from the organization"
-                                                        className="text-[26px] cursor-pointer hover:text-[red]"
-                                                        onClick={($event: any) =>
-                                                            handleClickRemove(teamMember.id, $event)
-                                                        }
-                                                    />
-                                                </div>
-                                            </StyledTableCell>
-                                        </TableRow>
-                                    );
-                                })}
+                            {teamMembersDisplays.length ? (
+                                teamMembersDisplays
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((teamMember: Doctors) => {
+                                        return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={teamMember.id}>
+                                                {columns.map((column) => {
+                                                    const value = teamMember[column.id];
+                                                    return (
+                                                        <StyledTableCell key={column.id} align={column.align}>
+                                                            {getCellElement(teamMember, column, value)}
+                                                        </StyledTableCell>
+                                                    );
+                                                })}
+                                                <StyledTableCell key="action" align="center">
+                                                    <div className="flex items-center justify-center gap-x-[16px] border-[#d6d6d6] w-full">
+                                                        <Images.FaClipboardUser
+                                                            title="Assign specialist"
+                                                            className="text-[26px] cursor-pointer hover:text-[#bc8c39]"
+                                                            onClick={() => handleClickEdit(teamMember)}
+                                                        />
+                                                        <Images.RiAdminFill
+                                                            title="Grant permissions"
+                                                            className="text-[26px] cursor-pointer hover:text-[#3986bc]"
+                                                            onClick={() => handleClickGrant(teamMember)}
+                                                        />
+                                                        <Images.MdDelete
+                                                            title="Remove from the organization"
+                                                            className="text-[26px] cursor-pointer hover:text-[red]"
+                                                            onClick={($event: any) =>
+                                                                handleClickRemove(teamMember.id, $event)
+                                                            }
+                                                        />
+                                                    </div>
+                                                </StyledTableCell>
+                                            </TableRow>
+                                        );
+                                    })
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={7}>
+                                        <div className="w-full flex items-center justify-center">
+                                            <div className="w-[200px]">
+                                                <Nodata />
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -481,7 +495,7 @@ function TeamMembersPage() {
                 }
             </PopupGrantPermission>
             {/* Delete */}
-            <PopupConfirmDelete
+            <PopupConfirm
                 isVisible={isVisiblePopupConfirm}
                 onClickCancel={handleClosePopupDelete}
                 onClickConfirm={handleConfirmDelete}

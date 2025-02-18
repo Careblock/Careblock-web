@@ -9,6 +9,7 @@ import {
     Paper,
     Table,
     TableBody,
+    TableCell,
     TableContainer,
     TableHead,
     TablePagination,
@@ -34,6 +35,7 @@ import * as signalR from '@microsoft/signalr';
 import { NotificationType } from '@/enums/NotificationType';
 import { Notifications } from '@/types/notification.type';
 import { StyledTableCell } from '@/constants/common.const';
+import Nodata from '@/components/base/no-data/nodata.component';
 
 function InviteMembersPage() {
     const { subscribeOnce } = useObservable();
@@ -210,31 +212,43 @@ function InviteMembersPage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {inviteMembersDisplays
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((inviteMember: Doctors) => {
-                                    return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={inviteMember.id}>
-                                            {columns.map((column) => {
-                                                const value = inviteMember[column.id];
-                                                return (
-                                                    <StyledTableCell key={column.id} align={column.align}>
-                                                        {getCellElement(inviteMember, column, value)}
-                                                    </StyledTableCell>
-                                                );
-                                            })}
-                                            <StyledTableCell key="action" align="center">
-                                                <div className="flex items-center justify-center gap-x-[16px] border-[#d6d6d6] w-full">
-                                                    <Images.FcInvite
-                                                        className="text-[40px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
-                                                        title="Invite to join the organization"
-                                                        onClick={() => pushNotification(inviteMember)}
-                                                    />
-                                                </div>
-                                            </StyledTableCell>
-                                        </TableRow>
-                                    );
-                                })}
+                            {inviteMembersDisplays.length ? (
+                                inviteMembersDisplays
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((inviteMember: Doctors) => {
+                                        return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={inviteMember.id}>
+                                                {columns.map((column) => {
+                                                    const value = inviteMember[column.id];
+                                                    return (
+                                                        <StyledTableCell key={column.id} align={column.align}>
+                                                            {getCellElement(inviteMember, column, value)}
+                                                        </StyledTableCell>
+                                                    );
+                                                })}
+                                                <StyledTableCell key="action" align="center">
+                                                    <div className="flex items-center justify-center gap-x-[16px] border-[#d6d6d6] w-full">
+                                                        <Images.FcInvite
+                                                            className="text-[40px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                            title="Invite to join the organization"
+                                                            onClick={() => pushNotification(inviteMember)}
+                                                        />
+                                                    </div>
+                                                </StyledTableCell>
+                                            </TableRow>
+                                        );
+                                    })
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={6}>
+                                        <div className="w-full flex items-center justify-center">
+                                            <div className="w-[200px]">
+                                                <Nodata />
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>

@@ -14,6 +14,7 @@ export enum SidebarItemValue {
     TimeSlot = 11,
     MedicineType = 12,
     Payment = 13,
+    Permission = 14,
 }
 
 export interface SidebarItemType {
@@ -117,5 +118,10 @@ export const sidebarItemAdmins: SidebarItemType[] = [
         itemValue: SidebarItemValue.Payment,
         label: 'Payment Methods',
         path: PATHS.PAYMENT_METHOD_ADMIN,
+    },
+    {
+        itemValue: SidebarItemValue.Permission,
+        label: 'Permissions',
+        path: PATHS.PERMISSION_ADMIN,
     },
 ];
