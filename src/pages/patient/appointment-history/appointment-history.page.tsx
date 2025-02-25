@@ -1,4 +1,17 @@
-import { Card, Button } from '@mui/material';
+import {
+    Card,
+    Button,
+    Modal,
+    Box,
+    IconButton,
+    Typography,
+    TextField,
+    Rating,
+    Divider,
+    Stack,
+    Chip,
+} from '@mui/material';
+import { Edit as EditIcon } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import AppointmentService from '@/services/appointment.service';
@@ -10,21 +23,57 @@ import { useAuth } from '@/contexts/auth.context';
 import { Images } from '@/assets/images';
 import { Color } from '@/enums/Color';
 import { setTitle } from '@/utils/document';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import ExaminationPackageReviewService from '@/services/examinationPackageReview.service';
+import { ExaminationPackageReview } from '@/types/examinationPackageReview.type';
+import { uuidv4 } from '@/utils/common.helpers';
+import { addToast } from '@/components/base/toast/toast.service';
+import { SystemMessage } from '@/constants/message.const';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
+import {
+    BrowserWallet,
+    Transaction,
+    ForgeScript
+  } from '@meshsdk/core';
+import { AssetMetadata, Mint } from 'node_modules/@meshsdk/core/dist/common/types';
+import { formatDateToString } from '@/utils/datetime.helper';
+import { capitalizedFirstCharacter } from '@/utils/string.helper';
 
 const AppointmentHistory = () => {
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [appointmentData, setAppointmentData] = useState([]);
     const [formattedAppointments, setFormattedAppointments] = useState<any>([]);
+    const [appointmentSelected, setAppointmentSelected] = useState<any>();
+    const [openFeedback, setOpenFeedback] = useState<boolean>(false);
+    const [walletAddress, setWalletAddress] = useState<string>("");
 
     useEffect(() => {
         setTitle('Appointments history | CareBlock');
+        fetchData();
+    }, []);
 
-        if (userData) {
-            subscribeOnce(AppointmentService.getAppointmentHistories(userData.id), (res: any) => {
-                setAppointmentData(res);
-            });
-        }
+
+    useEffect(() => {
+        const getWalletAddress = async () => {
+            let address = '';
+            const wallet = await BrowserWallet.enable('eternl');
+            const lstUsedAddress = await wallet.getUsedAddresses();
+            if (lstUsedAddress?.length > 0) {
+                address = lstUsedAddress[0];
+            }
+            if (!address) {
+                const lstUnUsedAddress = await wallet.getUnusedAddresses();
+                if (lstUnUsedAddress?.length > 0) {
+                    address = lstUnUsedAddress[0];
+                }
+            }
+            setWalletAddress(address);
+        };
+
+        getWalletAddress();
     }, []);
 
     useEffect(() => {
@@ -39,6 +88,7 @@ const AppointmentHistory = () => {
             address: appointment.address?.trim(),
             organizationName: appointment.organizationName?.trim(),
             examinationPackageName: appointment.examinationPackageName?.trim(),
+            examinationPackageId: appointment.examinationPackageId, 
             reason: appointment.reason?.trim(),
             endDateExpectation: format(new Date(appointment.endDateExpectation), 'HH:mm'),
             startDateExpectation: format(new Date(appointment.startDateExpectation), 'HH:mm'),
@@ -52,6 +102,8 @@ const AppointmentHistory = () => {
             endDateReality: format(new Date(appointment.endDateReality), 'HH:mm'),
             startDateReality: format(new Date(appointment.startDateReality), 'HH:mm'),
             dateReality: format(new Date(appointment.startDateReality), 'dd/MM/yyyy'),
+            feedback: appointment.feedback, 
+            rating: appointment.rating, 
         }));
         setFormattedAppointments(formattedData);
     }, [appointmentData]);
@@ -80,6 +132,195 @@ const AppointmentHistory = () => {
         }
     };
 
+    const FeedbackModal: React.FC<any> = ({ open, handleClose }) => {
+        const [reviewId, setReviewId] = useState<string | null>(null);
+    
+        const formik = useFormik({
+            initialValues: {
+                content: '',
+                rating: 5,
+            },
+            validationSchema: Yup.object({
+                content: Yup.string().required('Feedback is required'),
+                rating: Yup.number().min(1).max(5).required('Rating is required'),
+            }),
+            onSubmit: (values) => {
+                handleSubmit(values);
+            },
+        });
+    
+        useEffect(() => {
+            if (appointmentSelected) {
+                subscribeOnce(
+                    ExaminationPackageReviewService.getByAppointmentID(appointmentSelected.id),
+                    (res: any) => {
+                        if (res) {
+                            formik.setValues({
+                                content: res.content || '',
+                                rating: res.rating || 5,
+                            });
+                            setReviewId(res.id); 
+                        } else {
+                            formik.resetForm();
+                            setReviewId(null);
+                        }
+                    }
+                );
+            }
+        }, [appointmentSelected]);
+    
+        const handleSubmit = async (values: any) => {
+            if (userData) {
+                try {
+                    const payload = {
+                        ...values,
+                        userId: userData.id,
+                        examinationPackageId: appointmentSelected.examinationPackageId,
+                        appointmentId: appointmentSelected.id,
+                    } as ExaminationPackageReview;
+    
+                    if (reviewId) {
+                        subscribeOnce(
+                            ExaminationPackageReviewService.update(reviewId, {
+                                ...payload,
+                                id: reviewId,
+                            }),
+                            (_: any) => {
+                                addToast({ text: SystemMessage.FEEDBACK_UPDATE, position: ToastPositionEnum.TopRight });
+                                handleClose(true);
+                            }
+                        );
+                    } else {
+                        let id = uuidv4();
+                        const signedTx = await signFeedback(id);
+                        subscribeOnce(
+                            ExaminationPackageReviewService.create({
+                                ...payload,
+                                signHash: signedTx,
+                                id,
+                            }),
+                            async (_: any) => {
+                                addToast({ text: SystemMessage.FEEDBACK_CREATE, position: ToastPositionEnum.TopRight });
+                                handleClose(true);
+                            }
+                        );
+                    }
+                } catch(err) {
+                    addToast({ text: SystemMessage.FEEDBACK_CREATE_FAILED, position: ToastPositionEnum.TopRight, status: ToastStatusEnum.InValid, });
+                    handleClose(true);    
+                }
+            }
+        };
+
+        const signFeedback = async (id: string) : Promise<string> => {
+            const wallet = await BrowserWallet.enable('eternl');
+            const forgingScript = ForgeScript.withOneSignature(walletAddress);
+            const tx = new Transaction({ initiator: wallet });
+      
+            const assetMetadata: AssetMetadata = {
+                id,
+            };
+            
+            const asset: Mint = {
+                assetName: `feedback_${capitalizedFirstCharacter(appointmentSelected.examinationPackageName)}_${formatDateToString(new Date())}`,
+                assetQuantity: '1',
+                metadata: assetMetadata,
+                label: '721',
+                recipient: walletAddress,
+            };
+            tx.mintAsset(forgingScript, asset);
+            const unsignedTx = await tx.build();
+            const signedTx = await wallet.signTx(unsignedTx);
+            await wallet.submitTx(signedTx);
+            return signedTx;
+        };
+    
+        return (
+            <Modal open={open} onClose={handleClose}>
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 420,
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: 2,
+                    }}
+                >
+                    <IconButton onClick={handleClose} sx={{ position: 'absolute', top: 8, right: 8 }}>
+                        <CloseRoundedIcon />
+                    </IconButton>
+                    <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
+                        Feedback
+                    </Typography>
+                    <Divider sx={{ mb: 2 }} />
+                    <form>
+                        <TextField
+                            name="content"
+                            fullWidth
+                            multiline
+                            rows={3}
+                            label="Tell us what can be Improved?"
+                            variant="outlined"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.content}
+                            error={formik.touched.content && Boolean(formik.errors.content)}
+                            helperText={formik.touched.content && formik.errors.content}
+                            sx={{ mt: 2 }}
+                        />
+                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 2 }}>
+                            <Typography fontWeight="medium">Rating:</Typography>
+                            <Rating
+                                name="rating"
+                                onBlur={formik.handleBlur}
+                                value={formik.values.rating}
+                                onChange={(_, newValue) => formik.setFieldValue('rating', newValue || 5)}
+                                size="medium"
+                            />
+                        </Stack>
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            sx={{ mt: 3 }}
+                            type="button"
+                            onClick={() => {
+                                formik.submitForm()
+                            }}
+                        >
+                            Submit
+                        </Button>
+                    </form>
+                </Box>
+            </Modal>
+        );
+    };
+    
+    const fetchData = () => {
+        if (userData) {
+            subscribeOnce(AppointmentService.getAppointmentHistories(userData.id), (res: any) => {
+                setAppointmentData(res);
+            });
+        }
+    }
+
+    const handleOpenFeedback = (appointment: any) => {
+        setOpenFeedback(true); 
+        setAppointmentSelected(appointment); 
+    }
+
+    const handleCloseFeedback = (isSubmit ?: boolean) => {
+        setOpenFeedback(false); 
+        setAppointmentSelected(null);
+        if(isSubmit)  {
+            fetchData();
+        }
+    }
+
     return (
         <div className="h-[calc(100vh-48px-28px-40px-44px)] overflow-hidden bg-gray mt-[40px] w-full">
             <div className="text-center text-[20px] font-bold uppercase mb-[10px]">Appointments History</div>
@@ -87,7 +328,7 @@ const AppointmentHistory = () => {
                 {formattedAppointments.map((appointment: any) => (
                     <div className="w-[30%] bg-white" key={appointment.id}>
                         <Card>
-                            <div className="flex flex-col p-4 border border-[#ccc] border-solid rounded-md h-[258px]">
+                            <div className="flex flex-col p-4 border border-[#ccc] border-solid rounded-md h-[280px]">
                                 <p
                                     className="text-center mb-[14px] font-bold text-[16px] border-b border-[#ccc] pb-[10px] truncate"
                                     title={appointment.examinationPackageName}
@@ -121,14 +362,15 @@ const AppointmentHistory = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="mt-[12px]">
-                                            <Button
-                                                className="p-4 w-[120px] font-bold"
-                                                variant="contained"
-                                                color={getStatusColor(appointment.status)}
-                                            >
-                                                {getStatusText(appointment.status)}
-                                            </Button>
+                                        <div className="flex w-full items-center mt-1">
+                                            <div className="flex-1 truncate w-full">
+                                                <Chip
+                                                    className="w-full"
+                                                    variant="outlined"
+                                                    label={getStatusText(appointment.status)}
+                                                    color={getStatusColor(appointment.status)}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-y-1 flex-1 min-w-[200px]">
@@ -164,6 +406,27 @@ const AppointmentHistory = () => {
                                                 <p className="flex-1 truncate">{appointment.reason}</p>
                                             </div>
                                         )}
+                                        <div className="flex w-full pr-[10px] mt-auto items-center justify-end">
+                                            <div className="flex-1 flex items-center gap-3 h-[32px] px-3 border border-gray-300 rounded-lg bg-gray-50 shadow-sm">
+                                                <p className="flex-1 text-sm text-gray-700 italic truncate">
+                                                    {appointment.feedback || "No feedback yet"}
+                                                </p>
+                                                <Rating
+                                                    value={appointment.rating || 0}
+                                                    readOnly
+                                                    size="small"
+                                                    className="text-yellow-500"
+                                                />
+                                                <Button
+                                                    onClick={() => handleOpenFeedback(appointment)}
+                                                    variant="text"
+                                                    color="primary"
+                                                    className="p-1 min-w-[36px] rounded-md hover:bg-gray-200 transition"
+                                                >
+                                                    <EditIcon fontSize="small" />
+                                                </Button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -171,6 +434,7 @@ const AppointmentHistory = () => {
                     </div>
                 ))}
             </div>
+            <FeedbackModal open={openFeedback} handleClose={(isSubmit ?: boolean) => handleCloseFeedback(isSubmit)}/>
         </div>
     );
 };

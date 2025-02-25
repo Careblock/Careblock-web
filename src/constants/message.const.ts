@@ -64,4 +64,8 @@ export enum SystemMessage {
     MEDICINE_TYPE_REQUIRED = 'Medicine Type is required!',
     SIGN_RESULT = 'Sign result successfully!',
     SIGN_RESULT_FAILED = 'Signed result failed!',
+    FEEDBACK_UPDATE = 'Update feedback successfully!', 
+    FEEDBACK_CREATE = 'Create feedback successfully!',
+    FEEDBACK_CREATE_FAILED = 'Failed to create feedbacl, please try again later!'
+
 }
