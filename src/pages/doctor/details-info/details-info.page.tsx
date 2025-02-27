@@ -1,7 +1,7 @@
-import { Button } from '@mui/material';
+import { Button, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
 import { useEffect, useState } from 'react';
 import CreateConsultation from '../create-consultation/create-consultation.page';
-import {formatStandardDate } from '@/utils/datetime.helper';
+import { formatStandardDate } from '@/utils/datetime.helper';
 import { getFullName, getGenderName, textToHex } from '@/utils/common.helpers';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
 import { DetailsInfoType } from './details-info.type';
@@ -24,22 +24,31 @@ import { DataDefaults } from '@/types/dataDefault.type';
 import TheBill from '../bill/bill.page';
 import { BillEnum } from './details-info.const';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
-import {
-    Asset,
-    BrowserWallet,
-    Transaction,
-  } from '@meshsdk/core';
+import { Asset, BrowserWallet, Transaction } from '@meshsdk/core';
 import { RESULT_STATUS } from '@/enums/Result';
+import { Color } from '@/enums/Color';
+import { PAYMENT_STATUS, PAYMENT_STATUS_NAME } from '@/enums/Payment';
+import PaymentService from '@/services/payment.service';
+import { Payments } from '@/types/payment.type';
+import { EMPTY_GUID } from '@/constants/common.const';
+import PopupPaymentMethod from '../popup-payment-method/popup-payment-method.component';
+import { PaymentMethods } from '@/types/paymentMethods.type';
+import PaymentMethodService from '@/services/paymentMethod.service';
 
 const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) => {
     const { subscribeOnce } = useObservable();
     const { userData } = useAuth() as AuthContextType;
     const [result, setResult] = useState<Results[]>([]);
+    const [isPaid, setIsPaid] = useState<boolean>(false);
     const [dataDefault, setDataDefault] = useState<DataDefaults>();
     const [isShowCreatePopup, setIsShowCreatePopup] = useState(false);
     const [isShowBillPopup, setIsShowBillPopup] = useState(false);
+    const [isShowPaymentMethodPopup, setIsShowPaymentMethodPopup] = useState(false);
     const [isReloadData, setIsReloadData] = useState<boolean>(false);
     const connection = useSelector((state: { notification: NotificationState }) => state.notification.connection);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<any>('');
+    const [selectedResult, setSelectedResult] = useState<Results>();
+    const [paymentMethods, setPaymentMethods] = useState<PaymentMethods[]>([]);
 
     useEffect(() => {
         if (!dataSource?.appointmentId) return;
@@ -48,41 +57,63 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
         });
 
         if (currentTab === ScheduleTabs.CHECKEDIN) {
-            subscribeOnce(AccountService.getDefaultData(dataSource.appointmentId), (res: DataDefaults) => {
-                setDataDefault(res);
-            });
+            getDataDefault(dataSource.appointmentId);
+            getPaymentStatus(dataSource.appointmentId);
         }
     }, [dataSource, isReloadData]);
 
+    const getDataDefault = (appointmentId: string) => {
+        if (appointmentId === undefined) return;
+        subscribeOnce(AccountService.getDefaultData(appointmentId), (res: DataDefaults) => {
+            setDataDefault(res);
+        });
+    };
+
+    const getPaymentStatus = (appointmentId: string) => {
+        if (appointmentId === undefined) return;
+        subscribeOnce(PaymentService.getPaidByAppointmentId(appointmentId), (res: Payments) => {
+            if (res.id !== EMPTY_GUID) setIsPaid(true);
+            else setIsPaid(false);
+        });
+    };
+
+    const getPaymentMethods = () => {
+        subscribeOnce(PaymentMethodService.getAll(), (res: PaymentMethods[]) => {
+            if (res) {
+                setPaymentMethods(res);
+                if (res.length > 0) setSelectedPaymentMethod(res[0].id);
+            }
+        });
+    };
+
     const handleSendResult = async (result: any) => {
         try {
-
             const wallet = await BrowserWallet.enable('eternl');
             await wallet.getUsedAddresses();
             const policyId = await wallet.getPolicyIds();
             const tx = new Transaction({ initiator: wallet });
             const asset: Asset = {
-              unit: policyId[0] + textToHex(result.hashName),
-              quantity: '1'
+                unit: policyId[0] + textToHex(result.hashName),
+                quantity: '1',
             };
-    
+
             tx.sendAssets(dataSource.walletAddress, [asset]);
             const unsignedTx = await tx.build();
             const signedTx = await wallet.signTx(unsignedTx, true);
             await wallet.submitTx(signedTx);
-    
+
             pushNotification(result, BillEnum.RESULT_VALUE);
             subscribeOnce(ResultService.send(result.id), () => {
                 setIsReloadData(true);
             });
-        } catch(err) {
+        } catch (err) {
             addToast({
-                text: SystemMessage.SEND_RESULT_FAILED, 
+                text: SystemMessage.SEND_RESULT_FAILED,
                 position: ToastPositionEnum.TopRight,
                 status: ToastStatusEnum.InValid,
             });
         }
-    }
+    };
 
     const pushNotification = (result: Results, type: BillEnum) => {
         let isError = false;
@@ -148,6 +179,54 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
         }
     };
 
+    const handleClosePopupEdit = () => {
+        setIsShowPaymentMethodPopup(false);
+    };
+
+    const handleConfirmEdit = () => {
+        const payload: Payments = {
+            appointmentId: selectedResult?.appointmentId ?? '',
+            name: '',
+            paymentMethodId: selectedPaymentMethod,
+            status: PAYMENT_STATUS.PAID,
+            total: 0,
+        };
+
+        subscribeOnce(
+            PaymentService.updateByAppointment(selectedResult?.appointmentId ?? '', payload),
+            (appointmentId: string) => {
+                if (appointmentId !== EMPTY_GUID) {
+                    handleClosePopupEdit();
+                    setIsPaid(true);
+                    addToast({
+                        text: SystemMessage.MARK_AS_PAID,
+                        position: ToastPositionEnum.TopRight,
+                        status: ToastStatusEnum.Valid,
+                    });
+                    getPaymentStatus(appointmentId);
+                } else {
+                    handleClosePopupEdit();
+                    addToast({
+                        text: SystemMessage.MARKED_PAID_FAILED,
+                        position: ToastPositionEnum.TopRight,
+                        status: ToastStatusEnum.Warn,
+                    });
+                }
+            }
+        );
+    };
+
+    const handleClickPaid = (item: Results) => {
+        getPaymentMethods();
+        setSelectedResult(item);
+        setIsShowPaymentMethodPopup(true);
+    };
+
+    const handleSelectPaymentMethod = (event: any) => {
+        const { target: value } = event;
+        setSelectedPaymentMethod(value.value);
+    };
+
     const handleClickAccoummodate = () => {
         setIsShowCreatePopup(true);
     };
@@ -162,6 +241,16 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
 
     const handleSetIsShowBillPopup = (type: boolean) => {
         setIsShowBillPopup(type);
+    };
+
+    const getStatusText = () => {
+        if (isPaid) return PAYMENT_STATUS_NAME.PAID;
+        return PAYMENT_STATUS_NAME.UNPAID;
+    };
+
+    const getStatusColor = () => {
+        if (isPaid) return Color.success;
+        return Color.warning;
     };
 
     return (
@@ -233,12 +322,11 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                                         >
                                             File PDF
                                         </a>
-                                       {item.status == RESULT_STATUS.SIGNED && <Button
-                                            variant="outlined"
-                                            onClick={() => handleSendResult(item)}
-                                        >
-                                            Send result
-                                        </Button>}
+                                        {item.status == RESULT_STATUS.SIGNED && (
+                                            <Button variant="outlined" onClick={() => handleSendResult(item)}>
+                                                Send result
+                                            </Button>
+                                        )}
                                     </div>
                                     <div className="flex items-center mt-[12px] justify-center">
                                         <p className="ml-[8px] mr-[10px]">Bill:</p>
@@ -248,13 +336,31 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                                         >
                                             File PDF
                                         </p>
-                                       
+
                                         <Button
                                             variant="outlined"
                                             onClick={() => pushNotification(item, BillEnum.BILL_VALUE)}
                                         >
                                             Send bill
                                         </Button>
+
+                                        {!isPaid && (
+                                            <>
+                                                <div className="ml-[20px]"></div>
+
+                                                <Button variant="outlined" onClick={() => handleClickPaid(item)}>
+                                                    Mark as paid
+                                                </Button>
+                                            </>
+                                        )}
+                                    </div>
+                                    <div className="w-full flex items-center justify-center mt-[20px]">
+                                        <Chip
+                                            className="w-[180px] select-none"
+                                            variant="outlined"
+                                            label={getStatusText()}
+                                            color={getStatusColor()}
+                                        />
                                     </div>
                                 </li>
                             ))}
@@ -274,6 +380,34 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                 visible={isShowBillPopup}
                 setVisible={handleSetIsShowBillPopup}
             />
+            {/* Edit information */}
+            <PopupPaymentMethod
+                isVisible={isShowPaymentMethodPopup}
+                onClickCancel={handleClosePopupEdit}
+                onClickConfirm={handleConfirmEdit}
+            >
+                {
+                    <div className="flex flex-col items-start w-[400px] select-none">
+                        <FormControl sx={{ m: 1, width: 380 }}>
+                            <InputLabel id="payment-method-label">Payment Method</InputLabel>
+                            <Select
+                                size="medium"
+                                className="w-full"
+                                labelId="payment-method-label"
+                                value={selectedPaymentMethod}
+                                onChange={handleSelectPaymentMethod}
+                                input={<OutlinedInput id="select-payment-method" label="Payment Method" />}
+                            >
+                                {paymentMethods.map((item: PaymentMethods) => (
+                                    <MenuItem key={item.id} value={item.id}>
+                                        {item.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                }
+            </PopupPaymentMethod>
         </>
     );
 };

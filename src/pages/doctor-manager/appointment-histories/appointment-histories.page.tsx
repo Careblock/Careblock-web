@@ -520,7 +520,7 @@ const AppointmentHistories = () => {
                                                 <div className="flex w-full items-center mt-1">
                                                     <div className="flex-1 truncate w-full">
                                                         <Chip
-                                                            className="w-full"
+                                                            className="w-full select-none"
                                                             variant="outlined"
                                                             label={getStatusText(appointment.status)}
                                                             color={getStatusColor(appointment.status)}
@@ -590,7 +590,7 @@ const AppointmentHistories = () => {
                         <span>Consultation Request</span>
                         {resultModal && (
                             <Chip
-                                className="w-fit"
+                                className="w-fit select-none"
                                 variant="outlined"
                                 label={getResultStatusText(resultModal.status)}
                                 color={getResultStatusColor(resultModal.status)}
