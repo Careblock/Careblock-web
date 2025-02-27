@@ -32,11 +32,7 @@ import { uuidv4 } from '@/utils/common.helpers';
 import { addToast } from '@/components/base/toast/toast.service';
 import { SystemMessage } from '@/constants/message.const';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
-import {
-    BrowserWallet,
-    Transaction,
-    ForgeScript
-  } from '@meshsdk/core';
+import { BrowserWallet, Transaction, ForgeScript } from '@meshsdk/core';
 import { AssetMetadata, Mint } from 'node_modules/@meshsdk/core/dist/common/types';
 import { formatDateToString } from '@/utils/datetime.helper';
 import { capitalizedFirstCharacter } from '@/utils/string.helper';
@@ -48,13 +44,12 @@ const AppointmentHistory = () => {
     const [formattedAppointments, setFormattedAppointments] = useState<any>([]);
     const [appointmentSelected, setAppointmentSelected] = useState<any>();
     const [openFeedback, setOpenFeedback] = useState<boolean>(false);
-    const [walletAddress, setWalletAddress] = useState<string>("");
+    const [walletAddress, setWalletAddress] = useState<string>('');
 
     useEffect(() => {
         setTitle('Appointments history | CareBlock');
         fetchData();
     }, []);
-
 
     useEffect(() => {
         const getWalletAddress = async () => {
@@ -88,7 +83,7 @@ const AppointmentHistory = () => {
             address: appointment.address?.trim(),
             organizationName: appointment.organizationName?.trim(),
             examinationPackageName: appointment.examinationPackageName?.trim(),
-            examinationPackageId: appointment.examinationPackageId, 
+            examinationPackageId: appointment.examinationPackageId,
             reason: appointment.reason?.trim(),
             endDateExpectation: format(new Date(appointment.endDateExpectation), 'HH:mm'),
             startDateExpectation: format(new Date(appointment.startDateExpectation), 'HH:mm'),
@@ -102,8 +97,8 @@ const AppointmentHistory = () => {
             endDateReality: format(new Date(appointment.endDateReality), 'HH:mm'),
             startDateReality: format(new Date(appointment.startDateReality), 'HH:mm'),
             dateReality: format(new Date(appointment.startDateReality), 'dd/MM/yyyy'),
-            feedback: appointment.feedback, 
-            rating: appointment.rating, 
+            feedback: appointment.feedback,
+            rating: appointment.rating,
         }));
         setFormattedAppointments(formattedData);
     }, [appointmentData]);
@@ -134,7 +129,7 @@ const AppointmentHistory = () => {
 
     const FeedbackModal: React.FC<any> = ({ open, handleClose }) => {
         const [reviewId, setReviewId] = useState<string | null>(null);
-    
+
         const formik = useFormik({
             initialValues: {
                 content: '',
@@ -148,7 +143,7 @@ const AppointmentHistory = () => {
                 handleSubmit(values);
             },
         });
-    
+
         useEffect(() => {
             if (appointmentSelected) {
                 subscribeOnce(
@@ -159,7 +154,7 @@ const AppointmentHistory = () => {
                                 content: res.content || '',
                                 rating: res.rating || 5,
                             });
-                            setReviewId(res.id); 
+                            setReviewId(res.id);
                         } else {
                             formik.resetForm();
                             setReviewId(null);
@@ -168,7 +163,7 @@ const AppointmentHistory = () => {
                 );
             }
         }, [appointmentSelected]);
-    
+
         const handleSubmit = async (values: any) => {
             if (userData) {
                 try {
@@ -178,7 +173,7 @@ const AppointmentHistory = () => {
                         examinationPackageId: appointmentSelected.examinationPackageId,
                         appointmentId: appointmentSelected.id,
                     } as ExaminationPackageReview;
-    
+
                     if (reviewId) {
                         subscribeOnce(
                             ExaminationPackageReviewService.update(reviewId, {
@@ -199,28 +194,32 @@ const AppointmentHistory = () => {
                                 signHash: signedTx,
                                 id,
                             }),
-                            async (_: any) => {
+                            (_: any) => {
                                 addToast({ text: SystemMessage.FEEDBACK_CREATE, position: ToastPositionEnum.TopRight });
                                 handleClose(true);
                             }
                         );
                     }
-                } catch(err) {
-                    addToast({ text: SystemMessage.FEEDBACK_CREATE_FAILED, position: ToastPositionEnum.TopRight, status: ToastStatusEnum.InValid, });
-                    handleClose(true);    
+                } catch (err) {
+                    addToast({
+                        text: SystemMessage.FEEDBACK_CREATE_FAILED,
+                        position: ToastPositionEnum.TopRight,
+                        status: ToastStatusEnum.InValid,
+                    });
+                    handleClose(true);
                 }
             }
         };
 
-        const signFeedback = async (id: string) : Promise<string> => {
+        const signFeedback = async (id: string): Promise<string> => {
             const wallet = await BrowserWallet.enable('eternl');
             const forgingScript = ForgeScript.withOneSignature(walletAddress);
             const tx = new Transaction({ initiator: wallet });
-      
+
             const assetMetadata: AssetMetadata = {
                 id,
             };
-            
+
             const asset: Mint = {
                 assetName: `feedback_${capitalizedFirstCharacter(appointmentSelected.examinationPackageName)}_${formatDateToString(new Date())}`,
                 assetQuantity: '1',
@@ -234,7 +233,7 @@ const AppointmentHistory = () => {
             await wallet.submitTx(signedTx);
             return signedTx;
         };
-    
+
         return (
             <Modal open={open} onClose={handleClose}>
                 <Box
@@ -289,7 +288,7 @@ const AppointmentHistory = () => {
                             sx={{ mt: 3 }}
                             type="button"
                             onClick={() => {
-                                formik.submitForm()
+                                formik.submitForm();
                             }}
                         >
                             Submit
@@ -299,32 +298,32 @@ const AppointmentHistory = () => {
             </Modal>
         );
     };
-    
+
     const fetchData = () => {
         if (userData) {
             subscribeOnce(AppointmentService.getAppointmentHistories(userData.id), (res: any) => {
                 setAppointmentData(res);
             });
         }
-    }
+    };
 
     const handleOpenFeedback = (appointment: any) => {
-        setOpenFeedback(true); 
-        setAppointmentSelected(appointment); 
-    }
+        setOpenFeedback(true);
+        setAppointmentSelected(appointment);
+    };
 
-    const handleCloseFeedback = (isSubmit ?: boolean) => {
-        setOpenFeedback(false); 
+    const handleCloseFeedback = (isSubmit?: boolean) => {
+        setOpenFeedback(false);
         setAppointmentSelected(null);
-        if(isSubmit)  {
+        if (isSubmit) {
             fetchData();
         }
-    }
+    };
 
     return (
         <div className="h-[calc(100vh-48px-28px-40px-44px)] overflow-hidden bg-gray mt-[40px] w-full">
             <div className="text-center text-[20px] font-bold uppercase mb-[10px]">Appointments History</div>
-            <div className="flex-wrap gap-[20px] overflow-y-auto h-[calc(100%-48px)]">
+            <div className="flex flex-wrap gap-[20px] overflow-y-auto h-[calc(100%-48px)]">
                 {formattedAppointments.map((appointment: any) => (
                     <div className="w-[400px] bg-white" key={appointment.id}>
                         <Card>
@@ -364,7 +363,7 @@ const AppointmentHistory = () => {
                                         <div className="flex w-full items-center mt-1">
                                             <div className="flex-1 truncate w-full">
                                                 <Chip
-                                                    className="w-full"
+                                                    className="w-full select-none"
                                                     variant="outlined"
                                                     label={getStatusText(appointment.status)}
                                                     color={getStatusColor(appointment.status)}
@@ -408,7 +407,7 @@ const AppointmentHistory = () => {
                                         <div className="flex w-full pr-[10px] mt-auto items-center justify-end">
                                             <div className="flex-1 flex items-center gap-3 h-[32px] px-3 border border-gray-300 rounded-lg bg-gray-50 shadow-sm">
                                                 <p className="flex-1 text-sm text-gray-700 italic truncate">
-                                                    {appointment.feedback || "No feedback yet"}
+                                                    {appointment.feedback || 'No feedback yet'}
                                                 </p>
                                                 <Rating
                                                     value={appointment.rating || 0}
@@ -433,7 +432,7 @@ const AppointmentHistory = () => {
                     </div>
                 ))}
             </div>
-            <FeedbackModal open={openFeedback} handleClose={(isSubmit ?: boolean) => handleCloseFeedback(isSubmit)}/>
+            <FeedbackModal open={openFeedback} handleClose={(isSubmit?: boolean) => handleCloseFeedback(isSubmit)} />
         </div>
     );
 };
