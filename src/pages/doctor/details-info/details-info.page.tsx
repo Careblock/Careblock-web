@@ -1,7 +1,7 @@
 import { Button, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
 import { useEffect, useState } from 'react';
 import CreateConsultation from '../create-consultation/create-consultation.page';
-import { formatStandardDate } from '@/utils/datetime.helper';
+import { formatDateToString, formatStandardDate } from '@/utils/datetime.helper';
 import { getFullName, getGenderName, textToHex } from '@/utils/common.helpers';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
 import { DetailsInfoType } from './details-info.type';
@@ -9,7 +9,7 @@ import { Images } from '@/assets/images';
 import { GENDER, ScheduleTabs } from '@/enums/Common';
 import ResultService from '@/services/result.service';
 import useObservable from '@/hooks/use-observable.hook';
-import { Results } from '@/types/result.type';
+import { Bill, Results } from '@/types/result.type';
 import { useSelector } from 'react-redux';
 import { NotificationState } from '@/stores/notification';
 import * as signalR from '@microsoft/signalr';
@@ -24,7 +24,7 @@ import { DataDefaults } from '@/types/dataDefault.type';
 import TheBill from '../bill/bill.page';
 import { BillEnum } from './details-info.const';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
-import { Asset, BrowserWallet, Transaction } from '@meshsdk/core';
+import { Asset, AssetMetadata, BrowserWallet, ForgeScript, Mint, Transaction } from '@meshsdk/core';
 import { RESULT_STATUS } from '@/enums/Result';
 import { Color } from '@/enums/Color';
 import { PAYMENT_STATUS, PAYMENT_STATUS_NAME } from '@/enums/Payment';
@@ -49,6 +49,29 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<any>('');
     const [selectedResult, setSelectedResult] = useState<Results>();
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethods[]>([]);
+    const [bill, setBill] = useState<Bill>();
+    const [walletAddress, setWalletAddress] = useState<string>('');
+
+    useEffect(() => {
+        const getWalletAddress = async () => {
+            let address = '';
+            const wallet = await BrowserWallet.enable('eternl');
+            const lstUsedAddress = await wallet.getUsedAddresses();
+            if (lstUsedAddress?.length > 0) {
+                address = lstUsedAddress[0];
+            }
+            if (!address) {
+                const lstUnUsedAddress = await wallet.getUnusedAddresses();
+                if (lstUnUsedAddress?.length > 0) {
+                    address = lstUnUsedAddress[0];
+                }
+            }
+            setWalletAddress(address);
+        };
+
+        getWalletAddress();
+        getBillData();
+    }, []);
 
     useEffect(() => {
         if (!dataSource?.appointmentId) return;
@@ -61,6 +84,12 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
             getPaymentStatus(dataSource.appointmentId);
         }
     }, [dataSource, isReloadData]);
+
+    const getBillData = () => {
+        subscribeOnce(ResultService.getBill(dataSource.appointmentId!), (res: Bill) => {
+            setBill(res);
+        });
+    };
 
     const getDataDefault = (appointmentId: string) => {
         if (appointmentId === undefined) return;
@@ -183,13 +212,51 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
         setIsShowPaymentMethodPopup(false);
     };
 
-    const handleConfirmEdit = () => {
+    const mintPayment = async () => {
+        if (bill) {
+            try {
+                const assetMetadata: AssetMetadata = {
+                    doctorName: bill.doctorName,
+                    departmentName: bill.departmentName,
+                    organizationName: bill.organizationName,
+                    examinationPackageName: bill.examinationPackageName,
+                    patientName: bill.patientName,
+                    gender: bill.gender,
+                    totalPrice: `${bill.totalPrice}`,
+                };
+                const assetName = `bill_${formatDateToString(new Date())}`;
+                const asset: Mint = {
+                    assetName,
+                    assetQuantity: '1',
+                    metadata: assetMetadata,
+                    label: '721',
+                    recipient: walletAddress,
+                };
+                const forgingScript = ForgeScript.withOneSignature(walletAddress);
+                const wallet = await BrowserWallet.enable('eternl');
+                const tx = new Transaction({ initiator: wallet });
+                tx.mintAsset(forgingScript, asset);
+                const unsignedTx = await tx.build();
+                const signedTx = await wallet.signTx(unsignedTx);
+                const txHash = await wallet.submitTx(signedTx);
+                return txHash;
+            } catch (err) {
+                console.error(err);
+                return undefined;
+            }
+        }
+    };
+
+    const handleConfirmEdit = async () => {
+        const paidHash = await mintPayment();
+
         const payload: Payments = {
             appointmentId: selectedResult?.appointmentId ?? '',
             name: '',
             paymentMethodId: selectedPaymentMethod,
             status: PAYMENT_STATUS.PAID,
             total: 0,
+            paidHash: paidHash,
         };
 
         subscribeOnce(
@@ -375,11 +442,7 @@ const DetailsInfo = ({ currentTab, dataSource, clickedSave }: DetailsInfoType) =
                 setVisible={handleSetIsShowCreatePopup}
                 clickedSave={clickedSave}
             />
-            <TheBill
-                appointmentId={dataSource.appointmentId!}
-                visible={isShowBillPopup}
-                setVisible={handleSetIsShowBillPopup}
-            />
+            <TheBill bill={bill} visible={isShowBillPopup} setVisible={handleSetIsShowBillPopup} />
             {/* Edit information */}
             <PopupPaymentMethod
                 isVisible={isShowPaymentMethodPopup}

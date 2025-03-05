@@ -5,15 +5,15 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import { BillProps } from './bill.type';
-import useObservable from '@/hooks/use-observable.hook';
 import { Images } from '@/assets/images';
 import { jsPDF } from 'jspdf';
 import { toPng } from 'html-to-image';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ExaminationOptions } from '@/types/examinationOption.type';
 import Nodata from '@/components/base/no-data/nodata.component';
 import { format } from 'date-fns';
 import { Bill } from '@/types/result.type';
+import useObservable from '@/hooks/use-observable.hook';
 import ResultService from '@/services/result.service';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -25,18 +25,22 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-export default function TheBill({ visible, setVisible, appointmentId }: BillProps) {
+export default function TheBill({ visible, setVisible, bill, appointmentId }: BillProps) {
     const dynamicRef = useRef(null);
-    const [bill, setBill] = useState<Bill>();
     const { subscribeOnce } = useObservable();
+    const [billData, setBillData] = useState<Bill | undefined>(bill);
 
     useEffect(() => {
-        if (visible) {
+        if (visible && appointmentId) {
             subscribeOnce(ResultService.getBill(appointmentId), (res: Bill) => {
-                setBill(res);
+                setBillData(res);
             });
         }
     }, [visible]);
+
+    useEffect(() => {
+        setBillData(bill);
+    }, [bill]);
 
     const handleClose = () => {
         setVisible(false);
@@ -87,41 +91,41 @@ export default function TheBill({ visible, setVisible, appointmentId }: BillProp
                     ref={dynamicRef}
                     className="w-[600px] min-h-[420px] max-h-[680px] overflow-y-auto bg-[white] py-[16px] px-[20px]"
                 >
-                    <h2 className="font-bold text-center text-[18px]">{bill?.examinationPackageName}</h2>
-                    <p className="text-center">{bill?.organizationName} hospital</p>
+                    <h2 className="font-bold text-center text-[18px]">{billData?.examinationPackageName}</h2>
+                    <p className="text-center">{billData?.organizationName} hospital</p>
                     <p className="text-center text-[14px]">
-                        {bill?.createdDate ? format(bill?.createdDate, 'dd/MM/yyyy') : ''}
+                        {billData?.createdDate ? format(billData?.createdDate, 'dd/MM/yyyy') : ''}
                     </p>
                     <div className="mt-[16px] flex justify-between">
                         <div className="left border-r border-[#212121] w-[50%] px-[10px]">
                             <ul>
                                 <li>
-                                    <b>Patient:</b> {bill?.patientName}
+                                    <b>Patient:</b> {billData?.patientName}
                                 </li>
                                 <li>
-                                    <b>Sex:</b> {bill?.gender}
+                                    <b>Sex:</b> {billData?.gender}
                                 </li>
                                 <li>
-                                    <b>Address:</b> {bill?.address}
+                                    <b>Address:</b> {billData?.address}
                                 </li>
                                 <li>
-                                    <b>Phone:</b> {bill?.phone}
+                                    <b>Phone:</b> {billData?.phone}
                                 </li>
                             </ul>
                         </div>
                         <div className="right w-[50%] px-[10px]">
                             <ul>
                                 <li>
-                                    <b>Doctor:</b> {bill?.doctorName}
+                                    <b>Doctor:</b> {billData?.doctorName}
                                 </li>
                                 <li>
-                                    <b>Department:</b> {bill?.departmentName}
+                                    <b>Department:</b> {billData?.departmentName}
                                 </li>
                             </ul>
                         </div>
                     </div>
                     <div className="services mt-[16px]">
-                        {bill && bill.examinationOptions?.length > 0 ? (
+                        {billData && billData.examinationOptions?.length > 0 ? (
                             <table className="w-full">
                                 <thead>
                                     <tr>
@@ -138,7 +142,7 @@ export default function TheBill({ visible, setVisible, appointmentId }: BillProp
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {bill.examinationOptions.map((option: ExaminationOptions, index: number) => {
+                                    {billData.examinationOptions.map((option: ExaminationOptions, index: number) => {
                                         return (
                                             <tr key={option.id}>
                                                 <td className="border py-[2px] px-[4px] border-[#212121] text-center">
@@ -164,7 +168,7 @@ export default function TheBill({ visible, setVisible, appointmentId }: BillProp
                                             colSpan={2}
                                             className="border py-[2px] px-[4px] border-[#212121] text-right"
                                         >
-                                            {bill?.totalPrice}
+                                            {billData?.totalPrice}
                                         </td>
                                     </tr>
                                 </tbody>

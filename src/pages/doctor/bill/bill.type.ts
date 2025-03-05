@@ -1,5 +1,8 @@
+import { Bill } from '@/types/result.type';
+
 export interface BillProps {
-    appointmentId: string;
     visible: boolean;
+    bill?: Bill;
     setVisible: Function;
+    appointmentId?: string;
 }

@@ -7,6 +7,8 @@ export interface Payments {
     name?: string;
     status: PAYMENT_STATUS;
     total?: number;
+    paidHash?: string;
+    paidDate?: string;
     createdDate?: string;
     modifiedDate?: string;
 }
