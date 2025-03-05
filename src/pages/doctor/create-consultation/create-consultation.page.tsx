@@ -258,20 +258,25 @@ export default function CreateConsultation({
     };
 
     const setDetailsAppointment = (payload: any) => {
-        subscribeOnce(AppointmentDetailService.insert(payload), (id: string) => {
-            if (id !== EMPTY_GUID) {
-                handleClosePopup();
-                addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: ToastPositionEnum.TopRight });
-                clickedSave();
-            } else {
-                addToast({
-                    text: SystemMessage.INSERT_DIAGNOSTIC_FAILED,
-                    position: ToastPositionEnum.TopRight,
-                    status: ToastStatusEnum.InValid,
-                });
-                setFormType(FormType.Create);
+        subscribeOnce(
+            AppointmentDetailService.insert({
+                ...payload,
+            }),
+            (id: string) => {
+                if (id !== EMPTY_GUID) {
+                    handleClosePopup();
+                    addToast({ text: SystemMessage.INSERT_DIAGNOSTIC_SUCCESS, position: ToastPositionEnum.TopRight });
+                    clickedSave();
+                } else {
+                    addToast({
+                        text: SystemMessage.INSERT_DIAGNOSTIC_FAILED,
+                        position: ToastPositionEnum.TopRight,
+                        status: ToastStatusEnum.InValid,
+                    });
+                    setFormType(FormType.Create);
+                }
             }
-        });
+        );
     };
 
     const handleClickSave = () => {
