@@ -72,11 +72,7 @@ const NotificationItem = ({
                             )}
                             {!isRead && <div className="font-bold size-[8px] bg-primary rounded-full"></div>}
                         </div>
-                        <TheBill
-                            appointmentId={link!}
-                            visible={isShowBillPopup}
-                            setVisible={handleSetIsShowBillPopup}
-                        />
+                        <TheBill appointmentId={link} visible={isShowBillPopup} setVisible={handleSetIsShowBillPopup} />
                     </>
                 );
         }

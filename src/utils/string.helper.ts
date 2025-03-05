@@ -38,4 +38,8 @@ function formatString(str: string, ...values: string[]) {
     });
 }
 
-export { isString, isStringEmpty, titleCase, removeDotsAndCommas, formatString };
+function capitalizedFirstCharacter(str: string) {
+    return str ? str.charAt(0).toUpperCase() : '';
+}
+
+export { isString, isStringEmpty, titleCase, removeDotsAndCommas, formatString, capitalizedFirstCharacter};

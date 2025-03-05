@@ -445,7 +445,7 @@ function TeamMembersPage() {
                                 renderValue={(selected) => (
                                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                         {selected.map((data) => (
-                                            <Chip key={data} label={getSpecialistName(data)} />
+                                            <Chip className="select-none" key={data} label={getSpecialistName(data)} />
                                         ))}
                                     </Box>
                                 )}
