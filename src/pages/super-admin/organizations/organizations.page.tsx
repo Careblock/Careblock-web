@@ -9,6 +9,7 @@ import {
     DialogTitle,
     InputAdornment,
     Paper,
+    Stack,
     Table,
     TableBody,
     TableCell,

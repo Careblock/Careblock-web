@@ -212,7 +212,7 @@ export default function CreateConsultation({
         return true;
     };
 
-    const mintAsset = async (payload: any, ipfsHash: any) => {
+    const mintAsset = async (payload: any, ipfsHash: any) : Promise<boolean> => {
         if (account) {
             try {
                 const walletAddress = account.walletAddress;
@@ -237,10 +237,15 @@ export default function CreateConsultation({
                 const signedTx = await wallet.signTx(unsignedTx, true);
                 payload.signHash = signedTx;
                 payload.resultName = assetName;
+
+                return true; 
             } catch (err) {
                 console.error(err);
+                return false; 
             }
         }
+
+        return false;
     };
 
     const getSavePayload = (file: any) => {
@@ -261,6 +266,7 @@ export default function CreateConsultation({
         subscribeOnce(
             AppointmentDetailService.insert({
                 ...payload,
+                managerWalletAddress: account?.signerAddress,
             }),
             (id: string) => {
                 if (id !== EMPTY_GUID) {
@@ -289,12 +295,16 @@ export default function CreateConsultation({
             const fileRes = await getFilePDF();
             const payload = getSavePayload(fileRes.file);
 
-            mintAsset(payload, fileRes.ipfsHash);
-
-            setDetailsAppointment(payload);
-
-            handleClosePopup();
-            setIsLoading(false);
+            mintAsset(payload, fileRes.ipfsHash).then((res) =>  {
+                if(res) {
+                    setDetailsAppointment(payload);
+                    handleClosePopup();
+                    setIsLoading(false);
+                }
+            }).finally(() => {
+                setIsLoading(false);
+            });
+         
         }, 100);
     };
 
