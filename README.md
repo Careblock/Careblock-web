@@ -13,7 +13,7 @@ Visit the live app: [https://preprod-careblock.texblabs.com](https://preprod-car
 - **Frontend:** React, TypeScript, Tailwind CSS, Vite  
 - **Backend:** ASP.NET Core, Entity Framework Core  
 - **Database:** Microsoft SQL Server  
-- **Blockchain Integration:** Web3j (Java-based Ethereum library)
+- **Blockchain Integration:** MeshJs
 
 ## 🚀 Project Overview
 
