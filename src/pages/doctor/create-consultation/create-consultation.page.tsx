@@ -219,8 +219,10 @@ export default function CreateConsultation({
                 const assetMetadata: AssetMetadata = {
                     id: payload.resultId,
                     ipfsHash: ipfsHash,
+                    mediaType: "image/jpg",
+                    image: "ipfs://QmQjG9bk8og2pw2Zfbr4BBohR8fattkBWp6zXP7fpRZYYr",
                 };
-                const assetName = `${appointment.name?.replace(/ /g, '_')}_${formatDateToString(new Date())}`;
+                const assetName = `Careblock_${formatDateToString(new Date())}`;
                 const asset: Mint = {
                     assetName,
                     assetQuantity: '1',
