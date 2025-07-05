@@ -4,7 +4,10 @@ import * as Yup from 'yup';
 import { createValidation } from './common.validation';
 
 export const medicinesSchema = createValidation({
-    name: Yup.string().required(formatString(Resource.validation.required, 'Medicine name')),
+    name: Yup.string()
+        .transform((value) => value.trim())
+        .required(formatString(Resource.validation.required, 'Medicine name'))
+        .min(1, formatString(Resource.validation.invalid, 'Medicine name')),
 });
 
 export const medicineTypesSchema = createValidation({
