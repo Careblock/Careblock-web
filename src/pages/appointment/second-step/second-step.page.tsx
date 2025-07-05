@@ -219,26 +219,23 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType, setIsNext 
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <DatePicker
                                                 disablePast
+                                                maxDate={dayjs().add(1, 'year')}
                                                 className="w-[320px]"
                                                 value={scheduleData.date}
                                                 onChange={(newValue: Dayjs | null) => {
                                                     const today = dayjs().startOf('day');
-
                                                     if (!newValue || !newValue.isValid()) {
                                                         setDateError('Invalid date format.');
                                                         setIsNext?.(false);
                                                         return;
                                                     }
-
                                                     if (newValue.isBefore(today)) {
                                                         setDateError('Please select a future date.');
                                                         setIsNext?.(false);
                                                         return;
                                                     }
-
                                                     setDateError(null);
                                                     handleDateChange(newValue);
-                                                    // Nếu có đầy đủ dữ liệu thì mới bật nút Next
                                                     setIsNext?.(
                                                         !!(scheduleData.examinationPackage && scheduleData.time)
                                                     );
