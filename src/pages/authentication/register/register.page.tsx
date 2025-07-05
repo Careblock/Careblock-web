@@ -350,6 +350,7 @@ function Register() {
                                             onBlur={formik.handleBlur}
                                             error={formik.touched.seniority && Boolean(formik.errors.seniority)}
                                             helperText={formik.touched.seniority && formik.errors.seniority}
+                                            inputProps={{ min: 0 }}
                                         />
                                     </div>
                                 </div>
