@@ -64,7 +64,7 @@ function TeamMembersPage() {
     const [isVisiblePopupEdit, setIsVisiblePopupEdit] = useState<boolean>(false);
     const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
     const [isVisiblePopupGrant, setIsVisiblePopupGrant] = useState<boolean>(false);
-    const [deletedId, setDeletedId] = useState<string>();
+    const [deletedId] = useState<string>();
     const [grantedDoctor, setGrantedDoctor] = useState<any>();
     const [permissionCheckedList, setPermissionCheckedList] = useState<boolean[]>([false, false]);
     const [editDoctor, setEditDoctor] = useState<any>();
