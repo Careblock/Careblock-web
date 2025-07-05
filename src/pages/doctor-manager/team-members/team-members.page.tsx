@@ -125,11 +125,11 @@ function TeamMembersPage() {
         setPage(0);
     };
 
-    const handleClickRemove = (doctorId: string, event: any) => {
-        event.stopPropagation();
-        setDeletedId(doctorId);
-        setIsVisiblePopupConfirm(true);
-    };
+    // const handleClickRemove = (doctorId: string, event: any) => {
+    //     event.stopPropagation();
+    //     setDeletedId(doctorId);
+    //     setIsVisiblePopupConfirm(true);
+    // };
 
     const handleClickGrant = (doctor: any) => {
         let temp = [false, false];
