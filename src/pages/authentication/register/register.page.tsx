@@ -214,16 +214,19 @@ function Register() {
                                 <div className="flex flex-col w-1/2">
                                     <h3 className="text-left mb-1">Date of birth</h3>
                                     <TextField
-                                        className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
                                         name="dateOfBirth"
-                                        placeholder="Type value"
                                         type="date"
-                                        size="small"
                                         value={formik.values.dateOfBirth}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
                                         helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
+                                        inputProps={{
+                                            min: '1900-01-01',
+                                            max: new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+                                                .toISOString()
+                                                .split('T')[0],
+                                        }}
                                     />
                                 </div>
                                 <div className="flex flex-col w-1/2">
