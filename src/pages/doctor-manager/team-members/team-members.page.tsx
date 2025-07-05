@@ -386,13 +386,13 @@ function TeamMembersPage() {
                                                             className="text-[26px] cursor-pointer hover:text-[#3986bc]"
                                                             onClick={() => handleClickGrant(teamMember)}
                                                         />
-                                                        <Images.MdDelete
+                                                        {/* <Images.MdDelete
                                                             title="Remove from the organization"
                                                             className="text-[26px] cursor-pointer hover:text-[red]"
                                                             onClick={($event: any) =>
                                                                 handleClickRemove(teamMember.id, $event)
                                                             }
-                                                        />
+                                                        /> */}
                                                     </div>
                                                 </StyledTableCell>
                                             </TableRow>
