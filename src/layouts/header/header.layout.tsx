@@ -32,6 +32,7 @@ import { useDispatch } from 'react-redux';
 import { connect } from '@/stores/notification/notification.action';
 import Nodata from '@/components/base/no-data/nodata.component';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 
 const HeaderLayout = () => {
     const navigate = useNavigate();
@@ -46,6 +47,7 @@ const HeaderLayout = () => {
     const [isVisiblePopupDepartment, setIsVisiblePopupDepartment] = useState<boolean>(false);
     const [departmentId, setDepartmentId] = useState<string>('');
     const [departments, setDepartments] = useState<Departments[]>([]);
+    const [openHelp, setOpenHelp] = useState(false);
 
     useEffect(() => {
         const connection: signalR.HubConnection = new signalR.HubConnectionBuilder()
@@ -244,10 +246,26 @@ const HeaderLayout = () => {
                         <Images.FaUser size={18} className="ml-5" />
                         <Typography className="text-[14px] p-2 ml-8">My Account</Typography>
                     </div>
-                    <div className="flex items-center">
+                    <div
+                        className="flex items-center cursor-pointer hover:text-blue-600"
+                        onClick={() => setOpenHelp(true)}
+                    >
                         <Images.MdOutlineHelp size={18} className="ml-5" />
-                        <Typography className="text-[14px] p-2 ml-8">Help</Typography>
+                        <Typography className="text-[14px] p-2 ml-2">Help</Typography>
                     </div>
+
+                    <Dialog open={openHelp} onClose={() => setOpenHelp(false)}>
+                        <DialogTitle>Need Help?</DialogTitle>
+                        <DialogContent>
+                            <Typography>
+                                If you have any questions or need assistance, please contact us at:
+                                <strong> careblock.io@gmail.com</strong>
+                            </Typography>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setOpenHelp(false)}>Đóng</Button>
+                        </DialogActions>
+                    </Dialog>
                     <div className="flex items-center border-t" onClick={() => handleLogout()}>
                         <Images.IoLogOutOutline size={18} color="red" className="ml-5" />
                         <Typography className="text-[14px] px-2 py-2 ml-8 text-[red]">Log Out</Typography>
