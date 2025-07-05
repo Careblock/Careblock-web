@@ -15,7 +15,10 @@ export const medicineTypesSchema = createValidation({
 });
 
 export const medicinesAdminSchema = createValidation({
-    name: Yup.string().required(formatString(Resource.validation.required, 'Medicine name')),
+    name: Yup.string()
+        .transform((value) => value.trim())
+        .required(formatString(Resource.validation.required, 'Medicine name'))
+        .min(1, formatString(Resource.validation.invalid, 'Medicine name')),
     medicineTypeId: Yup.string().required(formatString(Resource.validation.required, 'Medicine Type')),
     price: Yup.string().required(formatString(Resource.validation.required, 'Price')),
     unitPrice: Yup.string().required(formatString(Resource.validation.required, 'Unit Price')),
