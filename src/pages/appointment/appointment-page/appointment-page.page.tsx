@@ -152,6 +152,7 @@ const AppointmentPage = () => {
                             scheduleData={scheduleData}
                             setScheduleData={handleChangeSchedule}
                             examinationType={examinationType}
+                            setIsNext={setIsNext}
                         />
                     ) : (
                         <FinalStep
