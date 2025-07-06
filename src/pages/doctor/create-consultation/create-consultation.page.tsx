@@ -35,6 +35,7 @@ import { AssetMetadata, BrowserWallet, ForgeScript, Mint, Transaction } from '@m
 import { uuidv4 } from '@/utils/common.helpers';
 import { formatDateToString } from '@/utils/datetime.helper';
 import Loading from '@/components/base/loading/loading.component';
+import dayjs from 'dayjs';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -102,7 +103,7 @@ export default function CreateConsultation({
             temp[DynamicField.OrganizationFax].value = res.organizationFax ?? '';
             temp[DynamicField.OrganizationWebsite].value = res.organizationUrl ?? '';
             temp[DynamicField.Fullname].value = res.fullName ?? '';
-            temp[DynamicField.YearOfBirth].value = res.dateOfBirth ?? '';
+            temp[DynamicField.YearOfBirth].value = res.dateOfBirth ? dayjs(res.dateOfBirth).format('YYYY-MM-DD') : '';
             temp[DynamicField.Gender].value = res.gender ?? '';
             temp[DynamicField.Address].value = res.address ?? '';
             temp[DynamicField.Datetime].value = Date.now();
@@ -110,7 +111,9 @@ export default function CreateConsultation({
             temp[DynamicField.DoctorName].displayValue = res.doctorName ?? '';
             temp[DynamicField.DoctorDD].value = doctorId ?? '';
             temp[DynamicField.DoctorDD].displayValue = res.doctorName ?? '';
-
+            temp[DynamicField.Fullname].disabled = true;
+            temp[DynamicField.Gender].disabled = true;
+            temp[DynamicField.YearOfBirth].disabled = true;
             setDataSource(temp);
         });
     };
@@ -212,15 +215,15 @@ export default function CreateConsultation({
         return true;
     };
 
-    const mintAsset = async (payload: any, ipfsHash: any) : Promise<boolean> => {
+    const mintAsset = async (payload: any, ipfsHash: any): Promise<boolean> => {
         if (account) {
             try {
                 const walletAddress = account.walletAddress;
                 const assetMetadata: AssetMetadata = {
                     id: payload.resultId,
                     ipfsHash: ipfsHash,
-                    mediaType: "image/jpg",
-                    image: "ipfs://QmQjG9bk8og2pw2Zfbr4BBohR8fattkBWp6zXP7fpRZYYr",
+                    mediaType: 'image/jpg',
+                    image: 'ipfs://QmQjG9bk8og2pw2Zfbr4BBohR8fattkBWp6zXP7fpRZYYr',
                 };
                 const assetName = `Careblock_${formatDateToString(new Date())}`;
                 const asset: Mint = {
@@ -240,10 +243,10 @@ export default function CreateConsultation({
                 payload.signHash = signedTx;
                 payload.resultName = assetName;
 
-                return true; 
+                return true;
             } catch (err) {
                 console.error(err);
-                return false; 
+                return false;
             }
         }
 
@@ -297,16 +300,17 @@ export default function CreateConsultation({
             const fileRes = await getFilePDF();
             const payload = getSavePayload(fileRes.file);
 
-            mintAsset(payload, fileRes.ipfsHash).then((res) =>  {
-                if(res) {
-                    setDetailsAppointment(payload);
-                    handleClosePopup();
+            mintAsset(payload, fileRes.ipfsHash)
+                .then((res) => {
+                    if (res) {
+                        setDetailsAppointment(payload);
+                        handleClosePopup();
+                        setIsLoading(false);
+                    }
+                })
+                .finally(() => {
                     setIsLoading(false);
-                }
-            }).finally(() => {
-                setIsLoading(false);
-            });
-         
+                });
         }, 100);
     };
 
