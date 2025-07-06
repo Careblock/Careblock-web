@@ -17,7 +17,7 @@ import { SystemMessage } from '@/constants/message.const';
 import { addToast } from '@/components/base/toast/toast.service';
 import { PATHS } from '@/enums/RoutePath';
 import * as Yup from 'yup';
-import { ToastPositionEnum } from '@/components/base/toast/toast.type';
+import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
 
 const FinalStep = forwardRef(({ userData, extraData, organization, schedule }: FinalStepProps, ref) => {
     const navigate = useNavigate();
@@ -60,9 +60,20 @@ const FinalStep = forwardRef(({ userData, extraData, organization, schedule }: F
                     startDateExpectation: startDate,
                 } as Appointments),
                 (res: any) => {
-                    addToast({ text: SystemMessage.MAKE_AN_APPOINTMENT_SUCCESS, position: ToastPositionEnum.TopRight });
+                    if (res === '00000000-0000-0000-0000-000000000000') {
+                        addToast({
+                            text: 'Appointment failed. Please try again.',
+                            position: ToastPositionEnum.TopRight,
+                            status: ToastStatusEnum.InValid,
+                        });
+                        return;
+                    }
+                    addToast({
+                        text: SystemMessage.MAKE_AN_APPOINTMENT_SUCCESS,
+                        position: ToastPositionEnum.TopRight,
+                    });
                     setTimeout(() => {
-                        res && navigate(PATHS.HOME);
+                        navigate(PATHS.HOME);
                     }, 100);
                 }
             );

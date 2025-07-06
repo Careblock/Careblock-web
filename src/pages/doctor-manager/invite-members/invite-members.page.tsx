@@ -108,7 +108,6 @@ function InviteMembersPage() {
                     isRead: false,
                 } as Notifications)
                 .then(() => {
-                    // ✅ Thêm ID vào set sau khi gửi thành công
                     setInvitedDoctorIds((prev) => new Set(prev).add(doctor.id));
                     addToast({ text: SystemMessage.INVITE_MEMBER, position: ToastPositionEnum.TopRight });
                 })
