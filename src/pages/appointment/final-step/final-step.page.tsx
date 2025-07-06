@@ -105,6 +105,7 @@ const FinalStep = forwardRef(({ userData, extraData, organization, schedule }: F
                         <div className="content-right__patient text-[16px] mb-1 flex w-full">
                             <b className="mr-1 text-[16px] w-[80px]">Patient:</b>
                             <TextField
+                                disabled={true}
                                 className="rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto w-full"
                                 name="name"
                                 placeholder="Type value"
@@ -120,6 +121,7 @@ const FinalStep = forwardRef(({ userData, extraData, organization, schedule }: F
                         <div className="content-right__patient text-[16px] mb-1 flex w-full">
                             <b className="mr-1 text-[16px] w-[80px]">Gender:</b>
                             <Select
+                                disabled={true}
                                 name="gender"
                                 className="w-full"
                                 size="small"
