@@ -97,8 +97,6 @@ function InviteMembersPage() {
     };
 
     const pushNotification = (doctor: any) => {
-        let isError = false;
-
         const send = () => {
             connection
                 .invoke('SendNotification', {
@@ -115,7 +113,6 @@ function InviteMembersPage() {
                     addToast({ text: SystemMessage.INVITE_MEMBER, position: ToastPositionEnum.TopRight });
                 })
                 .catch((error: any) => {
-                    isError = true;
                     console.error('Lỗi khi gọi SignalR: ', error);
                 });
         };
@@ -127,7 +124,6 @@ function InviteMembersPage() {
                 .start()
                 .then(send)
                 .catch((error: any) => {
-                    isError = true;
                     console.error('Lỗi khi kết nối SignalR: ', error);
                 });
         }
