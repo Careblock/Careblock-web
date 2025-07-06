@@ -15,7 +15,7 @@ export const registerDoctorSchema = createValidation({
     seniority: Yup.number()
         .typeError('Seniority must be a number')
         .required('Seniority is required')
-        .min(1, 'Seniority invalid'),
+        .min(0, 'Seniority '),
 });
 
 export const forgotPasswordSchema = createValidation({
