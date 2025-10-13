@@ -22,7 +22,8 @@ import VotingApiService, { VoteSubmissionRequest } from '@/services/votingApi.se
 interface VotingDialogProps {
     open: boolean;
     onClose: () => void;
-    onVoteSuccess?: () => void;
+    onVoteSuccess?: (transactionId?: string) => void;
+    onVoteError?: (error: string) => void;
     proposalId: string;
     proposalTitle: string;
     loading?: boolean;
@@ -32,6 +33,7 @@ const VotingDialog: React.FC<VotingDialogProps> = ({
     open,
     onClose,
     onVoteSuccess,
+    onVoteError,
     proposalId,
     proposalTitle,
     loading = false,
@@ -52,6 +54,12 @@ const VotingDialog: React.FC<VotingDialogProps> = ({
             } else {
                 setError('');
             }
+        } else {
+            // Reset states when dialog closes
+            setChoice('');
+            setRationale('');
+            setError('');
+            setIsSubmitting(false);
         }
     }, [open]);
 
@@ -106,42 +114,56 @@ const VotingDialog: React.FC<VotingDialogProps> = ({
                     setIsSubmitting(false);
                     
                     if (response.success) {
-                        // Reset form and close dialog
+                        // Reset form 
                         setChoice('');
                         setRationale('');
                         setError('');
                         
                         // Call success callback to refresh data
                         if (onVoteSuccess) {
-                            onVoteSuccess();
+                            onVoteSuccess(txHash); // Use txHash instead of transactionId
                         }
                         
-                        onClose();
+                        // Don't call onClose() here - let the parent handle closing via onVoteSuccess
                     } else {
-                        setError('Vote submission failed. Please try again.');
+                        const errorMessage = 'Vote submission failed. Please try again.';
+                        setError(errorMessage);
+                        if (onVoteError) {
+                            onVoteError(errorMessage);
+                        }
                     }
                 },
                 error: (error) => {
                     console.error('Vote submission API error:', error);
-                    setError('Error submitting vote to server. Please try again.');
+                    const errorMessage = 'Error submitting vote to server. Please try again.';
+                    setError(errorMessage);
                     setIsSubmitting(false);
+                    if (onVoteError) {
+                        onVoteError(errorMessage);
+                    }
                 }
             });
         } catch (err: any) {
             console.error('Error during voting process:', err);
             
+            let errorMessage = '';
             // Handle specific errors
             if (err.message?.includes('User declined')) {
-                setError('Transaction was declined. Please approve the transaction to cast your vote.');
+                errorMessage = 'Transaction was declined. Please approve the transaction to cast your vote.';
             } else if (err.message?.includes('No stake ID found in cookies')) {
-                setError('Please login first to cast your vote. Your stake ID is required.');
+                errorMessage = 'Please login first to cast your vote. Your stake ID is required.';
             } else if (err.message?.includes('not available')) {
-                setError('Eternl wallet not found. Please install and setup Eternl wallet.');
+                errorMessage = 'Eternl wallet not found. Please install and setup Eternl wallet.';
             } else {
-                setError(`Failed to cast vote: ${err.message || 'Unknown error occurred'}`);
+                errorMessage = `Failed to cast vote: ${err.message || 'Unknown error occurred'}`;
             }
             
+            setError(errorMessage);
             setIsSubmitting(false);
+            
+            if (onVoteError) {
+                onVoteError(errorMessage);
+            }
         }
     };
 

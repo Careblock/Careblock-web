@@ -25,6 +25,8 @@ import VotingDetailDialog from '@/components/dao/VotingDetailDialog';
 import CreateProposalDialog from '@/components/dao/CreateProposalDialog';
 import LoginRequiredDialog from '@/components/dao/LoginRequiredDialog';
 import SuccessDialog from '@/components/dao/SuccessDialog';
+import ErrorDialog from '@/components/dao/ErrorDialog';
+import TransactionIdChip from '@/components/dao/TransactionIdChip';
 import useObservable from '@/hooks/use-observable.hook';
 import VotingApiService, { VotingItem, VotingApiResponse } from '@/services/votingApi.service';
 import { isUserLoggedIn, getStakeIdFromCookies } from '@/utils/cookie.utils';
@@ -106,6 +108,22 @@ const DAOVotingPage: React.FC = () => {
         title: '',
         message: '',
         actionType: 'general'
+    });
+
+    const [errorDialog, setErrorDialog] = useState<{
+        open: boolean;
+        title: string;
+        message: string;
+        errorType: 'vote_error' | 'proposal_error' | 'wallet_error' | 'general';
+        details?: {
+            transactionId?: string;
+            proposalId?: string;
+        };
+    }>({
+        open: false,
+        title: '',
+        message: '',
+        errorType: 'general'
     });
     
     // API data states
@@ -270,8 +288,8 @@ const DAOVotingPage: React.FC = () => {
         }
     };
 
-    const handleCreateSuccess = (proposalId: string) => {
-        console.log('Proposal created successfully with ID:', proposalId);
+    const handleCreateSuccess = (proposalId: string, transactionId?: string) => {
+        console.log('Proposal created successfully with ID:', proposalId, 'Transaction ID:', transactionId);
         // Show success dialog
         setSuccessDialog({
             open: true,
@@ -279,7 +297,8 @@ const DAOVotingPage: React.FC = () => {
             message: 'Your proposal has been submitted and is now available for community voting.',
             actionType: 'proposal_created',
             details: {
-                id: proposalId
+                id: proposalId,
+                transactionId: transactionId
             }
         });
         // Refresh data to show new proposal
@@ -339,6 +358,26 @@ const DAOVotingPage: React.FC = () => {
                         sx={{ minWidth: 120 }}
                     >
                         Back to Home
+                    </Button>
+                    
+                    {/* Test Success Dialog Button - Remove this in production */}
+                    <Button
+                        variant="outlined"
+                        color="success"
+                        onClick={() => {
+                            setSuccessDialog({
+                                open: true,
+                                title: 'Test Vote Success!',
+                                message: 'This is a test success dialog.',
+                                actionType: 'vote_success',
+                                details: {
+                                    transactionId: 'test123456789'
+                                }
+                            });
+                        }}
+                        sx={{ minWidth: 120 }}
+                    >
+                        Test Success
                     </Button>
                 </Box>
             </Box>
@@ -486,6 +525,20 @@ const DAOVotingPage: React.FC = () => {
                                                         End: {format(new Date(voting.endDate), 'MMM dd, yyyy HH:mm')}
                                                     </Typography>
                                                 </Box>
+
+                                                {/* Proposal Transaction ID */}
+                                                {voting.transactionId && (
+                                                    <Box display="flex" alignItems="center" gap={1} mt={2}>
+                                                        <Typography variant="caption" color="text.secondary">
+                                                            Proposal Tx:
+                                                        </Typography>
+                                                        <TransactionIdChip 
+                                                            transactionId={voting.transactionId} 
+                                                            label="Proposal Transaction"
+                                                            size="small"
+                                                        />
+                                                    </Box>
+                                                )}
                                             </CardContent>
 
                                             <Box p={2} pt={0}>
@@ -528,7 +581,57 @@ const DAOVotingPage: React.FC = () => {
             <VotingDialog
                 open={votingDialog.open}
                 onClose={() => setVotingDialog({ open: false, proposalId: '', proposalTitle: '' })}
-                onVoteSuccess={loadVotingData}
+                onVoteSuccess={(transactionId) => {
+                    console.log('Vote success callback called with transactionId:', transactionId);
+                    
+                    // Close voting dialog first
+                    setVotingDialog({ open: false, proposalId: '', proposalTitle: '' });
+                    
+                    // Use setTimeout to ensure voting dialog closes before showing success dialog
+                    setTimeout(() => {
+                        // Show success dialog with transaction ID
+                        setSuccessDialog({
+                            open: true,
+                            title: 'Vote Submitted Successfully!',
+                            message: 'Your vote has been recorded on the blockchain and will be counted in the final results.',
+                            actionType: 'vote_success',
+                            details: {
+                                transactionId: transactionId
+                            }
+                        });
+                        
+                        console.log('Success dialog should now be open with state:', {
+                            open: true,
+                            transactionId: transactionId
+                        });
+                    }, 100);
+                    
+                    // Refresh voting data
+                    loadVotingData();
+                }}
+                onVoteError={(error) => {
+                    // Close voting dialog first
+                    setVotingDialog({ open: false, proposalId: '', proposalTitle: '' });
+                    
+                    // Determine error type based on error message
+                    let errorType: 'vote_error' | 'wallet_error' | 'general' = 'general';
+                    if (error.includes('wallet') || error.includes('declined') || error.includes('Eternl')) {
+                        errorType = 'wallet_error';
+                    } else if (error.includes('vote') || error.includes('submission')) {
+                        errorType = 'vote_error';
+                    }
+                    
+                    // Show error dialog
+                    setErrorDialog({
+                        open: true,
+                        title: 'Vote Failed',
+                        message: error,
+                        errorType: errorType,
+                        details: {
+                            proposalId: votingDialog.proposalId
+                        }
+                    });
+                }}
                 proposalId={votingDialog.proposalId}
                 proposalTitle={votingDialog.proposalTitle}
             />
@@ -545,6 +648,26 @@ const DAOVotingPage: React.FC = () => {
                 open={createDialog}
                 onClose={() => setCreateDialog(false)}
                 onSuccess={handleCreateSuccess}
+                onError={(error) => {
+                    // Close create dialog first
+                    setCreateDialog(false);
+                    
+                    // Determine error type
+                    let errorType: 'proposal_error' | 'wallet_error' | 'general' = 'general';
+                    if (error.includes('wallet') || error.includes('declined') || error.includes('Eternl')) {
+                        errorType = 'wallet_error';
+                    } else if (error.includes('proposal') || error.includes('create')) {
+                        errorType = 'proposal_error';
+                    }
+                    
+                    // Show error dialog
+                    setErrorDialog({
+                        open: true,
+                        title: 'Proposal Creation Failed',
+                        message: error,
+                        errorType: errorType
+                    });
+                }}
             />
 
             {/* Login Required Dialog */}
@@ -565,6 +688,16 @@ const DAOVotingPage: React.FC = () => {
                 message={successDialog.message}
                 actionType={successDialog.actionType}
                 details={successDialog.details}
+            />
+
+            {/* Error Dialog */}
+            <ErrorDialog
+                open={errorDialog.open}
+                onClose={() => setErrorDialog({ ...errorDialog, open: false })}
+                title={errorDialog.title}
+                message={errorDialog.message}
+                errorType={errorDialog.errorType}
+                details={errorDialog.details}
             />
         </Container>
     );

@@ -27,13 +27,15 @@ import { getStakeIdFromCookies, isUserLoggedIn } from '../../utils/cookie.utils'
 interface CreateProposalDialogProps {
     open: boolean;
     onClose: () => void;
-    onSuccess?: (proposalId: string) => void;
+    onSuccess?: (proposalId: string, transactionId?: string) => void;
+    onError?: (error: string) => void;
 }
 
 const CreateProposalDialog: React.FC<CreateProposalDialogProps> = ({
     open,
     onClose,
-    onSuccess
+    onSuccess,
+    onError
 }) => {
     const [activeStep, setActiveStep] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -150,30 +152,39 @@ const CreateProposalDialog: React.FC<CreateProposalDialogProps> = ({
                     
                     // Call success callback
                     if (onSuccess) {
-                        onSuccess(response.proposalId);
+                        onSuccess(response.proposalId, txHash);
                     }
                     
                     onClose();
                 },
                 error: () => {
-                    setError('Failed to create proposal. Please try again.');
+                    const errorMessage = 'Failed to create proposal. Please try again.';
+                    setError(errorMessage);
                     setLoading(false);
+                    if (onError) {
+                        onError(errorMessage);
+                    }
                 }
             });
         } catch (err: any) {
-            
+            let errorMessage = '';
             // Handle specific errors
             if (err.message?.includes('User declined')) {
-                setError('Transaction was declined. Please approve the transaction to create your proposal.');
+                errorMessage = 'Transaction was declined. Please approve the transaction to create your proposal.';
             } else if (err.message?.includes('No stake ID found in cookies')) {
-                setError('Please login first to create a proposal. Your stake ID is required.');
+                errorMessage = 'Please login first to create a proposal. Your stake ID is required.';
             } else if (err.message?.includes('not available')) {
-                setError('Eternl wallet not found. Please install and setup Eternl wallet.');
+                errorMessage = 'Eternl wallet not found. Please install and setup Eternl wallet.';
             } else {
-                setError(`Failed to create proposal: ${err.message || 'Unknown error occurred'}`);
+                errorMessage = `Failed to create proposal: ${err.message || 'Unknown error occurred'}`;
             }
             
+            setError(errorMessage);
             setLoading(false);
+            
+            if (onError) {
+                onError(errorMessage);
+            }
         }
     };
 
