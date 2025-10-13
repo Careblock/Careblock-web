@@ -86,7 +86,6 @@ export const dynamicFieldData: DynamicFieldType[] = [
         alignment: 'between',
         isDefault: true,
         rowIndex: 6,
-        disabled: true
     },
     {
         type: FieldType.Input,
@@ -98,7 +97,6 @@ export const dynamicFieldData: DynamicFieldType[] = [
         style: 'font-bold',
         isDefault: true,
         rowIndex: 6,
-        disabled: true
     },
     {
         type: FieldType.SelectBox,
@@ -110,7 +108,6 @@ export const dynamicFieldData: DynamicFieldType[] = [
         style: 'font-bold',
         isDefault: true,
         rowIndex: 6,
-        disabled: true
     },
     {
         type: FieldType.Input,

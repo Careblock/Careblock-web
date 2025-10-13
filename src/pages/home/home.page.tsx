@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Box } from '@mui/material';
 import { clearAppointment, storeAppointment } from '@/stores/appointment/appointment.action';
 import { CarouselDataSource } from '@/components/base/carousel/carousel.type';
 import Carousel from '@/components/base/carousel/carousel.component';
+import HomeActions from '@/components/home/HomeActions';
 import useObservable from '@/hooks/use-observable.hook';
 import { PATHS } from '@/enums/RoutePath';
 import { setTitle } from '@/utils/document';
@@ -49,12 +51,20 @@ const Homepage = () => {
     };
 
     return (
-        <Carousel
-            title="Health services"
-            dataSource={carouselDatasource}
-            onClickSeeMore={moveToAppointmentPage}
-            onClickItem={handleClickItemCarousel}
-        />
+        <>
+            {/* Main Action Cards */}
+            <HomeActions />
+            
+            {/* Health Services Carousel */}
+            <Box sx={{ mt: 4 }}>
+                <Carousel
+                    title="Available Health Services"
+                    dataSource={carouselDatasource}
+                    onClickSeeMore={moveToAppointmentPage}
+                    onClickItem={handleClickItemCarousel}
+                />
+            </Box>
+        </>
     );
 };
 

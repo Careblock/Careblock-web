@@ -6,7 +6,6 @@ export interface SecondStepProps {
     scheduleData: ExposeData;
     setScheduleData: Function;
     examinationType?: ExaminationTypes;
-    setIsNext?: (value: boolean) => void;
 }
 
 export interface ExposeData {

@@ -54,7 +54,6 @@ function UserInfo() {
             formik.setFieldValue('email', updatedUserInfo.email);
             formik.setFieldValue('phone', updatedUserInfo.phone);
             formik.setFieldValue('avatar', updatedUserInfo.avatar);
-            formik.setFieldValue('organization', updatedUserInfo.organization.name);
         }
     }, [userInfo]);
 
@@ -232,22 +231,6 @@ function UserInfo() {
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.email && Boolean(formik.errors.email)}
                                 helperText={formik.touched.email && formik.errors.email}
-                            />
-                        </div>
-                    </div>
-                    <div className="flex mb-3 gap-x-3">
-                        <div className="w-full">
-                            <h4 className="text-left mb-2">Organization</h4>
-                            <TextField
-                                className="w-full rounded-[10px] focus:outline-none focus:border-blue-500 mx-auto"
-                                name="organization"
-                                placeholder="Type value"
-                                type="text"
-                                size="small"
-                                value={formik.values.organization}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                disabled={true}
                             />
                         </div>
                     </div>

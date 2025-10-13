@@ -32,8 +32,7 @@ import { uuidv4 } from '@/utils/common.helpers';
 import { addToast } from '@/components/base/toast/toast.service';
 import { SystemMessage } from '@/constants/message.const';
 import { ToastPositionEnum, ToastStatusEnum } from '@/components/base/toast/toast.type';
-import { BrowserWallet, Transaction, ForgeScript } from '@meshsdk/core';
-import { AssetMetadata, Mint } from 'node_modules/@meshsdk/core/dist/common/types';
+import { BrowserWallet, Transaction, ForgeScript, AssetMetadata, Mint } from '@meshsdk/core';
 import { formatDateToString } from '@/utils/datetime.helper';
 import { capitalizedFirstCharacter } from '@/utils/string.helper';
 
@@ -409,26 +408,20 @@ const AppointmentHistory = () => {
                                                 <p className="flex-1 text-sm text-gray-700 italic truncate">
                                                     {appointment.feedback || 'No feedback yet'}
                                                 </p>
-
-                                                <div className="group flex items-center gap-1">
-                                                    <Rating
-                                                        value={appointment.rating || 0}
-                                                        readOnly
-                                                        size="small"
-                                                        className="text-yellow-500"
-                                                    />
-                                                    {appointment.status.includes(APPOINTMENT_STATUS_NAME.CHECKEDIN) && (
-                                                        <button
-                                                            onClick={() => handleOpenFeedback(appointment)}
-                                                            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-gray-200"
-                                                        >
-                                                            <EditIcon
-                                                                fontSize="small"
-                                                                className="text-gray-500 hover:text-primary"
-                                                            />
-                                                        </button>
-                                                    )}
-                                                </div>
+                                                <Rating
+                                                    value={appointment.rating || 0}
+                                                    readOnly
+                                                    size="small"
+                                                    className="text-yellow-500"
+                                                />
+                                                <Button
+                                                    onClick={() => handleOpenFeedback(appointment)}
+                                                    variant="text"
+                                                    color="primary"
+                                                    className="p-1 min-w-[36px] rounded-md hover:bg-gray-200 transition"
+                                                >
+                                                    <EditIcon fontSize="small" />
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>

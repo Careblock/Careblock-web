@@ -448,12 +448,7 @@ function Medicines() {
                                     size="small"
                                     variant="outlined"
                                     value={formik.values.price}
-                                    onChange={(e) => {
-                                        const value = parseFloat(e.target.value);
-                                        if (value >= 0 || e.target.value === '') {
-                                            formik.setFieldValue('price', e.target.value);
-                                        }
-                                    }}
+                                    onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.price && Boolean(formik.errors.price)}
                                     helperText={formik.touched.price && formik.errors.price}

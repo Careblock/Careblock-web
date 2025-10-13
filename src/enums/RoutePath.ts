@@ -47,4 +47,10 @@ export enum PATHS {
     FORBIDDEN = '/forbidden',
     // User information
     USER_INFO = '/user/info',
+    // DAO Governance
+    DAO_PROPOSALS = '/dao/proposals',
+    DAO_PROPOSAL_DETAIL = '/dao/proposals/:id',
+    DAO_CREATE_PROPOSAL = '/dao/proposals/create',
+    DAO_GOVERNANCE_DASHBOARD = '/dao/dashboard',
+    DAO_VOTING = '/dao/voting',
 }

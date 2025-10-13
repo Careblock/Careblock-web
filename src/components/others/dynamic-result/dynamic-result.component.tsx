@@ -154,7 +154,6 @@ const DynamicResult = forwardRef(({ type, datasource, classes, setDataSubmit }: 
                     <TextField
                         name={field.fieldName}
                         placeholder={field.placeholder ?? ''}
-                        disabled={field.disabled}
                         value={field.value}
                         variant="outlined"
                         size="small"
@@ -183,7 +182,6 @@ const DynamicResult = forwardRef(({ type, datasource, classes, setDataSubmit }: 
                         name={field.fieldName}
                         value={field.value}
                         size="small"
-                        disabled={field.disabled}
                         onChange={(event: SelectChangeEvent<any>) => handleSetFieldValue(field, event.target.value)}
                     >
                         {field.fieldName === 'gender'

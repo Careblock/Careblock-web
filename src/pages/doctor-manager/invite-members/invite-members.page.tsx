@@ -48,7 +48,6 @@ function InviteMembersPage() {
     const [inviteMembersDisplays, setInviteMembersDisplays] = useState<any[]>([]);
     const collapsed = useSelector((state: GlobalState) => state.system.collapsed);
     const connection = useSelector((state: { notification: NotificationState }) => state.notification.connection);
-    const [invitedDoctorIds, setInvitedDoctorIds] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         setTitle('Invite Members | CareBlock');
@@ -97,7 +96,9 @@ function InviteMembersPage() {
     };
 
     const pushNotification = (doctor: any) => {
-        const send = () => {
+        let isError = false;
+
+        if (connection.state === signalR.HubConnectionState.Connected) {
             connection
                 .invoke('SendNotification', {
                     accountId: doctor.id,
@@ -107,25 +108,29 @@ function InviteMembersPage() {
                     originId: userData?.id,
                     isRead: false,
                 } as Notifications)
-                .then(() => {
-                    setInvitedDoctorIds((prev) => new Set(prev).add(doctor.id));
-                    addToast({ text: SystemMessage.INVITE_MEMBER, position: ToastPositionEnum.TopRight });
-                })
                 .catch((error: any) => {
+                    isError = true;
                     console.error('Lỗi khi gọi SignalR: ', error);
                 });
-        };
-
-        if (connection.state === signalR.HubConnectionState.Connected) {
-            send();
         } else {
             connection
                 .start()
-                .then(send)
+                .then(() => {
+                    connection.invoke('SendNotification', {
+                        accountId: doctor.id,
+                        notificationTypeId: NotificationType.Invite,
+                        departmentId: doctor.departmentId,
+                        message: '',
+                        originId: userData?.id,
+                        isRead: false,
+                    } as Notifications);
+                })
                 .catch((error: any) => {
+                    isError = true;
                     console.error('Lỗi khi kết nối SignalR: ', error);
                 });
         }
+        if (!isError) addToast({ text: SystemMessage.INVITE_MEMBER, position: ToastPositionEnum.TopRight });
     };
 
     const getCellElement = (inviteMember: Doctors, column: Column, value: any) => {
@@ -223,13 +228,11 @@ function InviteMembersPage() {
                                                 })}
                                                 <StyledTableCell key="action" align="center">
                                                     <div className="flex items-center justify-center gap-x-[16px] border-[#d6d6d6] w-full">
-                                                        {!invitedDoctorIds.has(inviteMember.id) && (
-                                                            <Images.FcInvite
-                                                                className="text-[40px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
-                                                                title="Invite to join the organization"
-                                                                onClick={() => pushNotification(inviteMember)}
-                                                            />
-                                                        )}
+                                                        <Images.FcInvite
+                                                            className="text-[40px] px-[6px] rounded-full hover:bg-[#ddd] cursor-pointer text-[black]"
+                                                            title="Invite to join the organization"
+                                                            onClick={() => pushNotification(inviteMember)}
+                                                        />
                                                     </div>
                                                 </StyledTableCell>
                                             </TableRow>

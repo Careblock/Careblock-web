@@ -28,6 +28,9 @@ import ExaminationOptions from '@/pages/super-admin/examination-options/examinat
 import PaymentMethod from '@/pages/super-admin/payment-method/payment-method.page';
 import PermissionPage from '@/pages/super-admin/permissions/permissions.page';
 import TimeSlot from '@/pages/super-admin/times-slot/time-slot.page';
+import DAOProposalsPage from '@/pages/dao/DAOProposalsPage';
+import CreateProposalPage from '@/pages/dao/CreateProposalPage';
+import DAOVotingPage from '@/pages/dao/DAOVotingPage';
 
 export const routesForNotAuthenticatedOnly = [
     { path: PATHS.REGISTER, element: <Register /> },
@@ -40,6 +43,10 @@ export const routesForPublic = [
     { path: PATHS.APPOINTMENT, element: <AppointmentPage /> },
     { path: PATHS.LOGOUT, element: <Logout /> },
     { path: PATHS.USER_INFO, element: <UserInfo /> },
+    // DAO Governance routes - accessible to all authenticated users
+    { path: PATHS.DAO_PROPOSALS, element: <DAOProposalsPage /> },
+    { path: PATHS.DAO_CREATE_PROPOSAL, element: <CreateProposalPage /> },
+    { path: PATHS.DAO_VOTING, element: <DAOVotingPage /> },
 ];
 
 export const routesForDoctor = [

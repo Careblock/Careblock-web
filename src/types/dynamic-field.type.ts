@@ -17,7 +17,6 @@ export interface DynamicFieldType {
     isDefault: boolean;
     isGroup?: boolean;
     isCustomField?: boolean;
-    disabled?: boolean;
 }
 
 export type AlignmentType = 'left' | 'right' | 'center' | 'between' | undefined;

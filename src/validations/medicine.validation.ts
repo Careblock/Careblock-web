@@ -4,14 +4,7 @@ import * as Yup from 'yup';
 import { createValidation } from './common.validation';
 
 export const medicinesSchema = createValidation({
-    name: Yup.string()
-        .transform((value) => value.trim())
-        .required(formatString(Resource.validation.required, 'Medicine name'))
-        .min(1, formatString(Resource.validation.invalid, 'Medicine name')),
-    price: Yup.number()
-        .typeError(formatString(Resource.validation.required, 'Price'))
-        .required(formatString(Resource.validation.required, 'Price'))
-        .min(0, formatString(Resource.validation.invalid, 'Price cannot be negative')),
+    name: Yup.string().required(formatString(Resource.validation.required, 'Medicine name')),
 });
 
 export const medicineTypesSchema = createValidation({
@@ -19,14 +12,8 @@ export const medicineTypesSchema = createValidation({
 });
 
 export const medicinesAdminSchema = createValidation({
-    name: Yup.string()
-        .transform((value) => value.trim())
-        .required(formatString(Resource.validation.required, 'Medicine name'))
-        .min(1, formatString(Resource.validation.invalid, 'Medicine name')),
+    name: Yup.string().required(formatString(Resource.validation.required, 'Medicine name')),
     medicineTypeId: Yup.string().required(formatString(Resource.validation.required, 'Medicine Type')),
-    price: Yup.number()
-        .typeError(formatString(Resource.validation.required, 'Price'))
-        .required(formatString(Resource.validation.required, 'Price'))
-        .min(0, formatString(Resource.validation.invalid, 'Price cannot be negative')),
+    price: Yup.string().required(formatString(Resource.validation.required, 'Price')),
     unitPrice: Yup.string().required(formatString(Resource.validation.required, 'Unit Price')),
 });

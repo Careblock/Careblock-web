@@ -12,10 +12,7 @@ export const registerDoctorSchema = createValidation({
     ...commonUserSchema,
     departmentId: Yup.string().required(formatString(Resource.validation.required, 'Department')),
     organizationId: Yup.string().required(formatString(Resource.validation.required, 'Organization')),
-    seniority: Yup.number()
-        .typeError('Seniority must be a number')
-        .required('Seniority is required')
-        .min(0, 'Seniority '),
+    seniority: Yup.string().required(formatString(Resource.validation.required, 'Seniority')),
 });
 
 export const forgotPasswordSchema = createValidation({

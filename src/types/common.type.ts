@@ -25,3 +25,10 @@ export interface FormField {
     placeholder: string;
     type: string;
 }
+
+export interface Result<T = any> {
+    success: boolean;
+    data?: T;
+    message?: string;
+    error?: Error;
+}
