@@ -257,42 +257,6 @@ const DAOVotingPage: React.FC = () => {
         setDetailDialog({ open: false, votingId: '' });
     };
 
-    const handleVoteFromDetail = async (votingId: string, choice: number) => {
-        console.log('Vote from detail:', { votingId, choice });
-        
-        try {
-            const submission = {
-                choice: choice, // 1: Yes, 2: No, 3: Abstain
-                metadata: 'Vote from Detail View',
-                transactionId: `detail-tx-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-                ownerStakeId: `user-detail-${Date.now()}`
-            };
-
-            VotingApiService.submitVote(votingId, submission).subscribe({
-                next: (response) => {
-                    console.log('Detail vote submission success:', response);
-                    if (response.success) {
-                        // Refresh voting data to show updated results
-                        loadVotingData();
-                        alert('Vote submitted successfully!');
-                    } else {
-                        alert('Vote submission failed. Please try again.');
-                    }
-                },
-                error: (error) => {
-                    console.error('Detail vote submission error:', error);
-                    alert('Error submitting vote. Please try again.');
-                }
-            });
-        } catch (error) {
-            console.error('Detail vote submission error:', error);
-            alert('Error submitting vote. Please try again.');
-        }
-        
-        // Close detail dialog
-        setDetailDialog({ open: false, votingId: '' });
-    };
-
     const handleCreateProposal = () => {
         if (userLoggedIn) {
             setCreateDialog(true);
@@ -574,7 +538,6 @@ const DAOVotingPage: React.FC = () => {
                 open={detailDialog.open}
                 onClose={handleCloseDetail}
                 votingId={detailDialog.votingId}
-                onVote={handleVoteFromDetail}
             />
 
             {/* Create Proposal Dialog */}
