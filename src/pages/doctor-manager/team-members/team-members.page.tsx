@@ -64,7 +64,7 @@ function TeamMembersPage() {
     const [isVisiblePopupEdit, setIsVisiblePopupEdit] = useState<boolean>(false);
     const [isVisiblePopupConfirm, setIsVisiblePopupConfirm] = useState<boolean>(false);
     const [isVisiblePopupGrant, setIsVisiblePopupGrant] = useState<boolean>(false);
-    const [deletedId] = useState<string>();
+    const [deletedId, setDeletedId] = useState<string>();
     const [grantedDoctor, setGrantedDoctor] = useState<any>();
     const [permissionCheckedList, setPermissionCheckedList] = useState<boolean[]>([false, false]);
     const [editDoctor, setEditDoctor] = useState<any>();
@@ -125,11 +125,11 @@ function TeamMembersPage() {
         setPage(0);
     };
 
-    // const handleClickRemove = (doctorId: string, event: any) => {
-    //     event.stopPropagation();
-    //     setDeletedId(doctorId);
-    //     setIsVisiblePopupConfirm(true);
-    // };
+    const handleClickRemove = (doctorId: string, event: any) => {
+        event.stopPropagation();
+        setDeletedId(doctorId);
+        setIsVisiblePopupConfirm(true);
+    };
 
     const handleClickGrant = (doctor: any) => {
         let temp = [false, false];
@@ -386,13 +386,13 @@ function TeamMembersPage() {
                                                             className="text-[26px] cursor-pointer hover:text-[#3986bc]"
                                                             onClick={() => handleClickGrant(teamMember)}
                                                         />
-                                                        {/* <Images.MdDelete
+                                                        <Images.MdDelete
                                                             title="Remove from the organization"
                                                             className="text-[26px] cursor-pointer hover:text-[red]"
                                                             onClick={($event: any) =>
                                                                 handleClickRemove(teamMember.id, $event)
                                                             }
-                                                        /> */}
+                                                        />
                                                     </div>
                                                 </StyledTableCell>
                                             </TableRow>

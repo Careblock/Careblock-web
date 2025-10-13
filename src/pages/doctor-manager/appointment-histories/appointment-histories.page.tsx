@@ -54,7 +54,6 @@ import { INITIAL_APPOINTMENTS_HISTORIES_VALUES } from '@/constants/appointmentHi
 import { appointmentHistoriesSchema } from '@/validations/appointmentHistories.validation';
 import { useDispatch } from 'react-redux';
 import { setNotAssigned } from '@/stores/manager/manager.action';
-import { ROLE_NAMES } from '@/enums/Common';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -680,13 +679,11 @@ const AppointmentHistories = () => {
                                 onChange={($event: any) => handleSelectedDoctor($event)}
                                 error={formik.touched.doctorId && Boolean(formik.errors.doctorId)}
                             >
-                                {doctors
-                                    .filter((item: any) => item.roles.includes(ROLE_NAMES.DOCTOR))
-                                    .map((item: any) => (
-                                        <MenuItem key={item.id} value={item.id}>
-                                            {`${item.firstname} ${item.lastname}`}
-                                        </MenuItem>
-                                    ))}
+                                {doctors.map((item: any) => (
+                                    <MenuItem key={item.id} value={item.id}>
+                                        {`${item.firstname} ${item.lastname}`}
+                                    </MenuItem>
+                                ))}
                             </Select>
                             <FormHelperText>
                                 <span className="text-[#d32f2f]">{formik.errors.doctorId}</span>

@@ -6,12 +6,7 @@ import { PATHS } from '../enums/RoutePath';
 import { ROLE_NAMES } from '../enums/Common';
 
 export const ProtectedRoute = ({
-    allowedRoles = [
-        ROLE_NAMES.ADMIN,
-        ROLE_NAMES.PATIENT,
-        ROLE_NAMES.DOCTOR,
-        ROLE_NAMES.MANAGER,
-    ],
+    allowedRoles = [ROLE_NAMES.ADMIN, ROLE_NAMES.PATIENT, ROLE_NAMES.DOCTOR, ROLE_NAMES.MANAGER],
 }: ProtectedRouteProps) => {
     const { userData } = useAuth() as AuthContextType;
     let isValid = true;
@@ -21,12 +16,12 @@ export const ProtectedRoute = ({
     }
 
     allowedRoles.forEach((roles) => {
-        if (!userData.roles?.includes(roles) && !userData.roles?.includes(ROLE_NAMES.MANAGER_SIGN)) {
+        if (!userData.roles?.includes(roles)) {
             isValid = false;
             return <Navigate to={PATHS.FORBIDDEN} replace />;
         }
     });
 
     if (isValid) return <Outlet />;
-    return <Navigate to={PATHS.FORBIDDEN} replace />;
+    else return <Navigate to={PATHS.FORBIDDEN} replace />;
 };

@@ -3,6 +3,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { FormHelperText, InputAdornment, MenuItem, Select, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { Dayjs } from 'dayjs';
 import { formatHyphenDate, formatStandardDateTime } from '@/utils/datetime.helper';
 import avatarDefault from '@/assets/images/auth/avatarDefault.png';
 import { getStandardNumber } from '@/utils/number.helper';
@@ -16,9 +17,8 @@ import { cloneDeep } from 'lodash';
 import { Organizations } from '@/types/organization.type';
 import OrganizationService from '@/services/organization.service';
 import Nodata from '@/components/base/no-data/nodata.component';
-import dayjs, { Dayjs } from 'dayjs';
 
-const SecondStep = ({ scheduleData, setScheduleData, examinationType, setIsNext }: SecondStepProps) => {
+const SecondStep = ({ scheduleData, setScheduleData, examinationType }: SecondStepProps) => {
     const { subscribeOnce } = useObservable();
     const [initialized, setInitialized] = useState(true);
     const [searchValue, setSearchValue] = useState('');
@@ -29,7 +29,6 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType, setIsNext 
     const [examinationPackagesDisplay, setExaminationPackagesDisplay] = useState<
         ExaminationPackagesResponse[] | undefined
     >([]);
-    const [dateError, setDateError] = useState<string | null>(null);
 
     useEffect(() => {
         setTitle('Second step | CareBlock');
@@ -132,13 +131,13 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType, setIsNext 
 
     const handleChoosePackage = (examPackage: ExaminationPackagesResponse, time: string) => {
         if (!isDisabledDateTime(examPackage, time)) {
-            const updatedData = cloneDeep({
-                ...scheduleData,
-                examinationPackage: examPackage,
-                time,
-            });
-            setScheduleData(updatedData);
-            setIsNext?.(!!(updatedData.date && updatedData.examinationPackage && updatedData.time));
+            setScheduleData(
+                cloneDeep({
+                    ...scheduleData,
+                    examinationPackage: examPackage,
+                    time: time,
+                })
+            );
         }
     };
 
@@ -219,40 +218,10 @@ const SecondStep = ({ scheduleData, setScheduleData, examinationType, setIsNext 
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <DatePicker
                                                 disablePast
-                                                maxDate={dayjs().add(1, 'year')}
                                                 className="w-[320px]"
                                                 value={scheduleData.date}
-                                                onChange={(newValue: Dayjs | null) => {
-                                                    const today = dayjs().startOf('day');
-                                                    if (!newValue || !newValue.isValid()) {
-                                                        setDateError('Invalid date format.');
-                                                        setIsNext?.(false);
-                                                        return;
-                                                    }
-                                                    if (newValue.isBefore(today)) {
-                                                        setDateError('Please select a future date.');
-                                                        setIsNext?.(false);
-                                                        return;
-                                                    }
-                                                    setDateError(null);
-                                                    handleDateChange(newValue);
-                                                    setIsNext?.(
-                                                        !!(scheduleData.examinationPackage && scheduleData.time)
-                                                    );
-                                                }}
-                                                onError={(reason) => {
-                                                    if (reason === 'invalidDate') {
-                                                        setDateError('Invalid date format.');
-                                                        setIsNext?.(false);
-                                                    }
-                                                }}
-                                                slotProps={{
-                                                    textField: {
-                                                        size: 'small',
-                                                        error: !!dateError,
-                                                        helperText: dateError,
-                                                    },
-                                                }}
+                                                slotProps={{ textField: { size: 'small' } }}
+                                                onChange={(newValue) => handleDateChange(newValue)}
                                             />
                                         </LocalizationProvider>
                                     </div>

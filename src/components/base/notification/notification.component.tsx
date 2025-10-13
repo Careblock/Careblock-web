@@ -1,7 +1,7 @@
 import { NotificationType } from '@/enums/NotificationType';
 import { NotificationItemType } from './notification.type';
-// import { useState } from 'react';
-// import TheBill from '@/pages/doctor/bill/bill.page';
+import { useState } from 'react';
+import TheBill from '@/pages/doctor/bill/bill.page';
 
 const NotificationItem = ({
     isRead,
@@ -12,15 +12,15 @@ const NotificationItem = ({
     onClickDecline,
     onClickRead,
 }: NotificationItemType) => {
-    // const [isShowBillPopup, setIsShowBillPopup] = useState(false);
+    const [isShowBillPopup, setIsShowBillPopup] = useState(false);
 
-    // const handleClickBill = () => {
-    //     setIsShowBillPopup(true);
-    // };
+    const handleClickBill = () => {
+        setIsShowBillPopup(true);
+    };
 
-    // const handleSetIsShowBillPopup = (type: boolean) => {
-    //     setIsShowBillPopup(type);
-    // };
+    const handleSetIsShowBillPopup = (type: boolean) => {
+        setIsShowBillPopup(type);
+    };
 
     const getContentNoti = () => {
         switch (type) {
@@ -62,18 +62,17 @@ const NotificationItem = ({
                             ) : (
                                 <div className="flex-1 mb-[10px]">
                                     <div className="mb-[6px]">{message}</div>
-                                    <a
-                                        href={link}
-                                        download
+                                    <div
                                         className="text-light-blue-800 underline mr-[20px] cursor-pointer"
+                                        onClick={handleClickBill}
                                     >
-                                        Click to download
-                                    </a>
+                                        Click to open the Link
+                                    </div>
                                 </div>
                             )}
                             {!isRead && <div className="font-bold size-[8px] bg-primary rounded-full"></div>}
                         </div>
-                        {/* <TheBill appointmentId={link} visible={isShowBillPopup} setVisible={handleSetIsShowBillPopup} /> */}
+                        <TheBill appointmentId={link} visible={isShowBillPopup} setVisible={handleSetIsShowBillPopup} />
                     </>
                 );
         }
