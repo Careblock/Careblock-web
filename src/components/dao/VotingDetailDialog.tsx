@@ -27,6 +27,7 @@ import {
     CalendarToday as CalendarIcon
 } from '@mui/icons-material';
 import VotingApiService, { VotingDetailResponse } from '../../services/votingApi.service';
+import TransactionIdChip from './TransactionIdChip';
 
 interface VotingDetailDialogProps {
     open: boolean;
@@ -183,6 +184,19 @@ const VotingDetailDialog: React.FC<VotingDetailDialogProps> = ({
                                     End Date: {formatDate(detail.endDate)}
                                 </Typography>
                             </Box>
+
+                            {/* Proposal Transaction ID */}
+                            {detail.transactionId && (
+                                <Box display="flex" alignItems="center" gap={1} mb={2}>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Proposal Transaction:
+                                    </Typography>
+                                    <TransactionIdChip 
+                                        transactionId={detail.transactionId} 
+                                        label="Proposal Transaction"
+                                    />
+                                </Box>
+                            )}
                         </Box>
 
                         {/* Problem Summary */}
@@ -301,6 +315,71 @@ const VotingDetailDialog: React.FC<VotingDetailDialogProps> = ({
                                 </Typography>
                             </CardContent>
                         </Card>
+
+                        {/* Vote Transactions List */}
+                        {detail.votingChoices && detail.votingChoices.length > 0 && (
+                            <Card elevation={2} sx={{ mb: 3 }}>
+                                <CardContent>
+                                    <Typography variant="h6" gutterBottom color="primary.main" sx={{ fontWeight: 600 }}>
+                                        Vote Transactions ({detail.votingChoices.length})
+                                    </Typography>
+                                    
+                                    <Box sx={{ maxHeight: 300, overflowY: 'auto' }}>
+                                        {detail.votingChoices.map((choice, index) => (
+                                            <Paper 
+                                                key={choice.id} 
+                                                elevation={1} 
+                                                sx={{ 
+                                                    p: 2, 
+                                                    mb: 1, 
+                                                    display: 'flex', 
+                                                    alignItems: 'center', 
+                                                    justifyContent: 'space-between',
+                                                    bgcolor: 'grey.50'
+                                                }}
+                                            >
+                                                <Box display="flex" alignItems="center" gap={2}>
+                                                    <Typography variant="body2" sx={{ minWidth: 20 }}>
+                                                        #{index + 1}
+                                                    </Typography>
+                                                    
+                                                    <Chip
+                                                        label={
+                                                            choice.choice === 1 ? 'Yes' : 
+                                                            choice.choice === 2 ? 'No' : 'Abstain'
+                                                        }
+                                                        color={
+                                                            choice.choice === 1 ? 'success' : 
+                                                            choice.choice === 2 ? 'error' : 'default'
+                                                        }
+                                                        size="small"
+                                                        sx={{ minWidth: 70 }}
+                                                    />
+                                                    
+                                                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                                                        {formatDate(choice.createdAt)}
+                                                    </Typography>
+                                                </Box>
+                                                
+                                                <Box display="flex" alignItems="center" gap={1}>
+                                                    <TransactionIdChip 
+                                                        transactionId={choice.transactionId} 
+                                                        label="Vote Transaction"
+                                                        size="small"
+                                                    />
+                                                </Box>
+                                            </Paper>
+                                        ))}
+                                    </Box>
+                                    
+                                    {detail.votingChoices.length > 5 && (
+                                        <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                                            Scroll to see all transactions
+                                        </Typography>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        )}
 
                     </Box>
                 )}

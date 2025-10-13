@@ -14,8 +14,8 @@ import {
     CheckCircle as CheckCircleIcon,
     HowToVote as VoteIcon,
     Assignment as ProposalIcon,
-    Launch as LaunchIcon,
 } from '@mui/icons-material';
+import TransactionIdChip from './TransactionIdChip';
 
 interface SuccessDialogProps {
     open: boolean;
@@ -37,6 +37,7 @@ const SuccessDialog: React.FC<SuccessDialogProps> = ({
     actionType,
     details
 }) => {
+    console.log('SuccessDialog render:', { open, title, actionType, details });
     const getActionDetails = () => {
         switch (actionType) {
             case 'vote_success':
@@ -172,12 +173,10 @@ const SuccessDialog: React.FC<SuccessDialogProps> = ({
                                 Blockchain Transaction:
                             </Typography>
                         </Box>
-                        <Chip 
-                            label={`${details.transactionId.substring(0, 16)}...`}
-                            size="small" 
-                            color="secondary"
-                            sx={{ fontFamily: 'monospace' }}
-                            icon={<LaunchIcon />}
+                        <TransactionIdChip 
+                            transactionId={details.transactionId} 
+                            label="Transaction"
+                            size="medium"
                         />
                     </Box>
                 )}
