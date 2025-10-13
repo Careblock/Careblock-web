@@ -359,26 +359,6 @@ const DAOVotingPage: React.FC = () => {
                     >
                         Back to Home
                     </Button>
-                    
-                    {/* Test Success Dialog Button - Remove this in production */}
-                    <Button
-                        variant="outlined"
-                        color="success"
-                        onClick={() => {
-                            setSuccessDialog({
-                                open: true,
-                                title: 'Test Vote Success!',
-                                message: 'This is a test success dialog.',
-                                actionType: 'vote_success',
-                                details: {
-                                    transactionId: 'test123456789'
-                                }
-                            });
-                        }}
-                        sx={{ minWidth: 120 }}
-                    >
-                        Test Success
-                    </Button>
                 </Box>
             </Box>
 
@@ -582,8 +562,6 @@ const DAOVotingPage: React.FC = () => {
                 open={votingDialog.open}
                 onClose={() => setVotingDialog({ open: false, proposalId: '', proposalTitle: '' })}
                 onVoteSuccess={(transactionId) => {
-                    console.log('Vote success callback called with transactionId:', transactionId);
-                    
                     // Close voting dialog first
                     setVotingDialog({ open: false, proposalId: '', proposalTitle: '' });
                     
@@ -598,11 +576,6 @@ const DAOVotingPage: React.FC = () => {
                             details: {
                                 transactionId: transactionId
                             }
-                        });
-                        
-                        console.log('Success dialog should now be open with state:', {
-                            open: true,
-                            transactionId: transactionId
                         });
                     }, 100);
                     

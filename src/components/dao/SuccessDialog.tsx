@@ -12,8 +12,7 @@ import {
 } from '@mui/material';
 import {
     CheckCircle as CheckCircleIcon,
-    HowToVote as VoteIcon,
-    Assignment as ProposalIcon,
+    TaskAlt as TaskAltIcon,
 } from '@mui/icons-material';
 import TransactionIdChip from './TransactionIdChip';
 
@@ -37,32 +36,28 @@ const SuccessDialog: React.FC<SuccessDialogProps> = ({
     actionType,
     details
 }) => {
-    console.log('SuccessDialog render:', { open, title, actionType, details });
     const getActionDetails = () => {
         switch (actionType) {
             case 'vote_success':
                 return {
-                    icon: <VoteIcon sx={{ fontSize: 60, color: 'success.main' }} />,
+                    icon: <TaskAltIcon sx={{ fontSize: 60, color: 'white' }} />,
                     color: 'success.main',
-                    bgColor: 'success.light',
+                    bgColor: 'success.main',
                     actionText: 'Vote Submitted',
-                    celebration: '🗳️ ✅'
                 };
             case 'proposal_created':
                 return {
-                    icon: <ProposalIcon sx={{ fontSize: 60, color: 'primary.main' }} />,
+                    icon: <CheckCircleIcon sx={{ fontSize: 60, color: 'white' }} />,
                     color: 'primary.main',
-                    bgColor: 'primary.light',
+                    bgColor: 'primary.main',
                     actionText: 'Proposal Created',
-                    celebration: '📝 🎉'
                 };
             default:
                 return {
-                    icon: <CheckCircleIcon sx={{ fontSize: 60, color: 'success.main' }} />,
+                    icon: <CheckCircleIcon sx={{ fontSize: 60, color: 'white' }} />,
                     color: 'success.main',
-                    bgColor: 'success.light',
+                    bgColor: 'success.main',
                     actionText: 'Success',
-                    celebration: '✅'
                 };
         }
     };
@@ -87,7 +82,7 @@ const SuccessDialog: React.FC<SuccessDialogProps> = ({
                 <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
                     <Box sx={{ position: 'relative' }}>
                         <Avatar sx={{ 
-                            bgcolor: 'white',
+                            bgcolor: details_info.bgColor,
                             width: 100, 
                             height: 100,
                             border: `4px solid ${details_info.color}`,
@@ -105,7 +100,7 @@ const SuccessDialog: React.FC<SuccessDialogProps> = ({
                                 animation: 'bounce 1s infinite'
                             }}
                         >
-                            {details_info.celebration}
+                            
                         </Typography>
                     </Box>
                     <Typography variant="h4" component="div" sx={{ 
