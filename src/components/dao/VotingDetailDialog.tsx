@@ -32,19 +32,16 @@ interface VotingDetailDialogProps {
     open: boolean;
     onClose: () => void;
     votingId: string;
-    onVote?: (votingId: string, choice: number) => void;
 }
 
 const VotingDetailDialog: React.FC<VotingDetailDialogProps> = ({
     open,
     onClose,
-    votingId,
-    onVote
+    votingId
 }) => {
     const [detail, setDetail] = useState<VotingDetailResponse | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [validatingVote, setValidatingVote] = useState(false);
 
     // Load detail when dialog opens
     useEffect(() => {
@@ -114,40 +111,7 @@ const VotingDetailDialog: React.FC<VotingDetailDialogProps> = ({
         return total > 0 ? Math.round((count / total) * 100) : 0;
     };
 
-    const handleVoteClick = async (choice: number) => {
-        if (!detail) return;
-        
-        // Validate voter permission before submitting vote
-        setValidatingVote(true);
-        
-        const sampleStakeId = 'test001'; // In real app, this would come from user context
-        
-        try {
-            VotingApiService.validateVoter(detail.id, sampleStakeId).subscribe({
-                next: (response) => {
-                    setValidatingVote(false);
-                    if (response.canVote) {
-                        // User has permission, proceed with vote
-                        if (onVote) {
-                            onVote(detail.id, choice);
-                        }
-                    } else {
-                        // User doesn't have permission
-                        alert('❌ You do not have permission to vote on this proposal!\n\nYour Stake ID is not authorized to vote. Please contact the administrator to get permission.');
-                    }
-                },
-                error: (error) => {
-                    console.error('Error validating voter:', error);
-                    setValidatingVote(false);
-                    alert('⚠️ Unable to verify voting permission!\n\nThe system cannot confirm your voting rights. Please try again later or contact the administrator.');
-                }
-            });
-        } catch (error) {
-            console.error('Error validating voter:', error);
-            setValidatingVote(false);
-            alert('⚠️ Unable to verify voting permission!\n\nThe system cannot confirm your voting rights. Please try again later or contact the administrator.');
-        }
-    };
+
 
     const isExpired = () => {
         if (!detail) return false;

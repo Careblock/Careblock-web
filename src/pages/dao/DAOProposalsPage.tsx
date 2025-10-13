@@ -19,10 +19,9 @@ import { Link } from 'react-router-dom';
 import ProposalCard from '@/components/dao/ProposalCard';
 import GovernanceStatsCard from '@/components/dao/GovernanceStatsCard';
 import VotingDialog from '@/components/dao/VotingDialog';
-import { Proposal, ProposalFilter, VoteRequest } from '@/types/daoVoting.type';
+import { Proposal, ProposalFilter } from '@/types/daoVoting.type';
 import { ProposalStatus, ProposalType, ProposalCategory } from '@/enums/DAOVoting';
 import ProposalService from '@/services/proposal.service';
-import VotingService from '@/services/voting.service';
 
 const DAOProposalsPage: React.FC = () => {
     const [proposals, setProposals] = useState<Proposal[]>([]);
@@ -86,22 +85,7 @@ const DAOProposalsPage: React.FC = () => {
         }
     };
 
-    const handleVoteSubmit = async (voteRequest: VoteRequest) => {
-        try {
-            VotingService.castVote(voteRequest).subscribe({
-                next: (vote) => {
-                    console.log('Vote cast successfully:', vote);
-                    setVotingDialog({ open: false, proposalId: '', proposalTitle: '' });
-                    loadProposals(); // Reload to get updated vote counts
-                },
-                error: (error) => {
-                    console.error('Error casting vote:', error);
-                }
-            });
-        } catch (error) {
-            console.error('Error casting vote:', error);
-        }
-    };
+
 
     const handleFilterChange = (field: keyof ProposalFilter, value: any) => {
         setFilter(prev => ({
@@ -280,7 +264,7 @@ const DAOProposalsPage: React.FC = () => {
             <VotingDialog
                 open={votingDialog.open}
                 onClose={() => setVotingDialog({ open: false, proposalId: '', proposalTitle: '' })}
-                onVote={handleVoteSubmit}
+                onVoteSuccess={loadProposals}
                 proposalId={votingDialog.proposalId}
                 proposalTitle={votingDialog.proposalTitle}
             />
