@@ -3,7 +3,7 @@
 ## 🎯 Tính năng mới: Xem chi tiết Proposal
 
 ### **API Integration**
-- ✅ **GET Detail API**: `https://careblock-service20241103225423.azurewebsites.net/Voting/{id}`
+- ✅ **GET Detail API**: `https://careblock-services.texlabs.org/Voting/{id}`
 - ✅ **Service Method**: `VotingApiService.getVotingDetail(votingId)`
 - ✅ **Type Definitions**: `VotingDetailResponse` interface
 

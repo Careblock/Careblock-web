@@ -4,7 +4,7 @@
 
 ### **API Integration**
 - ✅ **Vote API**: `POST /Voting/{votingId}/choices`
-- ✅ **Endpoint**: `https://careblock-service20241103225423.azurewebsites.net/Voting/{id}/choices`
+- ✅ **Endpoint**: `https://careblock-services.texlabs.org/Voting/{id}/choices`
 - ✅ **Response**: Returns `true` on success
 
 ### **API Request Format**
