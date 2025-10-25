@@ -1,3 +1,4 @@
+import { Environment } from '@/environment';
 import { Observable } from 'rxjs';
 
 export interface VotingApiResponse {
@@ -86,7 +87,7 @@ export interface ValidateVoterResponse {
 }
 
 class _VotingApiService {
-    private baseUrl = 'https://careblock-service20241103225423.azurewebsites.net';
+    private baseUrl = Environment.BASE_API;
 
     getAllVotings(params?: VotingApiParams): Observable<VotingApiResponse> {
         const queryParams = new URLSearchParams();
@@ -143,7 +144,7 @@ class _VotingApiService {
     }
 
     getAllVotingsWithPagination(pageIndex: number = 1, pageSize: number = 20): Observable<VotingApiResponse> {
-        return this.getAllVotings({ isActive: true, pageIndex, pageSize });
+        return this.getAllVotings({ pageIndex, pageSize });
     }
 
     getAllInactiveVotings(pageIndex: number = 1, pageSize: number = 20): Observable<VotingApiResponse> {

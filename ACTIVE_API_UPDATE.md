@@ -4,14 +4,14 @@
 
 ### **Trước:**
 ```
-https://careblock-service20241103225423.azurewebsites.net/Voting?isActive=false&pageIndex=1&pageSize=20
+https://careblock-services.texlabs.org/Voting?isActive=false&pageIndex=1&pageSize=20
 ```
 - Chỉ lấy proposals đã expired
 - 1 proposal "Test01" (expired)
 
 ### **Sau:**
 ```  
-https://careblock-service20241103225423.azurewebsites.net/Voting?isActive=true&pageIndex=1&pageSize=20
+https://careblock-services.texlabs.org/Voting?isActive=true&pageIndex=1&pageSize=20
 ```
 - Lấy proposals đang active (có thể vote)
 - 2 active proposals: "test002" và "Test01"

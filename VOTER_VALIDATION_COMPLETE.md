@@ -9,7 +9,7 @@
 
 ### **API Usage Pattern**
 ```
-GET https://careblock-service20241103225423.azurewebsites.net/Voting/validate-voter?votingId=e8a5931e-c7eb-4c07-b57d-770a36784c1c&stakeId=test001
+GET https://careblock-services.texlabs.org/Voting/validate-voter?votingId=e8a5931e-c7eb-4c07-b57d-770a36784c1c&stakeId=test001
 
 Response: true | false
 ```

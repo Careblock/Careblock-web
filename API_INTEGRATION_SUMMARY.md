@@ -3,7 +3,7 @@
 ## 🎯 Đã thực hiện thành công
 
 ### 1. **API Service mới** (`/src/services/votingApi.service.ts`)
-- ✅ Tạo service call API thực tế từ: `https://careblock-service20241103225423.azurewebsites.net/Voting`
+- ✅ Tạo service call API thực tế từ: `https://careblock-services.texlabs.org/Voting`
 - ✅ Support các parameters: `isActive`, `pageIndex`, `pageSize`
 - ✅ TypeScript interfaces cho API response
 - ✅ Observable pattern với RxJS

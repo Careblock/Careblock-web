@@ -3,7 +3,7 @@
 ## 🎯 Full Proposal Creation System
 
 ### **API Integration**
-- ✅ **Create API**: `POST https://careblock-service20241103225423.azurewebsites.net/Voting`
+- ✅ **Create API**: `POST https://careblock-services.texlabs.org/Voting`
 - ✅ **Service**: `VotingApiService.createProposal()`
 - ✅ **Response**: Returns new proposal ID
 
