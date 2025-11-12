@@ -17,6 +17,7 @@ import DoctorLayout from '@/layouts/doctor/doctor.layout';
 import PatientLayout from '@/layouts/patient/patient.layout';
 import DoctorManagerLayout from '@/layouts/doctor-manager/doctor-manager.layout';
 import { PATHS } from '@/enums/RoutePath';
+import PageTracker from '@/components/base/page-tracker/page-tracker.component';
 
 const Routes = () => {
     const { userData, isLoading } = useAuth() as AuthContextType;
@@ -27,34 +28,39 @@ const Routes = () => {
 
     const router = createBrowserRouter([
         {
-            element: <DefaultLayout />,
-            errorElement: <NotFoundPage />,
-            children: [...(!userData ? routesForNotAuthenticatedOnly : []), ...routesForPublic],
-        },
-        {
-            path: PATHS.FORBIDDEN,
-            element: <Forbidden />,
-            errorElement: <NotFoundPage />,
-        },
-        {
-            element: <DoctorLayout />,
-            errorElement: <NotFoundPage />,
-            children: [...routesForDoctor],
-        },
-        {
-            element: <PatientLayout />,
-            errorElement: <NotFoundPage />,
-            children: [...routesForPatient],
-        },
-        {
-            element: <DoctorManagerLayout />,
-            errorElement: <NotFoundPage />,
-            children: [...routesForDoctorManager],
-        },
-        {
-            element: <DoctorManagerLayout />,
-            errorElement: <NotFoundPage />,
-            children: [...routesForAdmin],
+            element: <PageTracker />,
+            children: [
+                {
+                    element: <DefaultLayout />,
+                    errorElement: <NotFoundPage />,
+                    children: [...(!userData ? routesForNotAuthenticatedOnly : []), ...routesForPublic],
+                },
+                {
+                    path: PATHS.FORBIDDEN,
+                    element: <Forbidden />,
+                    errorElement: <NotFoundPage />,
+                },
+                {
+                    element: <DoctorLayout />,
+                    errorElement: <NotFoundPage />,
+                    children: [...routesForDoctor],
+                },
+                {
+                    element: <PatientLayout />,
+                    errorElement: <NotFoundPage />,
+                    children: [...routesForPatient],
+                },
+                {
+                    element: <DoctorManagerLayout />,
+                    errorElement: <NotFoundPage />,
+                    children: [...routesForDoctorManager],
+                },
+                {
+                    element: <DoctorManagerLayout />,
+                    errorElement: <NotFoundPage />,
+                    children: [...routesForAdmin],
+                },
+            ],
         },
     ]);
 

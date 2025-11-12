@@ -30,6 +30,7 @@ import TransactionIdChip from '@/components/dao/TransactionIdChip';
 import useObservable from '@/hooks/use-observable.hook';
 import VotingApiService, { VotingItem, VotingApiResponse } from '@/services/votingApi.service';
 import { isUserLoggedIn, getStakeIdFromCookies } from '@/utils/cookie.utils';
+import { event as trackEvent, exception as trackException } from '@/utils/analytics';
 
 // Helper function to determine if voting is still active
 const isVotingActive = (endDate: string): boolean => {
@@ -194,7 +195,17 @@ const DAOVotingPage: React.FC = () => {
     };
 
     const handleVote = async (votingId: string) => {
+        // Track vote button click
+        trackEvent('dao_vote_initiated', {
+            proposal_id: votingId,
+            user_authenticated: userLoggedIn
+        });
+
         if (!userLoggedIn) {
+            trackEvent('dao_vote_blocked', {
+                reason: 'not_authenticated',
+                proposal_id: votingId
+            });
             setLoginDialog({
                 open: true,
                 title: 'Authentication Required',
@@ -212,6 +223,10 @@ const DAOVotingPage: React.FC = () => {
         try {
             const stakeId = getStakeIdFromCookies();
             if (!stakeId) {
+                trackEvent('dao_vote_blocked', {
+                    reason: 'no_stake_id',
+                    proposal_id: votingId
+                });
                 setLoginDialog({
                     open: true,
                     title: 'Authentication Required',
@@ -224,12 +239,20 @@ const DAOVotingPage: React.FC = () => {
             VotingApiService.validateVoter(votingId, stakeId).subscribe({
                 next: (response) => {
                     if (response.canVote) {
+                        trackEvent('dao_vote_dialog_opened', {
+                            proposal_id: votingId,
+                            proposal_title: voting.title
+                        });
                         setVotingDialog({
                             open: true,
                             proposalId: votingId,
                             proposalTitle: voting.title,
                         });
                     } else {
+                        trackEvent('dao_vote_blocked', {
+                            reason: 'already_voted',
+                            proposal_id: votingId
+                        });
                         setLoginDialog({
                             open: true,
                             title: 'Already Voted',
@@ -241,6 +264,7 @@ const DAOVotingPage: React.FC = () => {
                 },
                 error: (error) => {
                     console.error('Error validating voter:', error);
+                    trackException(`Vote validation failed: ${error.message}`);
                     // On validation error, block voting for security (fail-closed)
                     setLoginDialog({
                         open: true,
@@ -252,6 +276,7 @@ const DAOVotingPage: React.FC = () => {
             });
         } catch (error) {
             console.error('Error validating voter:', error);
+            trackException(`Vote validation error: ${error}`);
             // On validation error, block voting for security (fail-closed)
             setLoginDialog({
                 open: true,
@@ -265,6 +290,9 @@ const DAOVotingPage: React.FC = () => {
 
 
     const handleViewDetail = (votingId: string) => {
+        trackEvent('dao_proposal_detail_viewed', {
+            proposal_id: votingId
+        });
         setDetailDialog({
             open: true,
             votingId: votingId,
@@ -276,9 +304,17 @@ const DAOVotingPage: React.FC = () => {
     };
 
     const handleCreateProposal = () => {
+        trackEvent('dao_create_proposal_clicked', {
+            user_authenticated: userLoggedIn
+        });
+
         if (userLoggedIn) {
             setCreateDialog(true);
+            trackEvent('dao_create_proposal_dialog_opened');
         } else {
+            trackEvent('dao_create_proposal_blocked', {
+                reason: 'not_authenticated'
+            });
             setLoginDialog({
                 open: true,
                 title: 'Login Required',
@@ -290,6 +326,13 @@ const DAOVotingPage: React.FC = () => {
 
     const handleCreateSuccess = (proposalId: string, transactionId?: string) => {
         console.log('Proposal created successfully with ID:', proposalId, 'Transaction ID:', transactionId);
+        
+        // Track successful proposal creation
+        trackEvent('dao_proposal_created', {
+            proposal_id: proposalId,
+            has_transaction_id: !!transactionId
+        });
+
         // Show success dialog
         setSuccessDialog({
             open: true,
